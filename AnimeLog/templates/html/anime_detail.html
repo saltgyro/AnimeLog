@@ -1,0 +1,68 @@
+{% extends "html/base.html" %}
+{% load static %}
+
+
+
+{% block content %}
+<script src="{% static 'js/anime_detail.js' %}" defer></script>
+<link rel="stylesheet" href="{% static 'css/anime_detail.css' %}">
+
+<h1>{{ anime.title }}</h1>
+
+<div>
+    <!-- 視聴済ボタン -->
+    <button id="watched-btn" data-anime-id="{{ anime.id }}" data-status="watched"
+            {% if not user.is_authenticated %}disabled{% endif %}
+            class="{% if user_relation and user_relation.is_watched %}btn-active{% else %}btn-inactive{% endif %}">
+        視聴済
+    </button>
+
+    <!-- お気に入りボタン -->
+    <button id="favorite-btn" data-anime-id="{{ anime.id }}" data-status="favorite"
+            {% if not user.is_authenticated or not user_relation or not user_relation.is_watched %}disabled{% endif %}
+            class="{% if user_relation and user_relation.is_favorite %}btn-active{% else %}btn-inactive{% endif %}">
+        お気に入り
+    </button>
+
+    <!-- 視聴予定ボタン -->
+    <button id="plan-to-watch-btn" data-anime-id="{{ anime.id }}" data-status="plan_to_watch"
+            {% if not user.is_authenticated %}disabled{% endif %}
+            class="{% if user_relation and user_relation.is_plan_to_watch %}btn-active{% else %}btn-inactive{% endif %}">
+        視聴予定
+    </button>
+
+    {% if not user.is_authenticated %}
+        <p>これらの機能を利用するにはログインしてください。</p>
+    {% endif %}
+</div>
+
+<div>
+    <label for="rating-input">評価を入力してください (0〜5):</label>
+    <input type="number" id="rating-input" min="0" max="5" step="0.1" value="{{ user_relation.rating|default:0.0 }}">
+    <button id="rating-submit" data-anime-id="{{ anime.id }}">評価を更新</button>
+</div>
+
+<div class="thumbnail">
+    {% if anime.thumbnail %}
+        <img src="{{ anime.thumbnail.url }}" alt="{{ anime.title }}" width="300">
+    {% else %}
+        <p>画像がありません</p>
+    {% endif %}
+</div>
+
+<p><strong>あらすじ:</strong> {{ anime.synopsis }}</p>
+<p><strong>放送開始日:</strong> {{ anime.start_date }}</p>
+<p><strong>放送終了日:</strong> {{ anime.end_date }}</p>
+<p><strong>総話数:</strong> {{ anime.episode_count }}</p>
+<p><strong>平均評価:</strong> {{ anime.average_rating }}</p>
+<p><strong>登録者数:</strong> {{ anime.watched_count }}</p>
+<p><strong>お気に入り数:</strong> {{ anime.favorite_count }}</p>
+
+<a href="{% url 'anime:index' %}">戻る</a>
+
+<script>
+    const updateStatusUrl = "{% url 'anime:update_status' %}";
+    const csrfToken = "{{ csrf_token }}";
+</script>
+
+{% endblock %}

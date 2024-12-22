@@ -1,0 +1,21 @@
+.menu-drawer .btn {
+    font-size: 27px;
+    background: 
+    #fff;
+    width: 40px;
+    padding: 4px 0;
+    cursor: pointer;
+    text-align: center;
+    top: 0;
+    right: 0;
+}
+.menu-drawer .btn::before, .menu-drawer .btn::after {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+}
+.menu-drawer .btn::before {
+    content: "\f0c9";
+}
+.menu-drawer .btn::after {
+    content: "\f00d";
+}

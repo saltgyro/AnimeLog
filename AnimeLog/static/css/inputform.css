@@ -1,0 +1,39 @@
+/* 入力フォームの全体スタイル */
+.form-group {
+    margin-bottom: 15px; /* 各フォーム要素間の余白 */
+}
+
+/* 入力フィールドのスタイル */
+input[type="nickname"],
+input[type="password1"],
+input[type="password2"] {
+    width: 100%; /* 横幅を100%に */
+    padding: 10px; /* 内側の余白 */
+    margin-top: 5px; /* ラベルとの間にスペース */
+    border: 1px solid #ccc; /* 境界線 */
+    border-radius: 5px; /* 角を丸く */
+    box-sizing: border-box; /* ボックスモデルを調整 */
+    font-size: 1em;
+}
+
+/* ラベルのスタイル */
+label {
+    font-weight: bold;
+    display: block; /* 各ラベルをブロック表示 */
+}
+
+/* 登録ボタンのスタイル */
+button[type="submit"] {
+    background-color: #4CAF50; /* 緑色 */
+    color: white; /* テキスト色 */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+button[type="submit"]:hover {
+    background-color: #45a049; /* ホバー時に少し濃く */
+}
+

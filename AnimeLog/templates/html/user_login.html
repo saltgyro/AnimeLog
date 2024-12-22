@@ -1,1 +1,17 @@
 {% extends "html/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/inputform.css' %}">
+<h1>ログイン画面です</h1>
+<div class="login-form">
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }} 
+        <button type="submit" class="btn btn-primary">ログイン</button>
+    </form>
+</div>
+<p>まだアカウントをお持ちでない方
+    <a href="{% url 'anime_tracker:regist' %}">新規登録</a>
+</p>
+{% endblock %}

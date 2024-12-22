@@ -23,11 +23,6 @@ header {
 }
 
 /* ドロップダウンボタン */
-.dropdown {
-    position: relative; /* 子要素の絶対配置の基準 */
-    display: inline-block;
-}
-
 .dropdown button {
     background-color: white;
     color: orange;
@@ -44,16 +39,14 @@ header {
 }
 
 /* ドロップダウンメニュー */
-.dropdown-content {
-    display: none; /* 初期状態は非表示 */
-    position: absolute;
+.dropdown-menu {
     background-color: white;
-    right: 0; /* 右揃えにする */
+    border: none;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     z-index: 1;
 }
 
-.dropdown-content a {
+.dropdown-menu a {
     color: black;
     padding: 10px 12px;
     text-decoration: none;
@@ -61,11 +54,6 @@ header {
     font-size: 1em; /* ボタンと同じ文字サイズ */
 }
 
-.dropdown-content a:hover {
+.dropdown-menu a:hover {
     background-color: #f1f1f1; /* ホバー時の背景色 */
-}
-
-/* ホバーでメニューを表示 */
-.dropdown:hover .dropdown-content {
-    display: block;
 }

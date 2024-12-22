@@ -3,6 +3,11 @@ from django.views.generic import (TemplateView,CreateView,FormView,View)
 from django.contrib.auth import authenticate,login,logout
 from .forms import UserForm,RegistForm,UserLoginForm,CustomUserCreationForm,UserEditForm,forms
 from django.urls import reverse_lazy
+from .models import (Anime,Genres,Seasons,Studios,Tags,User_anime_relations)
+from django.db.models import F
+import json
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 class UserLoginView(FormView):
     template_name = 'html/user_login.html'
@@ -29,10 +34,53 @@ class UserLogoutView(View):
     def post(self,request,*args, **kwargs):
         logout(request)
         return redirect('anime_tracker:index')
+
+class RegistUseView(CreateView):
+    template_name = 'html/regist.html'
+    form_class = RegistForm
+    success_url = reverse_lazy('anime:index')
     
 # 最初に呼びされる。ビュー
 def index(request):
-    return render(request, 'html/index.html')   
+    # デフォルトの並び順
+    sort_option = request.GET.get('sort', 'season-desc')  # デフォルトはシーズン新しい順
+    print("取得したsort_optionの値:", sort_option)
+    # クエリセットのベース
+    animes = Anime.objects.annotate(
+        seasons__year=F('anime_seasons__season_id__year'),
+        seasons__season=F('anime_seasons__season_id__season')
+    )
+
+    # 並び順の分岐
+    if sort_option == 'average_rating':  # 人気順
+        print("選択されたソートオプション: 人気順")
+        animes = animes.order_by('-average_rating')
+    elif sort_option == 'season':  # シーズン古い順
+        print("選択されたソートオプション: シーズン古い順")
+        animes = animes.order_by('seasons__year', 'seasons__season')
+    elif sort_option == 'season-desc':  # シーズン新しい順
+        print("選択されたソートオプション: シーズン新しい順")
+        animes = animes.order_by('-seasons__year', '-seasons__season')
+    elif sort_option == 'watched_count':  # 登録数順
+        print("選択されたソートオプション: 登録数順")
+        animes = animes.order_by('-watched_count')
+    else:  # デフォルト: シーズン新しい順
+        print("デフォルトのソートオプションが適用されました")
+        animes = animes.order_by('-seasons__year', '-seasons__season')
+    
+    # その他のデータを取得
+    genres = Genres.objects.all()
+    tags = Tags.objects.all()
+    studios = Studios.objects.all()
+    seasons = Seasons.objects.all()
+
+    return render(request, 'html/index.html', {
+        'animes': animes,
+        'genres': genres,
+        'tags': tags,
+        'studios': studios,
+        'seasons': seasons
+    })
 
 def regist_view(request):
     user_form = CustomUserCreationForm(request.POST or None)  
@@ -51,3 +99,135 @@ def regist_view(request):
     return render(request, 'html/regist.html', context={
         'user_form': user_form,
     })
+    
+@login_required
+def user_edit(request):
+    user_edit_form = forms.UserEditForm(request.POST or None,isinstance=request.user)
+    if user_edit_form.is_valid():
+        user_edit_form.save()
+        messages.success(request,'更新完了しました')
+    return render(request,'anime/user_edit.html',context={
+        'user_edit_form':user_edit_form
+    })
+@login_required
+def user_edit(request):
+    if request.method == 'POST':
+        form = UserEditForm(request.POST, user=request.user, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'プロフィールが更新されました。')
+            
+            return render(request, 'html/user_edit.html', {'form': form})# アカウント設定画面のまま
+    else:
+        form = UserEditForm(user=request.user, instance=request.user)
+    return render(request, 'html/user_edit.html', {'form': form})
+
+
+    
+@login_required
+def change_password(request):
+    pass
+
+
+#パスワードリセット
+def request_password_reset(request):
+    pass
+
+
+#アニメ詳細画面
+def animeDetailView(request, pk):
+    anime = get_object_or_404(Anime, pk=pk) 
+    return render(request, 'html/anime_detail.html', {'anime': anime})
+
+
+#アニメ詳細画面で追加
+@login_required
+def update_status(request):
+    print('update_statusが呼び出された')
+    if request.method == "POST":
+        # 生のリクエストボディを出力
+        print("リクエストボディ:", request.body)
+        try:
+            # JSONデータを読み取る
+            data = json.loads(request.body)  # リクエストボディをJSONとして解析
+            anime_id = data.get('anime_id')  # JSONからアニメIDを取得
+            status = data.get('status')      # JSONからステータスを取得
+
+            print(f"アニメID: {anime_id}")
+            print(f"ステータス: {status}")
+            
+            # anime_id = request.POST.get('anime_id')
+            # print(f"アニメID: {anime_id}")
+            # status = request.POST.get('status')
+            # print(f"ステータス: {status}")
+            anime = get_object_or_404(Anime, id=anime_id)
+            user = request.user
+            print(f"リクエストユーザー: {user.nickname}")
+            # デバッグ用の出力
+
+            # ユーザーとアニメの関係を更新
+            relation, created = User_anime_relations.objects.get_or_create(user_id=user, anime_id=anime)
+
+            # ステータス更新処理
+            if status == "watched":
+                relation.is_watched = True
+                relation.is_favorite = False  # 視聴済にした場合、お気に入りをリセット
+                relation.is_plan_to_watch = False
+            elif status == "favorite":
+                if relation.is_watched:  # 視聴済のみお気に入りに設定可能
+                    relation.is_favorite = True
+            elif status == "plan_to_watch":
+                relation.is_plan_to_watch = True
+                relation.is_watched = False
+                relation.is_favorite = False
+
+            relation.save()
+
+            # JSONレスポンスの内容
+            return JsonResponse({
+                "is_watched": relation.is_watched,
+                "is_favorite": relation.is_favorite,
+                "is_plan_to_watch": relation.is_plan_to_watch,
+            })
+
+        except Exception as e:
+            print(f"Anime の取得でエラー: {e}")
+            return JsonResponse({"error": str(e)}, status=400)
+
+    return JsonResponse({"error": "Invalid request method."}, status=400)
+
+
+#アニメ視聴管理更新
+def animeDetailView(request, pk):
+    anime = get_object_or_404(Anime, pk=pk)
+    user_relation = None
+    if request.user.is_authenticated:
+        user_relation = User_anime_relations.objects.filter(user_id=request.user, anime_id=anime).first()
+    return render(request, 'html/anime_detail.html', {'anime': anime, 'user_relation': user_relation})
+
+#ユーザー評価入力
+def update_rating(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            anime_id = data.get('anime_id')
+            rating = data.get('rating')
+
+            if not 0.0 <= rating <= 5.0:
+                return JsonResponse({"error": "Invalid rating value."}, status=400)
+
+            anime = get_object_or_404(Anime, id=anime_id)
+            user = request.user
+            relation, created = User_anime_relations.objects.get_or_create(user_id=user, anime_id=anime)
+            relation.rating = rating
+            relation.save()
+            
+            print("relation更新"+ str(relation.rating))
+            # アニメの平均評価を更新
+
+
+            return JsonResponse({"message": "Rating updated successfully.", "average_rating": anime.average_rating})
+            # return JsonResponse({"message": "Rating updated successfully."})
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+    return JsonResponse({"error": "Invalid request method."}, status=400)
