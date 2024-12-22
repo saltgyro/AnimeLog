@@ -1,0 +1,71 @@
+/* ヘッダー全体 */
+header {
+    background-color: orange; /* ヘッダー全体をオレンジ色に */
+    color: white; /* テキスト色を白に */
+    display: flex; /* 左右に配置 */
+    justify-content: space-between; /* 左右に要素を分ける */
+    align-items: center; /* 垂直中央揃え */
+    padding: 30px 20px; /* 上下30px、左右20pxの余白 */
+}
+
+/* タイトル部分（左側） */
+.header-title a {
+    color: white; /* リンクの文字色 */
+    text-decoration: none; /* 下線をなくす */
+    font-size: 1.5em; /* タイトルの文字サイズ */
+    font-weight: bold;
+}
+
+/* タイトルのホバー時 */
+.header-title a:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* ドロップダウンボタン */
+.dropdown {
+    position: relative; /* 子要素の絶対配置の基準 */
+    display: inline-block;
+}
+
+.dropdown button {
+    background-color: white;
+    color: orange;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.dropdown button:hover {
+    background-color: #ffcc80; /* ホバー時の背景色 */
+}
+
+/* ドロップダウンメニュー */
+.dropdown-content {
+    display: none; /* 初期状態は非表示 */
+    position: absolute;
+    background-color: white;
+    right: 0; /* 右揃えにする */
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 10px 12px;
+    text-decoration: none;
+    display: block;
+    font-size: 1em; /* ボタンと同じ文字サイズ */
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1; /* ホバー時の背景色 */
+}
+
+/* ホバーでメニューを表示 */
+.dropdown:hover .dropdown-content {
+    display: block;
+}

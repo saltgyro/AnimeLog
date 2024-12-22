@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimeLog</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/header.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sort.css' %}">
+    <script src="{% static 'js/sort.js' %}" defer></script>
+</head>
+<body>
+    <header>
+        <!-- 左側：タイトル部分 -->
+        <div class="header-title">
+            <a href="{% url 'anime_tracker:index' %}" class="text-decoration-none fs-4">アニメログ</a>
+        </div>
+
+        <!-- 右側：ドロップダウンメニュー -->
+        <div class="dropdown">
+            {% if request.user.is_authenticated %}
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    アカウント設定
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="{% url 'anime_tracker:user_edit' %}">アカウント設定</a></li>
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="document.getElementById('logout-form').submit();">ログアウト</a>
+                        <form id="logout-form" method="POST" action="{% url 'anime_tracker:user_logout' %}" style="display: none;">
+                            {% csrf_token %}
+                        </form>
+                    </li>
+                </ul>
+            {% else %}
+                <!-- 未ログインならログインボタン -->
+                <a href="{% url 'anime_tracker:user_login' %}" class="btn btn-primary">ログイン</a>
+            {% endif %}
+        </div>
+
+        <!-- Bootstrap JavaScriptの読み込み -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+    </header>
+</body>
+</html>
