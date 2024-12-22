@@ -1,0 +1,17 @@
+# 仮想環境
+venv/
+
+# Pythonキャッシュ
+*.pyc
+__pycache__/
+
+# 環境変数ファイル
+.env
+
+# SQLiteデータベース
+db.sqlite3
+*.sqlite3
+
+# 静的ファイルやメディアファイル
+staticfiles/
+media/
