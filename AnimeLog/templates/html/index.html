@@ -65,6 +65,14 @@
     </div>
 </div>
 
+<!-- 視聴済み／お気に入り／視聴予定を切り替える -->
+<div class="filters">
+    <a href="{% url 'anime_tracker:anime_list' 'not_in_list' %}" class="btn btn-primary">リスト外</a>
+    <a href="{% url 'anime_tracker:anime_list' 'watched' %}" class="btn btn-primary">視聴済み</a>
+    <a href="{% url 'anime_tracker:anime_list' 'favorite' %}" class="btn btn-primary">お気に入り</a>
+    <a href="{% url 'anime_tracker:anime_list' 'plan_to_watch' %}" class="btn btn-primary">視聴予定</a>
+</div>
+
 <!-- ソートボタン -->
 <div class="sort-options mb-3 d-flex justify-content-end">
     <label for="sort-select" class="form-label">並び順:</label>
@@ -76,7 +84,40 @@
     </select>
 </div>
 
-<div class="anime-list">
+<div class="search-results">
+    <h2>
+        {% if status == 'watched' %}
+            視聴済みのアニメ
+        {% elif status == 'favorite' %}
+            お気に入りのアニメ
+        {% elif status == 'plan_to_watch' %}
+            視聴予定のアニメ
+        {% elif status == 'not_in_list' %}
+            リスト外のアニメ
+        {% else %}
+            アニメリスト
+        {% endif %}
+    </h2>
+    <div class="anime-list">
+        {% for anime in animes %}
+            <div class="anime-item">
+                <a href="{% url 'anime_tracker:anime_detail' anime.id %}">
+                    {% if anime.thumbnail %}
+                        <img src="{{ anime.thumbnail.url }}" alt="{{ anime.title }}" width="150">
+                    {% else %}
+                        <p>画像なし</p>
+                    {% endif %}
+                    <p>{{ anime.title }}</p>
+                </a>
+            </div>
+        {% empty %}
+            <p>該当するアニメはありません。</p>
+        {% endfor %}
+    </div>
+</div>
+
+
+{% comment %} <div class="anime-list">
     {% for anime in animes %}
         <div class="anime-item">
             <a href="{% url 'anime_tracker:anime_detail' anime.id %}">
@@ -89,8 +130,23 @@
             </a>
         </div>
     {% endfor %}
-</div>
-{% endblock %}
+</div> {% endcomment %}
+
+{% comment %} <div class="anime-list">
+    {% for anime in animes %}
+        <div class="anime-item">
+            <a href="{% url 'anime_tracker:anime_detail' anime.id %}">
+                {% if anime.thumbnail %}
+                    <img src="{{ anime.thumbnail.url }}" alt="{{ anime.title }}" width="150">
+                {% else %}
+                    <p>画像なし</p>
+                {% endif %}
+                <p>{{ anime.title }}</p>
+            </a>
+        </div>
+    {% endfor %}
+</div>{% endcomment %}
+{% endblock %} 
 
 
 

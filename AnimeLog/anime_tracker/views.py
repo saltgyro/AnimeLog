@@ -42,33 +42,87 @@ class RegistUseView(CreateView):
     success_url = reverse_lazy('anime:index')
     
 # 最初に呼びされる。ビュー
+# def index(request):
+#     # デフォルトの並び順
+#     sort_option = request.GET.get('sort', 'season-desc')  # デフォルトはシーズン新しい順
+#     print("取得したsort_optionの値:", sort_option)
+#     # クエリセットのベース
+#     animes = Anime.objects.annotate(
+#         seasons__year=F('anime_seasons__season_id__year'),
+#         seasons__season=F('anime_seasons__season_id__season')
+#     )
+
+#     # 並び順の分岐
+#     if sort_option == 'average_rating':  # 人気順
+#         print("選択されたソートオプション: 人気順")
+#         animes = animes.order_by('-average_rating')
+#     elif sort_option == 'season':  # シーズン古い順
+#         print("選択されたソートオプション: シーズン古い順")
+#         animes = animes.order_by('seasons__year', 'seasons__season')
+#     elif sort_option == 'season-desc':  # シーズン新しい順
+#         print("選択されたソートオプション: シーズン新しい順")
+#         animes = animes.order_by('-seasons__year', '-seasons__season')
+#     elif sort_option == 'watched_count':  # 登録数順
+#         print("選択されたソートオプション: 登録数順")
+#         animes = animes.order_by('-watched_count')
+#     else:  # デフォルト: シーズン新しい順
+#         print("デフォルトのソートオプションが適用されました")
+#         animes = animes.order_by('-seasons__year', '-seasons__season')
+    
+#     # その他のデータを取得
+#     genres = Genres.objects.all()
+#     tags = Tags.objects.all()
+#     studios = Studios.objects.all()
+#     seasons = Seasons.objects.all()
+
+#     return render(request, 'html/index.html', {
+#         'animes': animes,
+#         'genres': genres,
+#         'tags': tags,
+#         'studios': studios,
+#         'seasons': seasons
+#     })
+
+
+# 最初に呼びされるビュー
 def index(request):
     # デフォルトの並び順
     sort_option = request.GET.get('sort', 'season-desc')  # デフォルトはシーズン新しい順
+    status = request.GET.get('status', 'not_in_list')  # デフォルトはリスト外
     print("取得したsort_optionの値:", sort_option)
+    print("取得したstatusの値:", status)
+
+    # ユーザーの視聴情報
+    user_anime_ids = User_anime_relations.objects.filter(user_id=request.user.id).values_list('anime_id', flat=True)
+
     # クエリセットのベース
     animes = Anime.objects.annotate(
         seasons__year=F('anime_seasons__season_id__year'),
         seasons__season=F('anime_seasons__season_id__season')
     )
 
+    # ステータスでフィルタリング
+    if status == 'watched':  # 視聴済
+        animes = animes.filter(user_anime_relations__is_watched=True, user_anime_relations__user_id=request.user.id)
+    elif status == 'favorite':  # お気に入り
+        animes = animes.filter(user_anime_relations__is_favorite=True, user_anime_relations__user_id=request.user.id)
+    elif status == 'plan_to_watch':  # 視聴予定
+        animes = animes.filter(user_anime_relations__is_plan_to_watch=True, user_anime_relations__user_id=request.user.id)
+    elif status == 'not_in_list':  # リスト外
+        animes = animes.exclude(id__in=user_anime_ids)
+
     # 並び順の分岐
     if sort_option == 'average_rating':  # 人気順
-        print("選択されたソートオプション: 人気順")
         animes = animes.order_by('-average_rating')
     elif sort_option == 'season':  # シーズン古い順
-        print("選択されたソートオプション: シーズン古い順")
         animes = animes.order_by('seasons__year', 'seasons__season')
     elif sort_option == 'season-desc':  # シーズン新しい順
-        print("選択されたソートオプション: シーズン新しい順")
         animes = animes.order_by('-seasons__year', '-seasons__season')
     elif sort_option == 'watched_count':  # 登録数順
-        print("選択されたソートオプション: 登録数順")
         animes = animes.order_by('-watched_count')
     else:  # デフォルト: シーズン新しい順
-        print("デフォルトのソートオプションが適用されました")
         animes = animes.order_by('-seasons__year', '-seasons__season')
-    
+
     # その他のデータを取得
     genres = Genres.objects.all()
     tags = Tags.objects.all()
@@ -80,8 +134,10 @@ def index(request):
         'genres': genres,
         'tags': tags,
         'studios': studios,
-        'seasons': seasons
+        'seasons': seasons,
+        'status': status  # 現在のステータスをテンプレートに渡す
     })
+
 
 def regist_view(request):
     user_form = CustomUserCreationForm(request.POST or None)  
@@ -271,24 +327,57 @@ def search_view(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
+#視聴済/お気に入り/視聴予定に応じたビュー※削除予定
+# def anime_list_view(request, status):
+#     """ステータスに応じたアニメリストを表示"""
+#     user = request.user  # 現在のログインユーザー
+#     if not user.is_authenticated:
+#         return redirect('anime_tracker:user_login')  # ログインしていない場合はリダイレクト
+
+#     # ステータスに基づいてフィルタリング
+#     if status == "watched":
+#         relations = User_anime_relations.objects.filter(user_id=user, is_watched=True)
+#     elif status == "favorite":
+#         relations = User_anime_relations.objects.filter(user_id=user, is_favorite=True)
+#     elif status == "plan_to_watch":
+#         relations = User_anime_relations.objects.filter(user_id=user, is_plan_to_watch=True)
+#     else:
+#         relations = User_anime_relations.objects.none()  # 空のクエリセット
+
+#     # 関連するアニメを取得
+#     animes = [relation.anime_id for relation in relations]
+
+#     return render(request, 'html/anime_list.html', {'animes': animes, 'status': status})
+
+#視聴済/お気に入り/視聴予定に応じたビュー※削除予定
+# def anime_list_view(request, status):
+#     if status == 'watched':
+#         animes = Anime.objects.filter(user_anime_relations__is_watched=True, user_anime_relations__user_id=request.user.id)
+#     elif status == 'favorite':
+#         animes = Anime.objects.filter(user_anime_relations__is_favorite=True, user_anime_relations__user_id=request.user.id)
+#     elif status == 'plan_to_watch':
+#         animes = Anime.objects.filter(user_anime_relations__is_plan_to_watch=True, user_anime_relations__user_id=request.user.id)
+#     else:
+#         animes = Anime.objects.none()
+
+#     # 結果をindex.htmlで表示
+#     return render(request, 'html/index.html', {'animes': animes, 'status': status})
+
 #視聴済/お気に入り/視聴予定に応じたビュー
 def anime_list_view(request, status):
-    """ステータスに応じたアニメリストを表示"""
-    user = request.user  # 現在のログインユーザー
-    if not user.is_authenticated:
-        return redirect('anime_tracker:user_login')  # ログインしていない場合はリダイレクト
+    user_anime_ids = User_anime_relations.objects.filter(user_id=request.user.id).values_list('anime_id', flat=True)
 
-    # ステータスに基づいてフィルタリング
-    if status == "watched":
-        relations = User_anime_relations.objects.filter(user_id=user, is_watched=True)
-    elif status == "favorite":
-        relations = User_anime_relations.objects.filter(user_id=user, is_favorite=True)
-    elif status == "plan_to_watch":
-        relations = User_anime_relations.objects.filter(user_id=user, is_plan_to_watch=True)
-    else:
-        relations = User_anime_relations.objects.none()  # 空のクエリセット
+    if status == 'watched':
+        animes = Anime.objects.filter(user_anime_relations__is_watched=True, user_anime_relations__user_id=request.user.id)
+    elif status == 'favorite':
+        animes = Anime.objects.filter(user_anime_relations__is_favorite=True, user_anime_relations__user_id=request.user.id)
+    elif status == 'plan_to_watch':
+        animes = Anime.objects.filter(user_anime_relations__is_plan_to_watch=True, user_anime_relations__user_id=request.user.id)
+    elif status == 'not_in_list':  # リスト外
+        animes = Anime.objects.exclude(id__in=user_anime_ids)
+    else:  # 無効なステータスの場合、全て非表示
+        animes = Anime.objects.none()
 
-    # 関連するアニメを取得
-    animes = [relation.anime_id for relation in relations]
+    # 結果をindex.htmlで表示
+    return render(request, 'html/index.html', {'animes': animes, 'status': status})
 
-    return render(request, 'html/anime_list.html', {'animes': animes, 'status': status})
