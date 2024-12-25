@@ -1,0 +1,25 @@
+.anime-list {
+    display: flex; /* 横並びに配置 */
+    flex-wrap: wrap; /* 行を折り返す */
+    gap: 20px; /* アイテム間の間隔 */
+    justify-content: center; /* コンテナ内で中央揃え */
+    padding: 20px;
+}
+
+.anime-item {
+    width: calc(12.5% - 20px); /* 1行に8枚 (12.5% の幅)、間隔分を引く */
+    box-sizing: border-box; /* パディングとボーダーを含めて計算 */
+    text-align: center; /* タイトルを中央揃え */
+}
+
+.anime-item img {
+    width: 100%; /* コンテナの幅に合わせる */
+    height: auto; /* アスペクト比を維持 */
+    border-radius: 8px; /* 角を丸める（任意） */
+}
+
+.anime-item p {
+    margin-top: 8px; /* 画像との間隔を設定 */
+    font-size: 14px; /* フォントサイズを調整 */
+    color: #333; /* テキストカラーを設定 */
+}

@@ -3,6 +3,16 @@
     margin-bottom: 15px; /* 各フォーム要素間の余白 */
 }
 
+/* フォーム全体のラッパー */
+.form-container {
+    display: flex; /* フレックスボックスを使う */
+    justify-content: center; /* 水平方向の中央揃え */
+    align-items: center; /* 垂直方向の中央揃え */
+    min-height: 100vh; /* 画面全体の高さを占める */
+    background-color: #f9f9f9; /* 背景色（必要に応じて変更） */
+}
+
+
 /* 入力フィールドのスタイル */
 input[type="nickname"],
 input[type="password1"],

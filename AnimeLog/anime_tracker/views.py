@@ -8,6 +8,7 @@ from django.db.models import F
 import json
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 class UserLoginView(FormView):
     template_name = 'html/user_login.html'
@@ -231,3 +232,21 @@ def update_rating(request):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
     return JsonResponse({"error": "Invalid request method."}, status=400)
+
+
+def search_view(request):
+    if request.method == 'POST':
+        import json
+        conditions = json.loads(request.body)
+        
+        # 条件に基づいてクエリを構築
+        query = Anime.objects.all()
+        if 'genre' in conditions:
+            query = query.filter(genre__id__in=conditions['genre'])
+        if 'tag' in conditions:
+            query = query.filter(tag__id__in=conditions['tag'])
+        
+        # 結果をJSON形式で返す
+        results = list(query.values('id', 'title', 'thumbnail'))
+        return JsonResponse({'results': results})
+

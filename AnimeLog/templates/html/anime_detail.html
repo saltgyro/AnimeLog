@@ -58,10 +58,10 @@
 <p><strong>登録者数:</strong> {{ anime.watched_count }}</p>
 <p><strong>お気に入り数:</strong> {{ anime.favorite_count }}</p>
 
-<a href="{% url 'anime:index' %}">戻る</a>
+<a href="{% url 'anime_tracker:index' %}">戻る</a>
 
 <script>
-    const updateStatusUrl = "{% url 'anime:update_status' %}";
+    const updateStatusUrl = "{% url 'anime_tracker:update_status' %}";
     const csrfToken = "{{ csrf_token }}";
 </script>
 

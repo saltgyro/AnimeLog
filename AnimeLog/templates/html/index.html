@@ -28,7 +28,7 @@
             <li><a href="#" class="text-decoration-none">📅 年代</a></li>
                 <li>
                     {% for season in seasons %}
-                        <li>{{ season.year}} 年 {{season.season}}</li>
+                        <li>{{ season.year}} 年 {{season.get_season_display }}</li>
                     {% endfor %}
                 </li>
             <li><a href="#" class="text-decoration-none">🎬 制作スタジオ</a></li>
@@ -67,3 +67,6 @@
     {% endfor %}
 </div>
 {% endblock %}
+
+
+
