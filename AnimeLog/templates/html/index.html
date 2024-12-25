@@ -115,38 +115,3 @@
         {% endfor %}
     </div>
 </div>
-
-
-{% comment %} <div class="anime-list">
-    {% for anime in animes %}
-        <div class="anime-item">
-            <a href="{% url 'anime_tracker:anime_detail' anime.id %}">
-                {% if anime.thumbnail %}
-                    <img src="{{ anime.thumbnail.url }}" alt="{{ anime.title }}" width="150">
-                {% else %}
-                    <p>画像なし</p>
-                {% endif %}
-                <p>{{ anime.title }}</p>
-            </a>
-        </div>
-    {% endfor %}
-</div> {% endcomment %}
-
-{% comment %} <div class="anime-list">
-    {% for anime in animes %}
-        <div class="anime-item">
-            <a href="{% url 'anime_tracker:anime_detail' anime.id %}">
-                {% if anime.thumbnail %}
-                    <img src="{{ anime.thumbnail.url }}" alt="{{ anime.title }}" width="150">
-                {% else %}
-                    <p>画像なし</p>
-                {% endif %}
-                <p>{{ anime.title }}</p>
-            </a>
-        </div>
-    {% endfor %}
-</div>{% endcomment %}
-{% endblock %} 
-
-
-
