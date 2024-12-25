@@ -116,15 +116,28 @@ def regist_view(request):
         'user_form': user_form,
     })
     
-@login_required
-def user_edit(request):
-    user_edit_form = forms.UserEditForm(request.POST or None,isinstance=request.user)
-    if user_edit_form.is_valid():
-        user_edit_form.save()
-        messages.success(request,'更新完了しました')
-    return render(request,'anime/user_edit.html',context={
-        'user_edit_form':user_edit_form
-    })
+# @login_required
+# def user_edit(request):
+#     user_edit_form = forms.UserEditForm(request.POST or None,isinstance=request.user)
+#     if user_edit_form.is_valid():
+#         user_edit_form.save()
+#         messages.success(request,'更新完了しました')
+#     return render(request,'anime/user_edit.html',context={
+#         'user_edit_form':user_edit_form
+#     })
+# @login_required
+# def user_edit(request):
+#     if request.method == 'POST':
+#         form = UserEditForm(request.POST, user=request.user, instance=request.user)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, 'プロフィールが更新されました。')
+            
+#             return render(request, 'html/user_edit.html', {'form': form})# アカウント設定画面のまま
+#     else:
+#         form = UserEditForm(user=request.user, instance=request.user)
+#     return render(request, 'html/user_edit.html', {'form': form})
+
 @login_required
 def user_edit(request):
     if request.method == 'POST':
@@ -132,17 +145,16 @@ def user_edit(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'プロフィールが更新されました。')
-            
-            return render(request, 'html/user_edit.html', {'form': form})# アカウント設定画面のまま
+            return render(request, 'html/user_edit.html', {'form': form})  # アカウント設定画面のまま
     else:
         form = UserEditForm(user=request.user, instance=request.user)
+
     return render(request, 'html/user_edit.html', {'form': form})
 
-
     
-@login_required
-def change_password(request):
-    pass
+# @login_required
+# def change_password(request):
+#     pass
 
 
 #パスワードリセット
