@@ -233,20 +233,62 @@ def update_rating(request):
             return JsonResponse({"error": str(e)}, status=400)
     return JsonResponse({"error": "Invalid request method."}, status=400)
 
-
 def search_view(request):
     if request.method == 'POST':
-        import json
-        conditions = json.loads(request.body)
+        data = json.loads(request.body)  # リクエストボディをJSONで読み込み
         
-        # 条件に基づいてクエリを構築
-        query = Anime.objects.all()
-        if 'genre' in conditions:
-            query = query.filter(genre__id__in=conditions['genre'])
-        if 'tag' in conditions:
-            query = query.filter(tag__id__in=conditions['tag'])
-        
-        # 結果をJSON形式で返す
-        results = list(query.values('id', 'title', 'thumbnail'))
+        animes = Anime.objects.all()
+
+        if 'genre' in data:
+            animes = animes.filter(genres__id__in=data['genre'])  # ジャンルに基づく検索
+        if 'tag' in data:
+            animes = animes.filter(tags__id__in=data['tag'])      # タグに基づく検索
+        if 'season' in data:
+            animes = animes.filter(seasons__id__in=data['season']) # シーズンに基づく検索
+        if 'studio' in data:
+            animes = animes.filter(studios__id__in=data['studio']) # 制作スタジオに基づく検索
+
+        # 重複を排除
+        animes = animes.distinct()
+
+        # JSON形式で結果を返す
+        results = [
+            {
+                'id': anime.id,
+                'title': anime.title,
+                'thumbnail': anime.thumbnail.url if anime.thumbnail else '',
+            } for anime in animes
+        ]
+        # JSON形式で結果を返す
+        results = [
+            {
+                'id': anime.id,
+                'title': anime.title,
+                'thumbnail': anime.thumbnail.url if anime.thumbnail else '',
+            } for anime in animes
+        ]
         return JsonResponse({'results': results})
 
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+#視聴済/お気に入り/視聴予定に応じたビュー
+def anime_list_view(request, status):
+    """ステータスに応じたアニメリストを表示"""
+    user = request.user  # 現在のログインユーザー
+    if not user.is_authenticated:
+        return redirect('anime_tracker:user_login')  # ログインしていない場合はリダイレクト
+
+    # ステータスに基づいてフィルタリング
+    if status == "watched":
+        relations = User_anime_relations.objects.filter(user_id=user, is_watched=True)
+    elif status == "favorite":
+        relations = User_anime_relations.objects.filter(user_id=user, is_favorite=True)
+    elif status == "plan_to_watch":
+        relations = User_anime_relations.objects.filter(user_id=user, is_plan_to_watch=True)
+    else:
+        relations = User_anime_relations.objects.none()  # 空のクエリセット
+
+    # 関連するアニメを取得
+    animes = [relation.anime_id for relation in relations]
+
+    return render(request, 'html/anime_list.html', {'animes': animes, 'status': status})

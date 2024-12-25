@@ -82,6 +82,30 @@ class Anime(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)#登録日時
     updated_at = models.DateTimeField(auto_now=True)#更新日時
     
+    genres = models.ManyToManyField(
+        'Genres',
+        through='Anime_genres',
+        related_name='animes'
+    )#Genresとの多対多の関係
+    
+    seasons = models.ManyToManyField(
+        'Seasons',
+        through='Anime_seasons',
+        related_name='animes'
+    )#Seasonsとの多対多の関係
+    
+    studios = models.ManyToManyField(
+        'Studios',
+        through='Anime_studio',
+        related_name='animes'
+    )#Studiosとの多対多の関係
+    
+    tags = models.ManyToManyField(
+        'Tags',
+        through='Anime_tags',
+        related_name='animes'
+    )#Tagsとの多対多の関係
+    
     def __str__(self):
         return self.title
 

@@ -16,25 +16,49 @@
             <li><a href="#" class="text-decoration-none">🎭 ジャンル</a></li>
                 <li>
                     {% for genre in genres %}
-                        <li>{{ genre.name }}</li>
+                        {% comment %} <li>{{ genre.name }}</li> {% endcomment %}
+                        <button 
+                            class="btn btn-outline-primary genre-button" 
+                            data-type="genre" 
+                            data-id="{{ genre.id }}">
+                            {{ genre.name }}
+                        </button>
                     {% endfor %}
                 </li>
             <li><a href="#" class="text-decoration-none">🏷 タグ</a></li>
                 <li>
                     {% for tag in tags %}
-                        <li>{{ tag.name }}</li>
+                        {% comment %} <li>{{ tag.name }}</li> {% endcomment %}
+                        <button 
+                            class="btn btn-outline-primary tag-button" 
+                            data-type="tag" 
+                            data-id="{{ tag.id }}">
+                            {{ tag.name }}
+                        </button>
                     {% endfor %}
                 </li>
             <li><a href="#" class="text-decoration-none">📅 年代</a></li>
                 <li>
                     {% for season in seasons %}
-                        <li>{{ season.year}} 年 {{season.get_season_display }}</li>
+                        {% comment %} <li>{{ season.year}} 年 {{season.get_season_display }}</li> {% endcomment %}
+                        <button 
+                            class="btn btn-outline-primary season-button" 
+                            data-type="season" 
+                            data-id="{{ season.id }}">
+                            {{ season.year}} 年 {{season.get_season_display }}
+                        </button>
                     {% endfor %}
                 </li>
             <li><a href="#" class="text-decoration-none">🎬 制作スタジオ</a></li>
                 <li>
                     {% for studio in studios %}
-                        <li>{{ studio.name }}</li>
+                        {% comment %} <li>{{ studio.name }}</li> {% endcomment %}
+                        <button 
+                            class="btn btn-outline-primary studio-button" 
+                            data-type="studio" 
+                            data-id="{{ studio.id }}">
+                            {{ studio.name }}
+                        </button>
                     {% endfor %}
                 </li>
         </ul>
