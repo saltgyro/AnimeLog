@@ -1,0 +1,127 @@
+{% extends "html/base.html" %}
+{% load static %}
+
+{% block content %}
+<button class="btn btn-primary m-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+    メニューを開く
+</button>
+<!-- オフキャンバスメニュー -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">メニュー</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="閉じる"></button>
+    </div>
+    <div class="offcanvas-body">
+        <ul class="list-unstyled">
+            <li><a href="#" class="text-decoration-none">🎭 ジャンル</a></li>
+                <li>
+                    {% for genre in genres %}
+                        {% comment %} <li>{{ genre.name }}</li> {% endcomment %}
+                        <button 
+                            class="btn btn-outline-primary genre-button" 
+                            data-type="genre" 
+                            data-id="{{ genre.id }}">
+                            {{ genre.name }}
+                        </button>
+                    {% endfor %}
+                </li>
+            <li><a href="#" class="text-decoration-none">🏷 タグ</a></li>
+                <li>
+                    {% for tag in tags %}
+                        {% comment %} <li>{{ tag.name }}</li> {% endcomment %}
+                        <button 
+                            class="btn btn-outline-primary tag-button" 
+                            data-type="tag" 
+                            data-id="{{ tag.id }}">
+                            {{ tag.name }}
+                        </button>
+                    {% endfor %}
+                </li>
+            <li><a href="#" class="text-decoration-none">📅 年代</a></li>
+                <li>
+                    {% for season in seasons %}
+                        {% comment %} <li>{{ season.year}} 年 {{season.get_season_display }}</li> {% endcomment %}
+                        <button 
+                            class="btn btn-outline-primary season-button" 
+                            data-type="season" 
+                            data-id="{{ season.id }}">
+                            {{ season.year}} 年 {{season.get_season_display }}
+                        </button>
+                    {% endfor %}
+                </li>
+            <li><a href="#" class="text-decoration-none">🎬 制作スタジオ</a></li>
+                <li>
+                    {% for studio in studios %}
+                        {% comment %} <li>{{ studio.name }}</li> {% endcomment %}
+                        <button 
+                            class="btn btn-outline-primary studio-button" 
+                            data-type="studio" 
+                            data-id="{{ studio.id }}">
+                            {{ studio.name }}
+                        </button>
+                    {% endfor %}
+                </li>
+        </ul>
+    </div>
+</div>
+
+<div class="filters">
+    <a href="{% url 'anime_tracker:anime_list' 'not_in_list' %}" class="btn btn-primary">リスト外</a>
+    
+    {% if request.user.is_authenticated %}
+        <a href="{% url 'anime_tracker:anime_list' 'watched' %}" class="btn btn-primary">視聴済み</a>
+        <a href="{% url 'anime_tracker:anime_list' 'favorite' %}" class="btn btn-primary">お気に入り</a>
+        <a href="{% url 'anime_tracker:anime_list' 'plan_to_watch' %}" class="btn btn-primary">視聴予定</a>
+    {% else %}
+        <!-- 未ログイン時はボタンを無効化 -->
+        <a class="btn btn-secondary disabled" aria-disabled="true" tabindex="-1">視聴済み</a>
+        <a class="btn btn-secondary disabled" aria-disabled="true" tabindex="-1">お気に入り</a>
+        <a class="btn btn-secondary disabled" aria-disabled="true" tabindex="-1">視聴予定</a>
+    {% endif %}
+</div>
+
+
+
+<!-- ソートボタン -->
+<div class="sort-options mb-3 d-flex justify-content-end">
+    <label for="sort-select" class="form-label">並び順:</label>
+    <select id="sort-select" class="form-select" onchange="applySort()">
+        <option value="season-desc" {% if request.GET.sort == 'season-desc' %}{% endif %}>シーズン（新しい順）</option>
+        <option value="season-asc" {% if request.GET.sort == 'season-asc' %}{% endif %}>シーズン（古い順）</option>
+        <option value="average_rating" {% if request.GET.sort == 'average_rating' %}selected{% endif %}>人気順</option>
+        <option value="watched_count-desc" {% if request.GET.sort == 'watched_count-desc' %}selected{% endif %}>登録数順</option>
+    </select>
+</div>
+
+<div class="search-results">
+    <h2>
+        {% if status == 'watched' %}
+            視聴済みのアニメ
+        {% elif status == 'favorite' %}
+            お気に入りのアニメ
+        {% elif status == 'plan_to_watch' %}
+            視聴予定のアニメ
+        {% elif status == 'not_in_list' %}
+            リスト外のアニメ
+        {% else %}
+            アニメリスト
+        {% endif %}
+    </h2>
+    <div class="anime-list">
+        {% for anime in animes %}
+            <div class="anime-item">
+                <a href="{% url 'anime_tracker:anime_detail' anime.id %}">
+                    {% if anime.thumbnail %}
+                        <img src="{{ anime.thumbnail.url }}" alt="{{ anime.title }}" width="150">
+                    {% else %}
+                        <p>画像なし</p>
+                    {% endif %}
+                    <p>{{ anime.title }}</p>
+                </a>
+            </div>
+        {% empty %}
+            <p>該当するアニメはありません。</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -9,11 +9,13 @@ import json
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+import requests
+
 
 class UserLoginView(FormView):
     template_name = 'html/user_login.html'
     form_class = UserLoginForm
-    success_url = reverse_lazy('anime_tracker:index')
+    success_url = reverse_lazy('anime_tracker:home')
     
     def form_valid(self, form):
         email = form.cleaned_data['email']
@@ -34,22 +36,25 @@ class UserLogoutView(View):
     
     def post(self,request,*args, **kwargs):
         logout(request)
-        return redirect('anime_tracker:index')
+        return redirect('anime_tracker:home')
 
 class RegistUseView(CreateView):
     template_name = 'html/regist.html'
     form_class = RegistForm
-    success_url = reverse_lazy('anime:index')
+    success_url = reverse_lazy('anime:home')
 
-
+def index(request):
+    return render(request, 'html/index.html')
 
 # 最初に呼びされるビュー
-def index(request):
+def home(request):
     # デフォルトの並び順
     sort_option = request.GET.get('sort', 'season-desc')  # デフォルトはシーズン新しい順
     status = request.GET.get('status', 'not_in_list')  # デフォルトはリスト外
-    print("取得したsort_optionの値:", sort_option)
-    print("取得したstatusの値:", status)
+    
+    # 未ログインの場合、ステータスを「リスト外」に強制
+    if not request.user.is_authenticated:
+        status = 'not_in_list'
 
     # ユーザーの視聴情報
     user_anime_ids = User_anime_relations.objects.filter(user_id=request.user.id).values_list('anime_id', flat=True)
@@ -88,7 +93,7 @@ def index(request):
     studios = Studios.objects.all()
     seasons = Seasons.objects.all()
 
-    return render(request, 'html/index.html', {
+    return render(request, 'html/home.html', {
         'animes': animes,
         'genres': genres,
         'tags': tags,
@@ -115,28 +120,6 @@ def regist_view(request):
     return render(request, 'html/regist.html', context={
         'user_form': user_form,
     })
-    
-# @login_required
-# def user_edit(request):
-#     user_edit_form = forms.UserEditForm(request.POST or None,isinstance=request.user)
-#     if user_edit_form.is_valid():
-#         user_edit_form.save()
-#         messages.success(request,'更新完了しました')
-#     return render(request,'anime/user_edit.html',context={
-#         'user_edit_form':user_edit_form
-#     })
-# @login_required
-# def user_edit(request):
-#     if request.method == 'POST':
-#         form = UserEditForm(request.POST, user=request.user, instance=request.user)
-#         if form.is_valid():
-#             form.save()
-#             messages.success(request, 'プロフィールが更新されました。')
-            
-#             return render(request, 'html/user_edit.html', {'form': form})# アカウント設定画面のまま
-#     else:
-#         form = UserEditForm(user=request.user, instance=request.user)
-#     return render(request, 'html/user_edit.html', {'form': form})
 
 @login_required
 def user_edit(request):
@@ -151,10 +134,6 @@ def user_edit(request):
 
     return render(request, 'html/user_edit.html', {'form': form})
 
-    
-# @login_required
-# def change_password(request):
-#     pass
 
 
 #パスワードリセット
@@ -314,6 +293,45 @@ def anime_list_view(request, status):
     else:  # 無効なステータスの場合、全て非表示
         animes = Anime.objects.none()
 
-    # 結果をindex.htmlで表示
-    return render(request, 'html/index.html', {'animes': animes, 'status': status})
+    # 結果をhome.htmlで表示
+    return render(request, 'html/home.html', {'animes': animes, 'status': status})
 
+# Annict API のアクセストークン
+ACCESS_TOKEN = "YOUR_ACCESS_TOKEN"  # ここに取得したトークンを入れる
+
+def get_anime_list(request):
+    # Annict API のエンドポイント
+    url = "https://api.annict.com/graphql"
+
+    # リクエストヘッダー
+    headers = {
+        "Authorization": f"Bearer {ACCESS_TOKEN}",
+        "Content-Type": "application/json"
+    }
+
+    # GraphQL クエリ（作品リストを取得）
+    query = """
+    query {
+    searchWorks(orderBy: { field: SEASON, direction: DESC }, first: 10) {
+        nodes {
+        id
+        title
+        seasonName
+        media
+        }
+    }
+    }
+    """
+
+    # Annict APIにリクエストを送信
+    response = requests.post(url, json={"query": query}, headers=headers)
+
+    # レスポンスを処理
+    if response.status_code == 200:
+        data = response.json()
+        anime_list = data["data"]["searchWorks"]["nodes"]
+    else:
+        anime_list = []  # エラー時は空リスト
+
+    # テンプレートにデータを渡す
+    return render(request, 'html/anime_list.html', {"anime_list": anime_list})
