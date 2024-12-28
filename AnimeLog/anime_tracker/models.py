@@ -68,6 +68,29 @@ class Series(models.Model):#シリーズテーブル
     def __str__(self):
         return self.title  # シリーズ名を返す  
 
+    
+class Character(models.Model):  # アニメのキャラクターモデル
+    name = models.CharField(max_length=255)  # キャラクター名
+    anime_id = models.ForeignKey('Anime', on_delete=models.SET_NULL, related_name='characters_set', null=True)  # アニメとの関連
+    voice_actor = models.CharField(max_length=255)  # 声優
+
+    def __str__(self):
+        return self.name
+
+class Song(models.Model):
+    SONG_CHOICES = [
+        (0, 'OP'),      # 0がオープニング
+        (1, 'ED'),      # 1がエンディング
+        (2, 'Insert'),  # 2が挿入歌
+    ]
+    title = models.CharField(max_length=255)  # 曲名
+    song_type = models.IntegerField(choices=SONG_CHOICES, default=0) # 曲のタイプ
+    artists = models.CharField(max_length=255, null=True, blank=True) #アーティスト名
+    note = models.CharField(max_length=255, null=True, blank=True)  # エピソード範囲や使用の詳細を記録
+
+    def __str__(self):
+        return self.title
+
 class Anime(models.Model):
     series_id = models.ForeignKey(Series, on_delete=models.SET_NULL, related_name='animes', null=True, blank=True)#シリーズID
     title = models.CharField(max_length=128)#タイトル名
@@ -81,6 +104,9 @@ class Anime(models.Model):
     favorite_count = models.IntegerField(null=True, blank=True, default=0)#お気に入りの数
     created_at = models.DateTimeField(auto_now_add=True)#登録日時
     updated_at = models.DateTimeField(auto_now=True)#更新日時
+    
+    characters = models.ManyToManyField('Character', related_name='animes')#キャラクター
+    songs = models.ManyToManyField('Song', related_name='animes')#曲
     
     genres = models.ManyToManyField(
         'Genres',
@@ -153,10 +179,10 @@ class User_anime_relations(models.Model):#ユーザーのアニメの視聴管�
 
 class Seasons(models.Model):#(放送シーズン)
     SEASON_CHOICES = [
-        (1, '春'),
-        (2, '夏'),
-        (3, '秋'),
-        (4, '冬'),
+        (0, '冬'),  # 0が冬
+        (1, '春'),  # 1が春
+        (2, '夏'),  # 2が夏
+        (3, '秋'),  # 3が秋
     ]
     
     year = models.IntegerField()#放送年
@@ -228,3 +254,7 @@ class Anime_tags(models.Model):#(アニメ-タグ中間テーブル)
         anime_title = self.anime_id.title if self.anime_id else "Unknown Anime"
         tag_name = self.tag_id.name if self.tag_id else "Unknown Tag"
         return f"{anime_title} - {tag_name}"
+
+
+
+

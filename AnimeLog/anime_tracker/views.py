@@ -46,6 +46,9 @@ class RegistUseView(CreateView):
 def index(request):
     return render(request, 'html/index.html')
 
+
+
+
 # 最初に呼びされるビュー
 def home(request):
     # デフォルトの並び順
@@ -56,14 +59,14 @@ def home(request):
     if not request.user.is_authenticated:
         status = 'not_in_list'
 
-    # ユーザーの視聴情報
-    user_anime_ids = User_anime_relations.objects.filter(user_id=request.user.id).values_list('anime_id', flat=True)
-
-    # クエリセットのベース
+    # アニメの視聴情報を取得するクエリ
+    user_anime_ids = User_anime_relations.objects.filter(user_id=request.user.id).values_list('anime_id', flat=True).distinct()
+    # 例えば、アニメのクエリセットを修正
     animes = Anime.objects.annotate(
         seasons__year=F('anime_seasons__season_id__year'),
         seasons__season=F('anime_seasons__season_id__season')
     )
+    
 
     # ステータスでフィルタリング
     if status == 'watched':  # 視聴済
@@ -86,6 +89,14 @@ def home(request):
         animes = animes.order_by('-watched_count')
     else:  # デフォルト: シーズン新しい順
         animes = animes.order_by('-seasons__year', '-seasons__season')
+
+    # 重複を手動で排除（Python側で重複を取り除く）
+    unique_animes = {}
+    for anime in animes:
+        unique_animes[anime.id] = anime
+
+    # 重複を排除したアニメリストを返す
+    animes = list(unique_animes.values())
 
     # その他のデータを取得
     genres = Genres.objects.all()
@@ -256,6 +267,9 @@ def search_view(request):
 
         # 重複を排除
         animes = animes.distinct()
+        
+        print("search_view実行") 
+        print(animes.query) 
 
         # JSON形式で結果を返す
         results = [
@@ -293,45 +307,8 @@ def anime_list_view(request, status):
     else:  # 無効なステータスの場合、全て非表示
         animes = Anime.objects.none()
 
+    # 重複を排除
+    animes = animes.distinct()
+    
     # 結果をhome.htmlで表示
     return render(request, 'html/home.html', {'animes': animes, 'status': status})
-
-# Annict API のアクセストークン
-ACCESS_TOKEN = "YOUR_ACCESS_TOKEN"  # ここに取得したトークンを入れる
-
-def get_anime_list(request):
-    # Annict API のエンドポイント
-    url = "https://api.annict.com/graphql"
-
-    # リクエストヘッダー
-    headers = {
-        "Authorization": f"Bearer {ACCESS_TOKEN}",
-        "Content-Type": "application/json"
-    }
-
-    # GraphQL クエリ（作品リストを取得）
-    query = """
-    query {
-    searchWorks(orderBy: { field: SEASON, direction: DESC }, first: 10) {
-        nodes {
-        id
-        title
-        seasonName
-        media
-        }
-    }
-    }
-    """
-
-    # Annict APIにリクエストを送信
-    response = requests.post(url, json={"query": query}, headers=headers)
-
-    # レスポンスを処理
-    if response.status_code == 200:
-        data = response.json()
-        anime_list = data["data"]["searchWorks"]["nodes"]
-    else:
-        anime_list = []  # エラー時は空リスト
-
-    # テンプレートにデータを渡す
-    return render(request, 'html/anime_list.html', {"anime_list": anime_list})
