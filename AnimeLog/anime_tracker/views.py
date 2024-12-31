@@ -47,29 +47,42 @@ class RegistUseView(CreateView):
 def get_animes(request, status, sort_option):
     user_anime_ids = User_anime_relations.objects.filter(user_id=request.user.id).values_list('anime_id', flat=True)
     
+    
     # ステータスごとのフィルタリング
     if status == 'watched':  # 視聴済
         animes = Anime.objects.filter(user_anime_relations__status=2, user_anime_relations__user_id=request.user.id)
+        print('視聴済')
     elif status == 'favorite':  # お気に入り
         animes = Anime.objects.filter(user_anime_relations__is_favorite=True, user_anime_relations__user_id=request.user.id)
+        print('お気に入り')
     elif status == 'plan_to_watch':  # 視聴予定
         animes = Anime.objects.filter(user_anime_relations__status=1, user_anime_relations__user_id=request.user.id)
+        print('視聴予定')
     elif status == 'not_in_list':  # リスト外
-        animes = Anime.objects.exclude(id__in=user_anime_ids)
+        animes = Anime.objects.all()
+        print('リスト外')
     else:  # 無効なステータスの場合、全て非表示
         animes = Anime.objects.all()
+        print('全て非表示')
 
+    print("sort_option:" + sort_option)
+    
     # 並び順の適用
     if sort_option == 'average_rating':
         animes = animes.order_by('-average_rating')
-    elif sort_option == 'start-date-asc':
+        print('平均評価が高い')
+    elif sort_option == 'season-asc':
         animes = animes.order_by('start_date')  # 古い順
-    elif sort_option == 'start-date-desc':
+        print('古い順')
+    elif sort_option == 'season-desc':
         animes = animes.order_by('-start_date')  # 新しい順
+        print('新しい順')
     elif sort_option == 'watched_count-desc':
         animes = animes.order_by('-watched_count')
+        print('登録数')
     else:
         animes = animes.order_by('-start_date')  # デフォルトでは新しい順
+        print('外：新しい順')
 
     # 重複を排除
     animes = animes.distinct()
