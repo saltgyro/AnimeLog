@@ -1,0 +1,60 @@
+/* 全体のレイアウト */
+.filters {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* ボタン間の隙間 */
+    margin-top: 20px;
+}
+
+
+
+/* すべてのボタンのデフォルトのスタイル */
+.filter-btn {
+    margin: 0 10px;
+}
+
+/* 選択中のボタンの色をオレンジに変更 */
+.filter-btn.selected {
+    background-color: orange;
+    border-color: orange;
+    color: white;
+}
+
+/* ホバー時のボタン色 */
+.filter-btn:hover {
+    background-color: #ff7f50;
+    border-color: #ff7f50;
+}
+
+
+/* ソートボタンの右端配置 */
+
+.sort-options {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+/* 1. アニメリストの表示（画面に合わせて自動調整、横スクロールしない） */
+
+/* 1. アニメリストの表示（画面に合わせて自動調整、横スクロールしない） */
+.anime-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px; /* 作品間のスペースを小さく */
+    padding: 20px 0;
+}
+
+.anime-item {
+    flex: 1 1 calc(12.5% - 12px); /* 画面幅に応じて8作品を並べる */
+    text-align: center;
+    max-width: 150px;
+}
+.anime-item img {
+    width: 100%;
+    height: auto;
+    max-width: 150px; /* 画像サイズ調整 */
+    border-radius: 5px;
+}
