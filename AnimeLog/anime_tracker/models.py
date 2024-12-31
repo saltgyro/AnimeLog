@@ -71,7 +71,7 @@ class Series(models.Model):#シリーズテーブル
     
 class Character(models.Model):  # アニメのキャラクターモデル
     name = models.CharField(max_length=255)  # キャラクター名
-    anime_id = models.ForeignKey('Anime', on_delete=models.SET_NULL, related_name='characters_set', null=True)  # アニメとの関連
+    anime_id = models.ForeignKey('Anime', on_delete=models.SET_NULL, related_name='characters_set', null=True,blank=True)  # アニメとの関連
     voice_actor = models.CharField(max_length=255)  # 声優
 
     def __str__(self):
@@ -105,8 +105,8 @@ class Anime(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)#登録日時
     updated_at = models.DateTimeField(auto_now=True)#更新日時
     
-    characters = models.ManyToManyField('Character', related_name='animes')#キャラクター
-    songs = models.ManyToManyField('Song', related_name='animes')#曲
+    characters = models.ManyToManyField('Character', related_name='animes', blank=True)#キャラクター
+    songs = models.ManyToManyField('Song', related_name='animes', blank=True)#曲
     
     genres = models.ManyToManyField(
         'Genres',
@@ -138,9 +138,13 @@ class Anime(models.Model):
 class User_anime_relations(models.Model):#ユーザーのアニメの視聴管理
     user_id = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='user_anime_relations', null=True, blank=True)
     anime_id = models.ForeignKey(Anime, on_delete=models.CASCADE, related_name='user_anime_relations', null=True, blank=True)
-    is_watched = models.BooleanField(default=False)#視聴済か
     is_favorite = models.BooleanField(default=False)#お気に入りか
-    is_plan_to_watch = models.BooleanField(default=False)#視聴予定か
+    STATUS_CHOICES = [
+        (0, '未選択'),      
+        (1, '視聴予定'),      
+        (2, '視聴済'),  
+    ]
+    status = models.IntegerField(choices=STATUS_CHOICES, default=0)
     rating = models.FloatField(default=0.0,
     validators=[
         MinValueValidator(0.0),  # 最小値 0.0
@@ -171,7 +175,7 @@ class User_anime_relations(models.Model):#ユーザーのアニメの視聴管�
 
     def update_anime_watched_count(self):
         """視聴済みのカウントを更新して保存する"""
-        watched_count = User_anime_relations.objects.filter(anime_id=self.anime_id, is_watched=True).count()
+        watched_count = User_anime_relations.objects.filter(anime_id=self.anime_id, status=2).count()
         self.anime_id.watched_count = watched_count
         print(f"視聴済みカウントが更新されました: {watched_count}")
         self.anime_id.save()
@@ -254,7 +258,6 @@ class Anime_tags(models.Model):#(アニメ-タグ中間テーブル)
         anime_title = self.anime_id.title if self.anime_id else "Unknown Anime"
         tag_name = self.tag_id.name if self.tag_id else "Unknown Tag"
         return f"{anime_title} - {tag_name}"
-
 
 
 

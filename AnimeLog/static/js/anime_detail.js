@@ -54,12 +54,35 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.log("データ更新成功:", data);
                 
                 // 動的にボタンの状態を変更
-                document.getElementById("watched-btn").className = data.is_watched ? "btn-active" : "btn-inactive";
-                document.getElementById("favorite-btn").className = data.is_favorite ? "btn-active" : "btn-inactive";
-                document.getElementById("plan-to-watch-btn").className = data.is_plan_to_watch ? "btn-active" : "btn-inactive";
+                 // ボタンの状態を更新
+                if (data.status === 2) {
+                    document.getElementById("watched-btn").className = "btn-active";
+                    document.getElementById("favorite-btn").disabled = false;
+                } else {
+                    document.getElementById("watched-btn").className = "btn-inactive";
+                    document.getElementById("favorite-btn").disabled = true; // 視聴予定ならお気に入り無効化
+                }
 
+                // お気に入りを有効化
+                if (data.is_favorite) {
+                    document.getElementById("favorite-btn").className = "btn-active";
+                } else {
+                    document.getElementById("favorite-btn").className = "btn-inactive";
+                }
+                // 視聴予定 (status = 1) の場合
+                if (data.status === 1) {
+                    document.getElementById("plan-to-watch-btn").className = "btn-active";
+                    document.getElementById("favorite-btn").disabled = true;  // 視聴予定時はお気に入り無効
+                } else {
+                    document.getElementById("plan-to-watch-btn").className = "btn-inactive";
+                }
+
+
+                
+
+                
                 // 視聴済が解除されたらお気に入りを無効化
-                document.getElementById("favorite-btn").disabled = !data.is_watched;
+                // document.getElementById("favorite-btn").disabled = !data.status === 2;
             })
             .catch(error => console.error("エラーが発生しました:", error));
         });
