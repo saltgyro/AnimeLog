@@ -27,7 +27,7 @@ STATICFILES_DIRS = [     # 静的ファイルの場所を追加
 SECRET_KEY = 'django-insecure-0ewg(x()5ugb2^#s!^dfs+$2mk0s@@_ad#n&&*5%__j2u0&8)o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
