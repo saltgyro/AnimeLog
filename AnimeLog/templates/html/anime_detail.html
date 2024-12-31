@@ -7,107 +7,78 @@
 <script src="{% static 'js/anime_detail.js' %}" defer></script>
 <link rel="stylesheet" href="{% static 'css/anime_detail.css' %}">
 
-<h1>{{ anime.title }}</h1>
+<div class="anime-detail-container">
+    <a href="{% url 'anime_tracker:home' %}" class="back-link">戻る</a>
+    <!-- 左側: サムネイル -->
+    <div class="thumbnail">
+        {% if anime.thumbnail %}
+            <img src="{{ anime.thumbnail.url }}" alt="{{ anime.title }}" width="300">
+        {% else %}
+            <p>画像がありません</p>
+        {% endif %}
+    </div>
 
-<div>
-    <!-- 視聴済ボタン -->
-    <button id="watched-btn" data-anime-id="{{ anime.id }}" data-status="watched"
-            {% if not user.is_authenticated %}disabled{% endif %}
-            class="{% if user_relation and user_relation.is_watched %}btn-active{% else %}btn-inactive{% endif %}">
-        視聴済
-    </button>
+    <!-- 右側: アニメ情報 -->
+    <div class="anime-info">
+        <h1>{{ anime.title }}</h1>
+        <div class="buttons">
+            <!-- 視聴済ボタン -->
+            <button id="watched-btn" data-anime-id="{{ anime.id }}" data-status="watched" {% if not user.is_authenticated %}disabled{% endif %} class="{% if user_relation and user_relation.is_watched %}btn-active{% else %}btn-inactive{% endif %}">
+                視聴済
+            </button>
 
-    <!-- お気に入りボタン -->
-    <button id="favorite-btn" data-anime-id="{{ anime.id }}" data-status="favorite"
-            {% if not user.is_authenticated or not user_relation or not user_relation.is_watched %}disabled{% endif %}
-            class="{% if user_relation and user_relation.is_favorite %}btn-active{% else %}btn-inactive{% endif %}">
-        お気に入り
-    </button>
+            <!-- お気に入りボタン -->
+            <button id="favorite-btn" data-anime-id="{{ anime.id }}" data-status="favorite" {% if not user.is_authenticated or not user_relation or not user_relation.is_watched %}disabled{% endif %} class="{% if user_relation and user_relation.is_favorite %}btn-active{% else %}btn-inactive{% endif %}">
+                お気に入り
+            </button>
 
-    <!-- 視聴予定ボタン -->
-    <button id="plan-to-watch-btn" data-anime-id="{{ anime.id }}" data-status="plan_to_watch"
-            {% if not user.is_authenticated %}disabled{% endif %}
-            class="{% if user_relation and user_relation.is_plan_to_watch %}btn-active{% else %}btn-inactive{% endif %}">
-        視聴予定
-    </button>
+            <!-- 視聴予定ボタン -->
+            <button id="plan-to-watch-btn" data-anime-id="{{ anime.id }}" data-status="plan_to_watch" {% if not user.is_authenticated %}disabled{% endif %} class="{% if user_relation and user_relation.is_plan_to_watch %}btn-active{% else %}btn-inactive{% endif %}">
+                視聴予定
+            </button>
 
-    {% if not user.is_authenticated %}
-        <p>これらの機能を利用するにはログインしてください。</p>
-    {% endif %}
-</div>
-
-<div>
-    <label for="rating-input">評価を入力してください (0〜5):</label>
-    <input type="number" id="rating-input" min="0" max="5" step="0.1" value="{{ user_relation.rating|default:0.0 }}">
-    <button id="rating-submit" data-anime-id="{{ anime.id }}">評価を更新</button>
-</div>
-
-<div class="thumbnail">
-    {% if anime.thumbnail %}
-        <img src="{{ anime.thumbnail.url }}" alt="{{ anime.title }}" width="300">
-    {% else %}
-        <p>画像がありません</p>
-    {% endif %}
-</div>
-
-<p><strong>あらすじ:</strong> {{ anime.synopsis }}</p>
-<p><strong>放送開始日:</strong> {{ anime.start_date }}</p>
-<p><strong>放送終了日:</strong> {{ anime.end_date }}</p>
-<p><strong>総話数:</strong> {{ anime.episode_count }}</p>
-<p><strong>平均評価:</strong> {{ anime.average_rating }}</p>
-<p><strong>登録者数:</strong> {{ anime.watched_count }}</p>
-<p><strong>お気に入り数:</strong> {{ anime.favorite_count }}</p>
-
-<h2>関連アニメ</h2>
-{% comment %} <ul>
-    {% for related_anime in related_animes %}
-        <li><a href="{% url 'anime_tracker:anime_detail' anime.id %}">{{ related_anime.title }}</a></li>
-    {% empty %}
-        <li>関連アニメはありません。</li>
-    {% endfor %}
-</ul> {% endcomment %}
-
-{% comment %} <ul>
-    {% for related_anime in related_animes %}
-        <li>
-            <!-- サムネイル画像の表示 -->
-            {% if related_anime.thumbnail %}
-                <img src="{{ related_anime.thumbnail.url }}" alt="{{ related_anime.title }}" width="100">
-            {% else %}
-                <p>サムネイルなし</p>
+            {% if not user.is_authenticated %}
+                <p>これらの機能を利用するにはログインしてください。</p>
             {% endif %}
-            <br>
-            <a href="{% url 'anime_tracker:anime_detail' anime.id %}">{{ related_anime.title }}</a>
-        </li>
-    {% empty %}
-        <li>関連アニメはありません。</li>
-    {% endfor %}
-</ul> {% endcomment %}
+        </div>
 
-<!-- 関連アニメの表示 -->
-<ul>
-    {% for related_anime in related_animes %}
-        <li>
-            <!-- サムネイルを先に表示 -->
-            {% if related_anime.thumbnail %}
-                <a href="{% url 'anime_tracker:anime_detail' anime.id %}">
-                    <img src="{{ related_anime.thumbnail.url }}" alt="{{ related_anime.title }}" width="100">
-                </a>
-            {% else %}
-                <p>サムネイルなし</p>
-            {% endif %}
-            
-            <!-- タイトルを表示 -->
-            <a href="{% url 'anime_tracker:anime_detail' anime.id %}">{{ related_anime.title }}</a>
-        </li>
-    {% empty %}
-        <li>関連アニメはありません。</li>
-    {% endfor %}
-</ul>
+        <div class="rating">
+            <label for="rating-input">評価を入力してください (0〜5):</label>
+            <input type="number" id="rating-input" min="0" max="5" step="0.1" value="{{ user_relation.rating|default:0.0 }}">
+            <button id="rating-submit" data-anime-id="{{ anime.id }}">評価を更新</button>
+        </div>
 
+        <p><strong>あらすじ:</strong> {{ anime.synopsis }}</p>
+        <p><strong>放送開始日:</strong> {{ anime.start_date }}</p>
+        <p><strong>放送終了日:</strong> {{ anime.end_date }}</p>
+        <p><strong>総話数:</strong> {{ anime.episode_count }}</p>
+        <p><strong>平均評価:</strong> {{ anime.average_rating }}</p>
+        <p><strong>登録者数:</strong> {{ anime.watched_count }}</p>
+        <p><strong>お気に入り数:</strong> {{ anime.favorite_count }}</p>
 
+        <h2>関連アニメ</h2>
+        <div class="related-animes">
+            <ul>
+                {% for related_anime in related_animes %}
+                    <li>
+                        {% if related_anime.thumbnail %}
+                            <a href="{% url 'anime_tracker:anime_detail' related_anime.id %}">
+                                <img src="{{ related_anime.thumbnail.url }}" alt="{{ related_anime.title }}">
+                            </a>
+                        {% else %}
+                            <p>サムネイルなし</p>
+                        {% endif %}
+                        <a href="{% url 'anime_tracker:anime_detail' related_anime.id %}">{{ related_anime.title }}</a>
+                    </li>
+                {% empty %}
+                    <li>関連アニメはありません。</li>
+                {% endfor %}
+            </ul>
+        </div>
 
-<a href="{% url 'anime_tracker:home' %}">戻る</a>
+    </div>
+</div>
+
 
 <script>
     const updateStatusUrl = "{% url 'anime_tracker:update_status' %}";

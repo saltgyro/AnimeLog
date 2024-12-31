@@ -12,3 +12,108 @@ button[disabled] {
     background-color: lightgray;
     cursor: not-allowed;
 }
+
+/* アニメ詳細画面のレイアウト */
+.anime-detail-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin: 20px;
+}
+
+/* 戻るリンクのスタイル */
+.back-link {
+    display: block;
+    text-decoration: underline; /* 下線を付ける */
+    color: #000; /* リンクの色を黒に */
+    margin-bottom: 10px; /* サムネイルとの間にスペースを追加 */
+}
+
+.back-link:hover {
+    color: #007bff; /* ホバー時のリンク色を青に */
+}
+
+
+.thumbnail {
+    display: block;
+    margin-top: 20px; /* 上部に間隔を追加 */
+    text-align: left; /* サムネイルを左寄せ */
+}
+
+.thumbnail img {
+    max-width: 100%;
+    height: auto;
+}
+
+.anime-info {
+    width: 65%; /* 右側のアニメ情報部分は全体の2/3 */
+}
+
+.anime-info h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.anime-info .buttons {
+    margin-bottom: 20px;
+}
+
+.anime-info .buttons button {
+    margin-right: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+.anime-info .rating {
+    margin-top: 20px;
+}
+
+.anime-info .rating input {
+    margin-right: 10px;
+    padding: 5px;
+    width: 80px;
+}
+
+.anime-info p {
+    margin: 10px 0;
+}
+
+.related-animes ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.related-animes li {
+    margin-bottom: 10px;
+}
+
+.related-animes a {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.related-animes img {
+    max-width: 100px;
+    margin-right: 10px;
+}
+
+
+
+ul {
+    list-style-type: none; /* デフォルトのリストスタイルを削除 */
+    padding: 0;
+    display: flex; /* 横並びにする */
+    flex-wrap: wrap; /* アイテムが横並びの幅を超えたら次の行に移動 */
+    gap: 10px; /* アイテム間の隙間を追加 */
+}
+
+/* 各リストアイテム（サムネイルとタイトルのセット） */
+ul li {
+    display: flex;
+    flex-direction: column; /* サムネイルの下にタイトルを表示するため縦並びにする */
+    align-items: center; /* サムネイルとタイトルを中央揃えにする */
+    text-align: center; /* タイトルを中央揃え */
+}
