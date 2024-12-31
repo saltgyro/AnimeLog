@@ -1,0 +1,62 @@
+/* user_editページのスタイル */
+.h2  {
+    text-align: center; /* 見出しを中央揃え */
+    margin-bottom: 20px; /* 見出しの下に余白 */
+}
+
+.account-form {
+    max-width: 600px; /* フォームの最大幅を設定 */
+    margin: 0 auto;   /* フォームを画面中央に配置 */
+    padding: 20px;
+    background-color: #f9f9f9; /* 背景色を設定 */
+    border-radius: 8px; /* 角を丸める */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 薄いシャドウを追加 */
+}
+
+.account-form h2 {
+    text-align: center; /* 見出しを中央揃え */
+    margin-bottom: 20px; /* 見出しの下に余白 */
+}
+
+.account-form p {
+    font-size: 1.1em;
+    margin-bottom: 15px;
+}
+
+.account-form button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    cursor: pointer;
+}
+
+.account-form button:hover {
+    background-color: #0056b3;
+}
+
+.messages {
+    margin-top: 20px;
+    padding: 0;
+    list-style-type: none;
+}
+
+.messages li {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.messages .success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.messages .error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
