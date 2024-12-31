@@ -166,11 +166,6 @@ def request_password_reset(request):
     pass
 
 
-#アニメ詳細画面
-def animeDetailView(request, pk):
-    anime = get_object_or_404(Anime, pk=pk) 
-    return render(request, 'html/anime_detail.html', {'anime': anime})
-
 
 #アニメ詳細画面で追加
 @login_required
@@ -227,7 +222,9 @@ def animeDetailView(request, pk):
     user_relation = None
     if request.user.is_authenticated:
         user_relation = User_anime_relations.objects.filter(user_id=request.user, anime_id=anime).first()
-    return render(request, 'html/anime_detail.html', {'anime': anime, 'user_relation': user_relation})
+    related_animes = Anime.objects.filter(series_id=anime.series_id).exclude(id=anime.id)
+    print(related_animes.count())
+    return render(request, 'html/anime_detail.html', {'anime': anime, 'user_relation': user_relation,'related_animes': related_animes})
 
 #ユーザー評価入力
 def update_rating(request):

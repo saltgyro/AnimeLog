@@ -58,6 +58,55 @@
 <p><strong>登録者数:</strong> {{ anime.watched_count }}</p>
 <p><strong>お気に入り数:</strong> {{ anime.favorite_count }}</p>
 
+<h2>関連アニメ</h2>
+{% comment %} <ul>
+    {% for related_anime in related_animes %}
+        <li><a href="{% url 'anime_tracker:anime_detail' anime.id %}">{{ related_anime.title }}</a></li>
+    {% empty %}
+        <li>関連アニメはありません。</li>
+    {% endfor %}
+</ul> {% endcomment %}
+
+{% comment %} <ul>
+    {% for related_anime in related_animes %}
+        <li>
+            <!-- サムネイル画像の表示 -->
+            {% if related_anime.thumbnail %}
+                <img src="{{ related_anime.thumbnail.url }}" alt="{{ related_anime.title }}" width="100">
+            {% else %}
+                <p>サムネイルなし</p>
+            {% endif %}
+            <br>
+            <a href="{% url 'anime_tracker:anime_detail' anime.id %}">{{ related_anime.title }}</a>
+        </li>
+    {% empty %}
+        <li>関連アニメはありません。</li>
+    {% endfor %}
+</ul> {% endcomment %}
+
+<!-- 関連アニメの表示 -->
+<ul>
+    {% for related_anime in related_animes %}
+        <li>
+            <!-- サムネイルを先に表示 -->
+            {% if related_anime.thumbnail %}
+                <a href="{% url 'anime_tracker:anime_detail' anime.id %}">
+                    <img src="{{ related_anime.thumbnail.url }}" alt="{{ related_anime.title }}" width="100">
+                </a>
+            {% else %}
+                <p>サムネイルなし</p>
+            {% endif %}
+            
+            <!-- タイトルを表示 -->
+            <a href="{% url 'anime_tracker:anime_detail' anime.id %}">{{ related_anime.title }}</a>
+        </li>
+    {% empty %}
+        <li>関連アニメはありません。</li>
+    {% endfor %}
+</ul>
+
+
+
 <a href="{% url 'anime_tracker:home' %}">戻る</a>
 
 <script>
