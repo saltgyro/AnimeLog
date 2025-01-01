@@ -116,16 +116,16 @@
 </div>
 
 <div class="filters">
-    {% comment %} <a href="{% url 'anime_tracker:home' %}?status=not_in_list" class="btn btn-primary filter-btn">全作品</a> {% endcomment %}
-    <a href="{% url 'anime_tracker:home' %}?status=not_in_list" 
+    {% comment %} <a href="{% url 'anime_tracker:home' %}?status=not_in_list" 
     class="btn btn-primary filter-btn {% if request.GET.status == 'not_in_list' %}selected{% endif %}">
+    全作品
+    </a> {% endcomment %}
+    <a href="{% url 'anime_tracker:home' %}?status=not_in_list" 
+    class="btn btn-primary filter-btn {% if request.GET.status != 'watched' and request.GET.status != 'favorite' and request.GET.status != 'plan_to_watch' %}selected{% endif %}">
     全作品
     </a>
     
     {% if request.user.is_authenticated %}
-        {% comment %} <a href="{% url 'anime_tracker:home' %}?status=watched" class="btn btn-primary filter-btn">視聴済み</a>
-        <a href="{% url 'anime_tracker:home' %}?status=favorite" class="btn btn-primary filter-btn">お気に入り</a>
-        <a href="{% url 'anime_tracker:home' %}?status=plan_to_watch" class="btn btn-primary filter-btn">視聴予定</a> {% endcomment %}
         <a href="{% url 'anime_tracker:home' %}?status=watched" 
         class="btn btn-primary filter-btn {% if request.GET.status == 'watched' %}selected{% endif %}">
         視聴済み
