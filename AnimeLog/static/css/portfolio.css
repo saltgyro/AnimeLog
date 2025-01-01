@@ -1,0 +1,44 @@
+/* 全体のラッパー */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center; /* 水平方向の中央揃え */
+}
+
+/* スクリーンショットを含むセクション */
+.screenshots {
+    margin-top: 30px;
+    text-align: center; /* スクリーンショットを中央に */
+}
+
+/* 各スクリーンショットのスタイル */
+.screenshot {
+    display: inline-block; /* 横並びにする */
+    margin-right: 10px;
+    margin-bottom: 20px;
+}
+
+/* ボタンのスタイル */
+a.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+a.btn:hover {
+    background-color: #45a049;
+}
+
+/* スクリーンショット画像のスタイル */
+img {
+    width: 45%; /* 画像の横幅を45%に */
+    margin-right: 10px; /* 右側のスペース */
+}
+
+.screenshot img:last-child {
+    margin-right: 0; /* 最後の画像の右スペースをゼロに */
+}
