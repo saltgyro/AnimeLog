@@ -307,9 +307,7 @@ def user_edit(request):
 
 
 
-#パスワードリセット
-def request_password_reset(request):
-    pass
+
 
 
 

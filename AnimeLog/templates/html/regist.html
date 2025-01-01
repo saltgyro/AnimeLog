@@ -3,10 +3,115 @@
 <!DOCTYPE html>
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/inputform.css' %}">
-<form method="POST">
-    {% csrf_token %}
-    {{ user_form.as_p }}
-    <input type="submit" value="ユーザー登録">
-</form> 
+
+{% comment %} <div class="form-container">
+    <h1>ユーザー登録</h1>
+
+    <!-- ユーザー登録フォーム -->
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            {{ user_form.as_p }} 
+        </div>
+
+        <!-- 登録ボタン -->
+        <button type="submit" class="btn btn-primary">ユーザー登録</button>
+    </form>
+</div>
+
+{% endblock %} {% endcomment %}
+
+
+{% comment %} <div class="form-container">
+    <h1>ユーザー登録</h1>
+
+    <!-- ユーザー登録フォーム -->
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="id_nickname">ニックネーム:</label>
+            {{ user_form.nickname }}
+            {% if user_form.nickname.errors %}
+                <div class="error-message show">
+                    {% for error in user_form.nickname.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_email">メールアドレス:</label>
+            {{ user_form.email }}
+            {% if user_form.email.errors %}
+                <div class="error-message show">
+                    {% for error in user_form.email.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_password1">パスワード:</label>
+            {{ user_form.password1 }}
+            {% if user_form.password1.errors %}
+                <div class="error-message show">
+                    {% for error in user_form.password1.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_password2">パスワード（確認用）:</label>
+            {{ user_form.password2 }}
+            {% if user_form.password2.errors %}
+                <div class="error-message show">
+                    {% for error in user_form.password2.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- 登録ボタン -->
+        <button type="submit" class="btn btn-primary">ユーザー登録</button>
+    </form>
+</div> {% endcomment %}
+
+
+
+
+<div class="form-container">
+    <h1>ユーザー登録</h1>
+
+    <!-- ユーザー登録フォーム -->
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            {{ user_form.as_p }}
+            
+            <!-- エラーメッセージを表示 -->
+            {% for field in user_form %}
+                {% if field.errors %}
+                    <div class="error-message">
+                        {% for error in field.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <!-- 登録ボタン -->
+        <button type="submit" class="btn btn-primary">ユーザー登録</button>
+    </form>
+</div>
+
+
 {% endblock %}

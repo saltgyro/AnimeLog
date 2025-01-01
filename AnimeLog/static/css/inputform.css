@@ -4,12 +4,15 @@
 }
 
 /* フォーム全体のラッパー */
+
 .form-container {
-    display: flex; /* フレックスボックスを使う */
-    justify-content: center; /* 水平方向の中央揃え */
+    display: flex;
+    justify-content: flex-start; /* 水平方向の中央揃え */
     align-items: center; /* 垂直方向の中央揃え */
+    flex-direction: column; /* 縦方向に並べる */
     min-height: 100vh; /* 画面全体の高さを占める */
-    background-color: #f9f9f9; /* 背景色（必要に応じて変更） */
+    background-color: #f9f9f9; /* 背景色 */
+    text-align: center; /* 中央揃え */
 }
 
 
@@ -47,3 +50,30 @@ button[type="submit"]:hover {
     background-color: #45a049; /* ホバー時に少し濃く */
 }
 
+/* h1タグのスタイル */
+h1 {
+    font-size: 2em; /* フォントサイズ */
+    font-weight: bold; /* 太字 */
+    text-align: center; /* 中央揃え */
+    margin-bottom: 20px; /* 下に余白 */
+}
+
+
+/* エラーメッセージの吹き出しスタイル */
+.error-message {
+    display: none; /* 最初は非表示 */
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    margin-top: 5px;
+    font-size: 0.9em;
+    position: relative;
+    width: 100%;
+}
+
+/* エラーメッセージを表示するためのスタイル */
+.error-message.show {
+    display: block; /* エラーメッセージを表示 */
+}

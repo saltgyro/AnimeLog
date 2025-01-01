@@ -3,15 +3,28 @@
 
 {% block content %}
 
-<h1>ログイン画面です</h1>
-<div class="login-form">
+<div class="form-container">
+    <h1>ログイン画面です</h1>
+
+    <!-- ログインフォーム -->
     <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }} 
+        
+        <div class="form-group">
+            {{ form.as_p }} 
+        </div>
+
+        <!-- ログインボタン -->
         <button type="submit" class="btn btn-primary">ログイン</button>
     </form>
+
+    {% comment %} <p>パスワードを忘れてしまった方
+        <a href="{% url 'anime_tracker:password_reset' %}">パスワードリセット</a>
+    </p> {% endcomment %}
+
+    <p>まだアカウントをお持ちでない方
+        <a href="{% url 'anime_tracker:regist' %}">新規登録</a>
+    </p>
 </div>
-<p>まだアカウントをお持ちでない方
-    <a href="{% url 'anime_tracker:regist' %}">新規登録</a>
-</p>
+
 {% endblock %}
