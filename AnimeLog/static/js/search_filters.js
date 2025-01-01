@@ -44,7 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
         currentUrl.searchParams.delete('studio');
         currentUrl.searchParams.delete('status');
         currentUrl.searchParams.delete('sort');
-        
+        currentUrl.searchParams.delete('search');
+
         // リセットしたURLに遷移
         window.location.href = currentUrl.toString();  // ページ遷移
     });

@@ -3,13 +3,43 @@ from django.views.generic import (TemplateView,CreateView,FormView,View)
 from django.contrib.auth import authenticate,login,logout
 from .forms import UserForm,RegistForm,UserLoginForm,CustomUserCreationForm,UserEditForm,forms
 from django.urls import reverse_lazy
-from .models import (Anime,Genres,Seasons,Studios,Tags,User_anime_relations)
+from .models import (Anime,Genres,Seasons,Studios,Tags,User_anime_relations,VoiceActor,Song,Character,Artist)
 from django.db.models import F,Q
 import json
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 import requests
+
+# ひらがなに変換
+# def kata2hira(text):
+#     """
+#     カタカナをひらがなに変換する関数
+#     """
+#     result = []
+#     for char in text:
+#         # カタカナの範囲（「ァ」～「ン」）をひらがなに変換
+#         if 'ァ' <= char <= 'ン':
+#             result.append(chr(ord(char) - 0x60))  # カタカナからひらがなに変換
+#         else:
+#             result.append(char)
+#     return ''.join(result)
+
+def kata2hira(text):
+    """
+    カタカナをひらがなに変換する関数
+    """
+    result = []
+    for char in text:
+        if isinstance(char, str) and len(char) == 1:  # 1文字かを確認
+            # カタカナの範囲（「ァ」～「ン」）をひらがなに変換
+            if 'ァ' <= char <= 'ン':
+                result.append(chr(ord(char) - 0x60))  # カタカナからひらがなに変換
+            else:
+                result.append(char)  # カタカナでない場合はそのまま追加
+        else:
+            result.append(char)  # 文字列全体が長すぎる場合、そのまま追加
+    return ''.join(result)
 
 
 class UserLoginView(FormView):
@@ -65,9 +95,35 @@ def get_animes(request, status, sort_option,search_conditions):
         animes = Anime.objects.all()
         print('全て非表示')
 
+    
+
+
     # 検索条件の追加
     # AND検索のために条件をまとめる
     filter_conditions = Q()
+    
+    # 検索キーワードに対してAND検索を行う
+    if search_conditions.get('search'):
+        search_keywords = search_conditions['search']
+        for keyword in search_keywords:
+            # タイトル検索（タイトルにキーワードが含まれている場合）
+            filter_conditions &= Q(title__icontains=keyword)
+
+            # 他のテーブル（ジャンル、タグ、キャラクター、ソング、声優、アーティストなど）にも適用
+            genres = Genres.objects.filter(name__icontains=keyword)
+            tags = Tags.objects.filter(name__icontains=keyword)
+            characters = Character.objects.filter(name__icontains=keyword)
+            voice_actors = VoiceActor.objects.filter(name__icontains=keyword)
+            songs = Song.objects.filter(title__icontains=keyword)
+            artists = Artist.objects.filter(name__icontains=keyword)
+
+
+
+    # フィルタリングを適用
+    animes = animes.filter(filter_conditions)
+                                
+    
+    
 
     # ジャンル検索
     if search_conditions.get('genre'):
@@ -89,10 +145,26 @@ def get_animes(request, status, sort_option,search_conditions):
         filter_conditions &= Q(studios__id__in=search_conditions['studio'])
         print(f"スタジオフィルタ: {filter_conditions}")
 
+    # デバッグ: filter_conditionsが正しく設定されているか確認
+    print(f"filter_conditions: {filter_conditions}")
     
-    # AND検索を適用
-    if filter_conditions:
-        animes = animes.filter(filter_conditions)
+    # フィルタリングを適用
+    animes = animes.filter(filter_conditions)
+
+    # デバッグ: animesが正しくフィルタリングされているか確認
+    print(f"animes queryset: {animes}")
+    
+    # # AND検索を適用
+    # if filter_conditions:
+    #     animes = animes.filter(filter_conditions)
+    
+    # # 検索バーで入力されたキーワードでAND検索
+    # search_query = search_conditions.get('search', '')  # 検索バーの内容
+    # if search_query:
+    #     search_keywords = search_query.split()  # スペースで区切って複数のキーワードに分割
+    #     for keyword in search_keywords:
+    #         filter_conditions &= Q(title__icontains=keyword)  # 各キーワードがタイトルに含まれているアニメを検索
+    #     print(f"AND検索のキーワード: {search_keywords}")
     
         
     print("sort_option:" + sort_option)
@@ -150,6 +222,20 @@ def home(request):
     studio_search = request.GET.getlist('studio')
     print("studio_search")
     print(studio_search)
+    search_query = request.GET.getlist('search')   # 検索バーのキーワードを取得
+    print("studio_search")
+    print(studio_search)
+    
+    # ユーザーの入力をひらがなに変換
+    # ユーザーの入力をカタカナ→ひらがなに変換
+    search_query_hiragana = kata2hira(search_query)  # カタカナをひらがなに変換
+    
+    # スペースで区切ってキーワードリストを作成
+    search_keywords = search_query_hiragana.split() if search_query_hiragana else []
+    
+    # 出力確認用
+    print("search_query_hiragana:", search_query_hiragana)  # 変換後のひらがな
+    print("search_keywords:", search_keywords)  # スペースで区切ったキーワードリスト
     
     # 検索条件をまとめてディクショナリに格納
     search_conditions = {
@@ -157,6 +243,7 @@ def home(request):
         'tag': tag_search,
         'season': season_search,
         'studio': studio_search,
+        'search': search_query,
     }
     
     # データを取得

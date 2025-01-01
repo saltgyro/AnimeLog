@@ -16,6 +16,15 @@
     <div class="offcanvas-body">
         <h6>検索条件</h6>
         <ul>
+            <!-- フリーワード検索 -->
+            {% if search_conditions.search %}
+            <li>フリーワード検索: 
+                {% for keyword in search_conditions.search %}
+                    <span>{{ keyword }}</span>{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </li>
+            {% endif %}
+            
             <!-- ジャンル -->
             {% if search_conditions.genre %}
                 <li>ジャンル: 

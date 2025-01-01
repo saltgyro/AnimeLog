@@ -22,6 +22,15 @@
                 <a href="{% url 'anime_tracker:home' %}" class="text-decoration-none fs-4">アニメログ</a>
             </div>
 
+            <!-- 検索バー（home.htmlページでのみ表示） -->
+            {% if request.resolver_match.view_name == 'anime_tracker:home' %}
+                <form method="get" action="{% url 'anime_tracker:home' %}" class="d-flex">
+                    <input type="text" name="search" class="form-control" placeholder="スペースで区切って検索" value="{{ request.GET.search }}">
+                    <button type="submit" class="btn btn-primary">検索</button>
+                </form>
+                
+            {% endif %}
+
             <!-- 右側：ドロップダウンメニュー -->
             <div class="dropdown">
                 {% if request.user.is_authenticated %}
