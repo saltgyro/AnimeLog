@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate,login,logout
 from .forms import UserForm,RegistForm,UserLoginForm,CustomUserCreationForm,UserEditForm,forms
 from django.urls import reverse_lazy
 from .models import (Anime,Genres,Seasons,Studios,Tags,User_anime_relations)
-from django.db.models import F
+from django.db.models import F,Q
 import json
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -44,7 +44,7 @@ class RegistUseView(CreateView):
     success_url = reverse_lazy('anime:home')
 
 # アニメのリストを取得し、フィルタリング、並び替えを行う共通メソッド
-def get_animes(request, status, sort_option):
+def get_animes(request, status, sort_option,search_conditions):
     user_anime_ids = User_anime_relations.objects.filter(user_id=request.user.id).values_list('anime_id', flat=True)
     
     
@@ -65,6 +65,36 @@ def get_animes(request, status, sort_option):
         animes = Anime.objects.all()
         print('全て非表示')
 
+    # 検索条件の追加
+    # AND検索のために条件をまとめる
+    filter_conditions = Q()
+
+    # ジャンル検索
+    if search_conditions.get('genre'):
+        filter_conditions &= Q(genres__id__in=search_conditions['genre'])
+        print(f"ジャンルフィルタ: {filter_conditions}")
+    
+    # タグ検索
+    if search_conditions.get('tag'):
+        filter_conditions &= Q(tags__id__in=search_conditions['tag'])
+        print(f"タグフィルタ: {filter_conditions}")
+    
+    # シーズン検索
+    if search_conditions.get('season'):
+        filter_conditions &= Q(seasons__id__in=search_conditions['season'])
+        print(f"シーズンフィルタ: {filter_conditions}")
+    
+    # スタジオ検索
+    if search_conditions.get('studio'):
+        filter_conditions &= Q(studios__id__in=search_conditions['studio'])
+        print(f"スタジオフィルタ: {filter_conditions}")
+
+    
+    # AND検索を適用
+    if filter_conditions:
+        animes = animes.filter(filter_conditions)
+    
+        
     print("sort_option:" + sort_option)
     
     # 並び順の適用
@@ -84,6 +114,7 @@ def get_animes(request, status, sort_option):
         animes = animes.order_by('-start_date')  # デフォルトでは新しい順
         print('外：新しい順')
 
+
     # 重複を排除
     animes = animes.distinct()
 
@@ -102,21 +133,48 @@ def index(request):
 
 # homeビュー
 def home(request):
+    # URLパラメータから条件を取得
     sort_option = request.GET.get('sort', 'start-date-desc')  # デフォルトは新しい順
     status = request.GET.get('status', 'not_in_list')  # デフォルトはリスト外
     
-    # 未ログインの場合、ステータスを「リスト外」に強制
-    if not request.user.is_authenticated:
-        status = 'not_in_list'
-
-    # アニメのリストを取得
-    animes = get_animes(request, status, sort_option)
+    # URLのクエリパラメータから検索条件を取得
+    genre_search = request.GET.getlist('genre')
+    print(" genre_search ")
+    print( genre_search )
+    tag_search = request.GET.getlist('tag')
+    print("tag_search")
+    print(tag_search)
+    season_search = request.GET.getlist('season')
+    print("season_search")
+    print(season_search)
+    studio_search = request.GET.getlist('studio')
+    print("studio_search")
+    print(studio_search)
     
-    # その他のデータを取得
+    # 検索条件をまとめてディクショナリに格納
+    search_conditions = {
+        'genre': genre_search,
+        'tag': tag_search,
+        'season': season_search,
+        'studio': studio_search,
+    }
+    
+    # データを取得
     genres = Genres.objects.all()
     tags = Tags.objects.all()
     studios = Studios.objects.all()
     seasons = Seasons.objects.all()
+    
+    
+    # 未ログインの場合、ステータスを「リスト外」に強制
+    if not request.user.is_authenticated:
+        status = 'not_in_list'
+    
+
+    # アニメのリストを取得
+    animes = get_animes(request, status, sort_option, search_conditions)
+    
+    
 
     return render(request, 'html/home.html', {
         'animes': animes,
@@ -124,7 +182,8 @@ def home(request):
         'tags': tags,
         'studios': studios,
         'seasons': seasons,
-        'status': status  # 現在のステータスをテンプレートに渡す
+        'status': status , # 現在のステータスをテンプレートに渡す
+        'search_conditions': search_conditions,#検索条件
     })
 
 

@@ -14,11 +14,57 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="閉じる"></button>
     </div>
     <div class="offcanvas-body">
+        <h6>検索条件</h6>
+        <ul>
+            <!-- ジャンル -->
+            {% if search_conditions.genre %}
+                <li>ジャンル: 
+                    {% for genre in genres %}
+                        {% if genre.id|stringformat:"s" in search_conditions.genre %}
+                            <span>{{ genre.name }}</span>
+                        {% endif %}
+                    {% endfor %}
+                </li>
+            {% endif %}
+
+            <!-- タグ -->
+            {% if search_conditions.tag %}
+                <li>タグ: 
+                    {% for tag in tags %}
+                        {% if tag.id|stringformat:"s" in search_conditions.tag %}
+                            <span>{{ tag.name }}</span>
+                        {% endif %}
+                    {% endfor %}
+                </li>
+            {% endif %}
+
+            <!-- シーズン -->
+            {% if search_conditions.season %}
+                <li>シーズン: 
+                    {% for season in seasons %}
+                        {% if season.id|stringformat:"s" in search_conditions.season %}
+                            <span>{{ season.year }} 年 {{ season.get_season_display }}</span>
+                        {% endif %}
+                    {% endfor %}
+                </li>
+            {% endif %}
+
+            <!-- スタジオ -->
+            {% if search_conditions.studio %}
+                <li>スタジオ: 
+                    {% for studio in studios %}
+                        {% if studio.id|stringformat:"s" in search_conditions.studio %}
+                            <span>{{ studio.name }}</span>
+                        {% endif %}
+                    {% endfor %}
+                </li>
+            {% endif %}
+        </ul>
+
         <ul class="list-unstyled">
             <li><a href="#" class="text-decoration-none">🎭 ジャンル</a></li>
                 <li>
                     {% for genre in genres %}
-                        {% comment %} <li>{{ genre.name }}</li> {% endcomment %}
                         <button 
                             class="btn btn-outline-primary genre-button" 
                             data-type="genre" 
@@ -30,7 +76,6 @@
             <li><a href="#" class="text-decoration-none">🏷 タグ</a></li>
                 <li>
                     {% for tag in tags %}
-                        {% comment %} <li>{{ tag.name }}</li> {% endcomment %}
                         <button 
                             class="btn btn-outline-primary tag-button" 
                             data-type="tag" 
@@ -42,7 +87,6 @@
             <li><a href="#" class="text-decoration-none">📅 年代</a></li>
                 <li>
                     {% for season in seasons %}
-                        {% comment %} <li>{{ season.year}} 年 {{season.get_season_display }}</li> {% endcomment %}
                         <button 
                             class="btn btn-outline-primary season-button" 
                             data-type="season" 
@@ -54,7 +98,6 @@
             <li><a href="#" class="text-decoration-none">🎬 制作スタジオ</a></li>
                 <li>
                     {% for studio in studios %}
-                        {% comment %} <li>{{ studio.name }}</li> {% endcomment %}
                         <button 
                             class="btn btn-outline-primary studio-button" 
                             data-type="studio" 
@@ -112,19 +155,6 @@
 </div>
 
 <div class="search-results">
-    <h2>
-        {% if status == 'watched' %}
-            視聴済みのアニメ
-        {% elif status == 'favorite' %}
-            お気に入りのアニメ
-        {% elif status == 'plan_to_watch' %}
-            視聴予定のアニメ
-        {% elif status == 'not_in_list' %}
-            リスト外のアニメ
-        {% else %}
-            アニメリスト
-        {% endif %}
-    </h2>
     <div class="anime-list">
         {% for anime in animes %}
             <div class="anime-item">
@@ -143,3 +173,5 @@
     </div>
 </div>
 {% endblock %}
+
+
