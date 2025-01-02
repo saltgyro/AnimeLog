@@ -41,7 +41,8 @@
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="{% url 'anime_tracker:user_edit' %}">アカウント設定</a></li>
                         <li>
-                            <a class="dropdown-item" href="#" onclick="document.getElementById('logout-form').submit();">ログアウト</a>
+                            {% comment %} <a class="dropdown-item" href="#" onclick="document.getElementById('logout-form').submit();">ログアウト</a> {% endcomment %}
+                            <a class="dropdown-item" href="#" id="logout-btn">ログアウト</a>
                             <form id="logout-form" method="POST" action="{% url 'anime_tracker:user_logout' %}" style="display: none;">
                                 {% csrf_token %}
                             </form>
@@ -57,10 +58,63 @@
         <!-- Bootstrap JavaScriptの読み込み -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
 
+
+
+        <!-- ログアウト確認モーダル -->
+        <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="logoutModalLabel">ログアウト確認</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        本当にログアウトしますか？
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                        <form id="logout-form" method="POST" action="{% url 'anime_tracker:user_logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">ログアウト</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <!-- メインコンテンツ -->
         <main>
             {% block content %}
             {% endblock %}
         </main>
+
+        <script>
+            // ログアウトボタンをクリックした時の処理
+            document.addEventListener('DOMContentLoaded', function() {
+                const logoutBtn = document.getElementById('logout-btn');
+                const logoutForm = document.getElementById('logout-form');
+                
+                if (logoutBtn) {
+                    logoutBtn.addEventListener('click', function(event) {
+                        event.preventDefault(); // リンクのデフォルト動作をキャンセル
+                        console.log('ログアウトボタンがクリックされました');
+                        new bootstrap.Modal(document.getElementById('logoutModal')).show();
+                    });
+                }
+            
+                const confirmLogoutBtn = document.querySelector('#logoutModal .btn-danger');
+                if (confirmLogoutBtn) {
+                    confirmLogoutBtn.addEventListener('click', function(event) {
+                        console.log('確認後にログアウト');
+                        logoutForm.submit(); // ログアウトフォームを送信
+                        const modal = new bootstrap.Modal(document.getElementById('logoutModal'));
+                        modal.hide();  // モーダルを閉じる
+                    });
+                }
+            });
+            
+            
+        </script>
     </body>
 </html>
