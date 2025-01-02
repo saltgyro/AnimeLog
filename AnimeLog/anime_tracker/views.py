@@ -49,7 +49,14 @@ class UserLoginView(FormView):
                 self.request.session.set_expiry(120000)  # 秒間保持
             else:
                 self.request.session.set_expiry(0)  # ブラウザが閉じられると終了
-        return super().form_valid(form)
+            return super().form_valid(form)
+        # 認証に失敗した場合、フォームを無効にしてエラーメッセージを表示
+        form.add_error('password', 'メールアドレスまたはパスワードが間違っています。')
+        return self.form_invalid(form)
+    
+    def form_invalid(self, form):
+        # フォームが無効な場合、フォームを再度表示（エラーメッセージを含む）
+        return render(self.request, self.template_name, {'form': form})
 
 class UserLogoutView(View):
     def get(self,request,*args, **kwargs):
