@@ -10,9 +10,11 @@ urlpatterns = [
     path('',views.index,name='index'),
     path('home/', views.home, name='home'),
     path('regist/', views.regist_view, name='regist'), 
+    
     path('password_reset/', auth_views.PasswordResetView.as_view(template_name='registration/password_reset.html'), name='password_reset'),# パスワードリセット用のURLパターン
     
     path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='registration/password_reset_done.html'), name='password_reset_done'),# リセットリクエスト送信後に表示するページ
+    
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='registration/password_reset_confirm.html'), name='password_reset_confirm'),# リセット用URL（ユーザーとトークンを含む）
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), name='password_reset_complete'),# パスワードリセット完了後に表示されるページ
     

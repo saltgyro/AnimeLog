@@ -3,6 +3,7 @@ from .models import Users
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.forms import UserCreationForm
+from django.core.exceptions import ValidationError
 
 class RegistForm(forms.ModelForm):
     
@@ -11,6 +12,7 @@ class RegistForm(forms.ModelForm):
         fields = ['nickname', 'email', 'password']
         widgets = {
             'password': forms.PasswordInput(),
+            # 'password': forms.PasswordInput(attrs={'class': 'form-control'}),
         }
         labels = {
             'nickname': 'ニックネーム',
@@ -20,8 +22,11 @@ class RegistForm(forms.ModelForm):
     
     def save(self,commit=False):
         user = super().save(commit=False)
+        # パスワードの検証
         validate_password(self.cleaned_data['password'], user)
+        # パスワードのハッシュ化
         user.set_password(self.cleaned_data['password'])
+        # ユーザーの保存
         user.save()
         return user
     
@@ -50,6 +55,22 @@ class CustomUserCreationForm(UserCreationForm):
             'password1': 'パスワード',
             'password2': '確認用パスワード'
         }
+        def clean_password1(self):
+            password = self.cleaned_data.get('password1')
+            print(f"Password1 validation: {password}")  # デバッグ用
+            if len(password) < 8:
+                raise ValidationError('パスワードは最低8文字以上でなければなりません。')
+            if password.isdigit():
+                raise ValidationError('数字だけのパスワードは使用できません。')
+            return password
+
+        def clean_password2(self):
+            password1 = self.cleaned_data.get('password1')
+            password2 = self.cleaned_data.get('password2')
+            print(f"Password2 validation: {password1}, {password2}")  # デバッグ用
+            if password1 != password2:
+                raise ValidationError('パスワードが一致しません。')
+            return password2
 
 class UserLoginForm(forms.Form):#ログインの際に使用するフォーム
     email = forms.EmailField(label='メールアドレス')

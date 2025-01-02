@@ -10,20 +10,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 import requests
+from django.contrib.auth.views import PasswordResetDoneView
 
-# ひらがなに変換
-# def kata2hira(text):
-#     """
-#     カタカナをひらがなに変換する関数
-#     """
-#     result = []
-#     for char in text:
-#         # カタカナの範囲（「ァ」～「ン」）をひらがなに変換
-#         if 'ァ' <= char <= 'ン':
-#             result.append(chr(ord(char) - 0x60))  # カタカナからひらがなに変換
-#         else:
-#             result.append(char)
-#     return ''.join(result)
+class PasswordResetDone(PasswordResetDoneView):
+    """パスワード変更用URLを送りましたページ"""
+    template_name = 'registration/password_reset_done.html'
 
 def kata2hira(text):
     """
@@ -151,21 +142,6 @@ def get_animes(request, status, sort_option,search_conditions):
     # フィルタリングを適用
     animes = animes.filter(filter_conditions)
 
-    # デバッグ: animesが正しくフィルタリングされているか確認
-    print(f"animes queryset: {animes}")
-    
-    # # AND検索を適用
-    # if filter_conditions:
-    #     animes = animes.filter(filter_conditions)
-    
-    # # 検索バーで入力されたキーワードでAND検索
-    # search_query = search_conditions.get('search', '')  # 検索バーの内容
-    # if search_query:
-    #     search_keywords = search_query.split()  # スペースで区切って複数のキーワードに分割
-    #     for keyword in search_keywords:
-    #         filter_conditions &= Q(title__icontains=keyword)  # 各キーワードがタイトルに含まれているアニメを検索
-    #     print(f"AND検索のキーワード: {search_keywords}")
-    
         
     print("sort_option:" + sort_option)
     
@@ -287,6 +263,9 @@ def regist_view(request):
     if user_form.is_valid():
         user_form.save()
         return redirect('anime_tracker:user_login')  # 登録成功後にログイン画面へリダイレクト
+    else:
+        # フォームのエラーをコンソールに出力
+        print("Form errors:", user_form.errors)
 
     return render(request, 'html/regist.html', context={
         'user_form': user_form,

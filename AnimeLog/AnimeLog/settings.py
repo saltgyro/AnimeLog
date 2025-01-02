@@ -35,13 +35,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'anime_tracker',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'anime_tracker',
 ]
 
 MIDDLEWARE = [
@@ -142,4 +142,4 @@ EMAIL_HOST = 'smtp.gmail.com'  # SMTPサーバー（例：Gmailの場合）
 EMAIL_PORT = 587  # ポート番号
 EMAIL_USE_TLS = True  # TLSを使用
 EMAIL_HOST_USER = 'lingmuguibo8@gmail.com'  # Gmailのメールアドレス
-EMAIL_HOST_PASSWORD = 'nYsZB4pT'  # Gmailのパスワード
+EMAIL_HOST_PASSWORD = 'solr znpx dpsc bsmy'  # Gmailのパスワード
