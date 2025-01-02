@@ -57,3 +57,20 @@ header {
 .dropdown-menu a:hover {
     background-color: #f1f1f1; /* ホバー時の背景色 */
 }
+
+/* ヘッダーのログインボタン */
+.header-btn {
+    background-color: white;
+    color: orange;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.header-btn:hover {
+    background-color: #ffcc80; /* ホバー時の背景色 */
+    cursor: pointer;
+}
