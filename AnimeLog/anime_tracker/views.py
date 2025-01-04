@@ -10,11 +10,58 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 import requests
-from django.contrib.auth.views import PasswordResetDoneView
+from django.contrib.auth.views import PasswordResetDoneView,PasswordResetView,PasswordResetCompleteView,PasswordResetConfirmView
 
-class PasswordResetDone(PasswordResetDoneView):
-    """パスワード変更用URLを送りましたページ"""
-    template_name = 'registration/password_reset_done.html'
+from django.shortcuts import render
+from django.contrib.auth.tokens import default_token_generator
+from django.urls import reverse
+from django.core.mail import send_mail
+from django.conf import settings
+from django.template.loader import render_to_string
+
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+
+
+class CustomPasswordResetView(PasswordResetView):
+    # パスワードリセットページのカスタムビュー
+    template_name = 'registration/password_reset.html'  # カスタムテンプレートを指定
+    success_url = reverse_lazy('anime_tracker:password_reset_done')  # 成功時のURLを指定
+
+    def form_valid(self, form):
+        # contextを取得
+        context = self.get_context_data(form=form)
+        context['settings'] = settings  # settingsを追加
+
+        # ここでフォームのデフォルトの動作を行います。
+        # 入力されたメールに基づきユーザーを検索し、リセット用のメールを送信する
+        response = super().form_valid(form)
+
+        # メール送信処理後、contextをレスポンスに追加
+        response.context_data = context
+        return response
+
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'registration/password_reset_confirm.html'
+
+    def get_success_url(self):
+        # パスワードリセット完了ページにリダイレクト
+        return reverse_lazy('anime_tracker:password_reset_done')
+
+class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'registration/password_reset_complete.html'  # カスタムテンプレートを指定
+
+    def get_success_url(self):
+        # 必要であれば成功後のURLを指定
+        return reverse_lazy('anime_tracker:password_reset_done')
+
+
+
+class CustomPasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'registration/password_reset_done.html'  # カスタムテンプレートを指定
+
+    
 
 def kata2hira(text):
     """

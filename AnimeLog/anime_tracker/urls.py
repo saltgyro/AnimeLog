@@ -1,6 +1,6 @@
 from django.urls import path
 from .import views
-from .views import(index,RegistUseView,UserLoginView,UserLogoutView,animeDetailView,update_status)
+from .views import(index,RegistUseView,UserLoginView,UserLogoutView,animeDetailView,update_status,CustomPasswordResetView,CustomPasswordResetDoneView,CustomPasswordResetCompleteView,CustomPasswordResetConfirmView)
 from django.contrib.auth import views as auth_views
 
 app_name = 'anime_tracker'
@@ -11,12 +11,11 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('regist/', views.regist_view, name='regist'), 
     
-    path('password_reset/', auth_views.PasswordResetView.as_view(template_name='registration/password_reset.html'), name='password_reset'),# パスワードリセット用のURLパターン
+    path('password_reset/', CustomPasswordResetView.as_view(), name='password_reset'),# パスワードリセット用のURLパターン
+    path('password_reset/done/', CustomPasswordResetDoneView.as_view(), name='password_reset_done'),# リセットリクエスト送信後に表示するページ
     
-    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='registration/password_reset_done.html'), name='password_reset_done'),# リセットリクエスト送信後に表示するページ
-    
-    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='registration/password_reset_confirm.html'), name='password_reset_confirm'),# リセット用URL（ユーザーとトークンを含む）
-    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), name='password_reset_complete'),# パスワードリセット完了後に表示されるページ
+    path('reset/<uidb64>/<token>/', CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),# リセット用URL（ユーザーとトークンを含む）
+    path('reset/done/', CustomPasswordResetCompleteView.as_view(), name='password_reset_complete'),# パスワードリセット完了後に表示されるページ
     
     
     path('user_login/',UserLoginView.as_view(),name='user_login'),#ページへ遷移
