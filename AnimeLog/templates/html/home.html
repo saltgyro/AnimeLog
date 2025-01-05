@@ -76,7 +76,7 @@
         </div>
 
         <ul class="list-unstyled">
-            <li><a href="#" class="text-decoration-none">🎭 ジャンル</a></li>
+            {% comment %} <li><a href="#" class="text-decoration-none">🎭 ジャンル</a></li>
                 <li>
                     {% for genre in genres %}
                         <button 
@@ -86,9 +86,24 @@
                             {{ genre.name }}
                         </button>
                     {% endfor %}
-                </li>
-            <li><a href="#" class="text-decoration-none">🏷 タグ</a></li>
+                </li> {% endcomment %}
+
                 <li>
+                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#genreMenu" aria-expanded="false" aria-controls="genreMenu">🎭 ジャンル</a>
+                    <div id="genreMenu" class="collapse">
+                        {% for genre in genres %}
+                            <button 
+                                class="btn btn-outline-primary genre-button" 
+                                data-type="genre" 
+                                data-id="{{ genre.id }}">
+                                {{ genre.name }}
+                            </button>
+                        {% endfor %}
+                    </div>
+                </li>
+
+            {% comment %} <li><a href="#" class="text-decoration-none">🏷 タグ</a></li> {% endcomment %}
+                {% comment %} <li>
                     {% for tag in tags %}
                         <button 
                             class="btn btn-outline-primary tag-button" 
@@ -97,9 +112,24 @@
                             {{ tag.name }}
                         </button>
                     {% endfor %}
-                </li>
-            <li><a href="#" class="text-decoration-none">📅 年代</a></li>
+                </li> {% endcomment %}
+
                 <li>
+                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#tagMenu" aria-expanded="false" aria-controls="tagMenu">🏷 タグ</a>
+                    <div id="tagMenu" class="collapse">
+                        {% for tag in tags %}
+                            <button 
+                                class="btn btn-outline-primary tag-button" 
+                                data-type="tag" 
+                                data-id="{{ tag.id }}">
+                                {{ tag.name }}
+                            </button>
+                        {% endfor %}
+                    </div>
+                </li>
+
+            {% comment %} <li><a href="#" class="text-decoration-none">📅 年代</a></li> {% endcomment %}
+                {% comment %} <li>
                     {% for season in seasons %}
                         <button 
                             class="btn btn-outline-primary season-button" 
@@ -108,9 +138,24 @@
                             {{ season.year}} 年 {{season.get_season_display }}
                         </button>
                     {% endfor %}
-                </li>
-            <li><a href="#" class="text-decoration-none">🎬 制作スタジオ</a></li>
+                </li> {% endcomment %}
+
                 <li>
+                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#seasonMenu" aria-expanded="false" aria-controls="seasonMenu">📅 年代</a>
+                    <div id="seasonMenu" class="collapse">
+                        {% for season in seasons %}
+                            <button 
+                                class="btn btn-outline-primary season-button" 
+                                data-type="season" 
+                                data-id="{{ season.id }}">
+                                {{ season.year}} 年 {{ season.get_season_display }}
+                            </button>
+                        {% endfor %}
+                    </div>
+                </li>
+
+            {% comment %} <li><a href="#" class="text-decoration-none">🎬 制作スタジオ</a></li> {% endcomment %}
+                {% comment %} <li>
                     {% for studio in studios %}
                         <button 
                             class="btn btn-outline-primary studio-button" 
@@ -119,6 +164,19 @@
                             {{ studio.name }}
                         </button>
                     {% endfor %}
+                </li> {% endcomment %}
+                <li>
+                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#studioMenu" aria-expanded="false" aria-controls="studioMenu">🎬 制作スタジオ</a>
+                    <div id="studioMenu" class="collapse">
+                        {% for studio in studios %}
+                            <button 
+                                class="btn btn-outline-primary studio-button" 
+                                data-type="studio" 
+                                data-id="{{ studio.id }}">
+                                {{ studio.name }}
+                            </button>
+                        {% endfor %}
+                    </div>
                 </li>
         </ul>
     </div>
