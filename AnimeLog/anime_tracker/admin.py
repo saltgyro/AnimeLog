@@ -83,11 +83,17 @@ class CharacterInline(admin.TabularInline):
 class SongInline(admin.TabularInline):
     model = Anime.songs.through  # ManyToManyの中間テーブルを指定
     extra = 1
+    
+# Anime-Studio中間テーブル用インライン
+class AnimeStudioInline(admin.TabularInline):
+    model = Anime_studio  # AnimeとStudioの中間テーブルを指定
+    extra = 1
+    autocomplete_fields = ['studio_id']  # studio_idを指定
 
 # Animeモデル用Adminクラス
 @admin.register(Anime)
 class AnimeAdmin(admin.ModelAdmin):
-    inlines = [AnimeGenresInline, AnimeTagsInline, AnimeSeasonsInline, CharacterInline, SongInline]  # キャラクターと曲をインラインで表示
+    inlines = [AnimeGenresInline, AnimeTagsInline, AnimeSeasonsInline, CharacterInline, SongInline,AnimeStudioInline]  # キャラクターと曲をインラインで表示
     list_display = ['title', 'start_date', 'end_date', 'episode_count']
     search_fields = ['title']
     list_filter = ['start_date', 'end_date']

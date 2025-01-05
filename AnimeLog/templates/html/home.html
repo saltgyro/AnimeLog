@@ -71,9 +71,13 @@
         </ul>
 
         <!-- リセットボタン -->
-        <div class="offcanvas-footer">
-            <button class="btn btn-danger m-3" id="reset-search">検索リセット</button>
-        </div>
+        
+        
+        <span>詳細画面</span>
+        <label class="switch">
+            <input type="checkbox" id="toggle-detail">
+            <span class="slider"></span>
+        </label>
 
         <ul class="list-unstyled">
             {% comment %} <li><a href="#" class="text-decoration-none">🎭 ジャンル</a></li>
@@ -238,12 +242,53 @@
                     {% endif %}
                     <p>{{ anime.title }}</p>
                 </a>
+
+                <div class="anime-detail" style="display: none;">
+                    <p><strong>放送開始日:</strong> {{ anime.start_date }}</p>
+                    <p><strong>放送終了日:</strong> {{ anime.end_date }}</p>
+                    <p><strong>総話数:</strong> {{ anime.episode_count }}</p>
+                    <p><strong>平均評価:</strong> {{ anime.average_rating }}</p>
+                    <p><strong>登録者数:</strong> {{ anime.watched_count }}</p>
+                    <p><strong>お気に入り数:</strong> {{ anime.favorite_count }}</p>
+                </div>
             </div>
         {% empty %}
             <p>該当するアニメはありません。</p>
         {% endfor %}
     </div>
 </div>
+
+<script>
+    // 詳細画面用のトグルボタン
+    const detailToggleButton = document.getElementById("toggle-detail");
+    const animeDetails = document.querySelectorAll('.anime-detail');
+    console.log("AA")
+    // 詳細情報の表示/非表示
+    detailToggleButton.addEventListener("change", function () {
+        if (detailToggleButton.checked) {
+            animeDetails.forEach(function(detail) {
+                detail.style.display = 'block';  // 詳細を表示
+                console.log("HEI")
+            });
+        } else {
+            animeDetails.forEach(function(detail) {
+                detail.style.display = 'none';  // 詳細を非表示
+            });
+        }
+    });
+
+    // 初期状態の設定（トグルボタンの状態に応じて表示/非表示）
+    if (detailToggleButton.checked) {
+        animeDetails.forEach(function(detail) {
+            console.log("Foo")
+            detail.style.display = 'block';  // 詳細を表示
+        });
+    } else {
+        animeDetails.forEach(function(detail) {
+            detail.style.display = 'none';  // 詳細を非表示
+        });
+    }
+</script>
 {% endblock %}
 
 

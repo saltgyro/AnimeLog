@@ -233,7 +233,10 @@ class Anime_studio(models.Model):#(アニメ-制作スタジオ中間テーブ�
     updated_at = models.DateTimeField(auto_now=True)#更新日時
     
     def __str__(self):
-        return f"{self.anime.title} - {self.studio.name}"
+        anime_title = self.anime_id.title if self.anime_id else "アニメ情報なし"
+        studio_name = self.studio_id.name if self.studio_id else "スタジオ情報なし"
+        return f"{anime_title} - {studio_name}"
+    
     
 class Genres(models.Model):#(ジャンル一覧)
     name = models.CharField(max_length=255)
