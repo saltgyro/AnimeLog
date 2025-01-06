@@ -49,4 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // リセットしたURLに遷移
         window.location.href = currentUrl.toString();  // ページ遷移
     });
+
+    
+    
 });

@@ -26,10 +26,15 @@
 
             <!-- 検索バー（home.htmlページでのみ表示） -->
             {% if request.resolver_match.view_name == 'anime_tracker:home' %}
-                <form method="get" action="{% url 'anime_tracker:home' %}" class="d-flex">
+                {% comment %} <form method="get" action="{% url 'anime_tracker:home' %}" class="d-flex">
+                    <input type="text" name="search" class="form-control" placeholder="スペースで区切って検索" value="{{ request.GET.search }}">
+                    <button type="submit" class="btn btn-primary">検索</button>
+                </form> {% endcomment %}
+                <form id="search-form" method="get" action="{% url 'anime_tracker:home' %}" class="d-flex">
                     <input type="text" name="search" class="form-control" placeholder="スペースで区切って検索" value="{{ request.GET.search }}">
                     <button type="submit" class="btn btn-primary">検索</button>
                 </form>
+                
                 
             {% endif %}
 
@@ -114,7 +119,24 @@
                     });
                 }
             });
+            // 以下が検索バー押された時に他の検索条件保持する動作
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchForm = document.getElementById('search-form');
+                searchForm.addEventListener('submit', function(e) {
+                    e.preventDefault(); // デフォルトのフォーム送信を防ぐ
             
+                    // 現在のURLを取得
+                    const url = new URL(window.location.href);
+                    const params = url.searchParams;
+            
+                    // フリーワード検索を設定
+                    const searchInput = document.querySelector('input[name="search"]').value;
+                    params.set('search', searchInput);
+            
+                    // 新しいURLにリダイレクト
+                    window.location.href = `${url.pathname}?${params.toString()}`;
+                });
+            });
             
         </script>
     </body>
