@@ -20,7 +20,9 @@
             {% if search_conditions.search %}
             <li>フリーワード検索: 
                 {% for keyword in search_conditions.search %}
-                    <span>{{ keyword }}</span>{% if not forloop.last %}, {% endif %}
+                    <span>{{ keyword }}
+                        <button class="btn btn-sm btn-danger remove-condition" data-type="search" data-value="{{ keyword }}">×</button>
+                    </span>{% if not forloop.last %}, {% endif %}
                 {% endfor %}
             </li>
             {% endif %}
@@ -30,7 +32,10 @@
                 <li>ジャンル: 
                     {% for genre in genres %}
                         {% if genre.id|stringformat:"s" in search_conditions.genre %}
-                            <span>{{ genre.name }}</span>
+                            <span>{{ genre.name }}
+                                <button class="btn btn-sm btn-danger remove-condition" data-type="genre" data-value="{{ genre.id }}">×</button>
+
+                            </span>
                         {% endif %}
                     {% endfor %}
                 </li>
@@ -41,7 +46,9 @@
                 <li>タグ: 
                     {% for tag in tags %}
                         {% if tag.id|stringformat:"s" in search_conditions.tag %}
-                            <span>{{ tag.name }}</span>
+                            <span>{{ tag.name }}
+                                <button class="btn btn-sm btn-danger remove-condition" data-type="tag" data-value="{{ tag.id }}">×</button>
+                            </span>
                         {% endif %}
                     {% endfor %}
                 </li>
@@ -52,7 +59,9 @@
                 <li>シーズン: 
                     {% for season in seasons %}
                         {% if season.id|stringformat:"s" in search_conditions.season %}
-                            <span>{{ season.year }} 年 {{ season.get_season_display }}</span>
+                            <span>{{ season.year }} 年 {{ season.get_season_display }}
+                                <button class="btn btn-sm btn-danger remove-condition" data-type="season" data-value="{{ season.id }}">×</button>
+                            </span>
                         {% endif %}
                     {% endfor %}
                 </li>
@@ -63,7 +72,9 @@
                 <li>スタジオ: 
                     {% for studio in studios %}
                         {% if studio.id|stringformat:"s" in search_conditions.studio %}
-                            <span>{{ studio.name }}</span>
+                            <span>{{ studio.name }}
+                                <button class="btn btn-sm btn-danger remove-condition" data-type="studio" data-value="{{ studio.id }}">×</button>
+                            </span>
                         {% endif %}
                     {% endfor %}
                 </li>
@@ -272,6 +283,41 @@
             detail.style.display = 'none';  // 詳細を非表示
         });
     }
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        // 全ての "remove-condition" ボタンにクリックイベントを追加
+        const buttons = document.querySelectorAll(".remove-condition");
+        buttons.forEach(button => {
+            button.addEventListener("click", function(event) {
+                event.preventDefault(); // デフォルトのリンク動作を防ぐ
+                
+                // ボタンから条件タイプと値を取得
+                const type = this.getAttribute("data-type");
+                const value = this.getAttribute("data-value");
+
+                // 現在のURLを取得してクエリパラメータを操作
+                const url = new URL(window.location.href);
+                const params = url.searchParams;
+
+                // 該当する条件を削除
+                const values = params.getAll(type); // すべての値を取得
+                params.delete(type); // まずそのパラメータを削除
+                values.forEach(val => {
+                    if (val !== value) { // 削除対象以外を再追加
+                        params.append(type, val);
+                    }
+                });
+
+                // 新しいURLにリダイレクト
+                window.location.href = url.toString();
+            });
+        });
+    });
+    
+    
+
+    
+
 </script>
 {% endblock %}
 
