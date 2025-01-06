@@ -1,0 +1,34 @@
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #FDF5C1; /* 背景色を薄い黄色に設定 */
+    padding: 10px;
+    border: 1px solid #D6B65A; /* 境界線を黄色系に設定 */
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.pagination a,
+.pagination span {
+    display: inline-block;
+    text-align: center;
+    padding: 5px 10px;
+    margin: 0 5px;
+    border: 1px solid #555; /* ボーダーの色 */
+    border-radius: 5px;
+    color: #000; /* テキストの色 */
+    text-decoration: none; /* 下線を消す */
+    background-color: #FAE6B2; /* ボタンの背景色 */
+    font-size: 14px;
+}
+
+.pagination a:hover {
+    background-color: #FFD966; /* ホバー時の背景色 */
+}
+
+.pagination .active {
+    font-weight: bold; /* 現在のページを太字に */
+    background-color: #FFE89A; /* 現在のページの背景色 */
+    border-color: #D6B65A; /* 現在のページのボーダー色 */
+}

@@ -26,6 +26,4 @@ urlpatterns = [
     path('update_status/', views.update_status, name='update_status'), 
     path('update_rating/', views.update_rating, name='update_rating'),
     path('search/', views.search_view, name='search'),  # 検索用URL
-    
-    
 ]

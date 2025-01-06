@@ -21,6 +21,7 @@ from django.template.loader import render_to_string
 
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
+from django.core.paginator import Paginator
 
 
 class CustomPasswordResetView(PasswordResetView):
@@ -291,9 +292,14 @@ def home(request):
     # アニメのリストを取得
     animes = get_animes(request, status, sort_option, search_conditions)
     
+    # ページネーションの設定
+    paginator = Paginator(animes, 24)  # 1ページに表示するアイテム数
+    page_number = request.GET.get('page')  # 現在のページ番号
+    page_obj = paginator.get_page(page_number)  # 該当のページを取得
     
 
     return render(request, 'html/home.html', {
+        'page_obj': page_obj,
         'animes': animes,
         'genres': genres,
         'tags': tags,

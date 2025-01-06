@@ -80,17 +80,7 @@
         </label>
 
         <ul class="list-unstyled">
-            {% comment %} <li><a href="#" class="text-decoration-none">🎭 ジャンル</a></li>
-                <li>
-                    {% for genre in genres %}
-                        <button 
-                            class="btn btn-outline-primary genre-button" 
-                            data-type="genre" 
-                            data-id="{{ genre.id }}">
-                            {{ genre.name }}
-                        </button>
-                    {% endfor %}
-                </li> {% endcomment %}
+            
 
                 <li>
                     <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#genreMenu" aria-expanded="false" aria-controls="genreMenu">🎭 ジャンル</a>
@@ -106,17 +96,7 @@
                     </div>
                 </li>
 
-            {% comment %} <li><a href="#" class="text-decoration-none">🏷 タグ</a></li> {% endcomment %}
-                {% comment %} <li>
-                    {% for tag in tags %}
-                        <button 
-                            class="btn btn-outline-primary tag-button" 
-                            data-type="tag" 
-                            data-id="{{ tag.id }}">
-                            {{ tag.name }}
-                        </button>
-                    {% endfor %}
-                </li> {% endcomment %}
+            
 
                 <li>
                     <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#tagMenu" aria-expanded="false" aria-controls="tagMenu">🏷 タグ</a>
@@ -132,17 +112,7 @@
                     </div>
                 </li>
 
-            {% comment %} <li><a href="#" class="text-decoration-none">📅 年代</a></li> {% endcomment %}
-                {% comment %} <li>
-                    {% for season in seasons %}
-                        <button 
-                            class="btn btn-outline-primary season-button" 
-                            data-type="season" 
-                            data-id="{{ season.id }}">
-                            {{ season.year}} 年 {{season.get_season_display }}
-                        </button>
-                    {% endfor %}
-                </li> {% endcomment %}
+            
 
                 <li>
                     <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#seasonMenu" aria-expanded="false" aria-controls="seasonMenu">📅 年代</a>
@@ -158,17 +128,7 @@
                     </div>
                 </li>
 
-            {% comment %} <li><a href="#" class="text-decoration-none">🎬 制作スタジオ</a></li> {% endcomment %}
-                {% comment %} <li>
-                    {% for studio in studios %}
-                        <button 
-                            class="btn btn-outline-primary studio-button" 
-                            data-type="studio" 
-                            data-id="{{ studio.id }}">
-                            {{ studio.name }}
-                        </button>
-                    {% endfor %}
-                </li> {% endcomment %}
+                
                 <li>
                     <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#studioMenu" aria-expanded="false" aria-controls="studioMenu">🎬 制作スタジオ</a>
                     <div id="studioMenu" class="collapse">
@@ -187,10 +147,6 @@
 </div>
 
 <div class="filters">
-    {% comment %} <a href="{% url 'anime_tracker:home' %}?status=not_in_list" 
-    class="btn btn-primary filter-btn {% if request.GET.status == 'not_in_list' %}selected{% endif %}">
-    全作品
-    </a> {% endcomment %}
     <a href="{% url 'anime_tracker:home' %}?status=not_in_list" 
     class="btn btn-primary filter-btn {% if request.GET.status != 'watched' and request.GET.status != 'favorite' and request.GET.status != 'plan_to_watch' %}selected{% endif %}">
     全作品
@@ -232,7 +188,7 @@
 
 <div class="search-results">
     <div class="anime-list">
-        {% for anime in animes %}
+        {% for anime in page_obj %}
             <div class="anime-item">
                 <a href="{% url 'anime_tracker:anime_detail' anime.id %}">
                     {% if anime.thumbnail %}
@@ -256,7 +212,33 @@
             <p>該当するアニメはありません。</p>
         {% endfor %}
     </div>
+    
+    
+    <!-- ページネーション -->
+    <div class="pagination">
+        <!-- 最初のページへのリンク -->
+        {% if page_obj.has_previous %}
+            <a href="?page=1" class="first-page">«</a>
+            <a href="?page={{ page_obj.previous_page_number }}" class="prev-page">＜前のページ</a>
+        {% endif %}
+    
+        <!-- ページ番号のループ -->
+        {% for num in page_obj.paginator.page_range %}
+            {% if num == page_obj.number %}
+                <span class="page-number active">{{ num }}</span> <!-- 現在のページは強調表示 -->
+            {% else %}
+                <a href="?page={{ num }}" class="page-number">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+    
+        <!-- 次のページへのリンク -->
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="next-page">次のページ＞</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="last-page">»</a>
+        {% endif %}
+    </div>
 </div>
+
 
 <script>
     // 詳細画面用のトグルボタン
