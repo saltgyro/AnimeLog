@@ -120,114 +120,315 @@ class RegistUseView(CreateView):
     success_url = reverse_lazy('anime:home')
 
 # アニメのリストを取得し、フィルタリング、並び替えを行う共通メソッド
-def get_animes(request, status, sort_option,search_conditions):
-    user_anime_ids = User_anime_relations.objects.filter(user_id=request.user.id).values_list('anime_id', flat=True)
+# def get_animes(request, status, sort_option,search_conditions):
+#     user_anime_ids = User_anime_relations.objects.filter(user_id=request.user.id).values_list('anime_id', flat=True)
     
     
-    # ステータスごとのフィルタリング
-    if status == 'watched':  # 視聴済
-        animes = Anime.objects.filter(user_anime_relations__status=2, user_anime_relations__user_id=request.user.id)
-        print('視聴済')
-    elif status == 'favorite':  # お気に入り
-        animes = Anime.objects.filter(user_anime_relations__is_favorite=True, user_anime_relations__user_id=request.user.id)
-        print('お気に入り')
-    elif status == 'plan_to_watch':  # 視聴予定
-        animes = Anime.objects.filter(user_anime_relations__status=1, user_anime_relations__user_id=request.user.id)
-        print('視聴予定')
-    elif status == 'not_in_list':  # リスト外
-        animes = Anime.objects.all()
-        print('リスト外')
-    else:  # 無効なステータスの場合、全て非表示
-        animes = Anime.objects.all()
-        print('全て非表示')
+#     # ステータスごとのフィルタリング
+#     if status == 'watched':  # 視聴済
+#         animes = Anime.objects.filter(user_anime_relations__status=2, user_anime_relations__user_id=request.user.id)
+#         print('視聴済')
+#     elif status == 'favorite':  # お気に入り
+#         animes = Anime.objects.filter(user_anime_relations__is_favorite=True, user_anime_relations__user_id=request.user.id)
+#         print('お気に入り')
+#     elif status == 'plan_to_watch':  # 視聴予定
+#         animes = Anime.objects.filter(user_anime_relations__status=1, user_anime_relations__user_id=request.user.id)
+#         print('視聴予定')
+#     elif status == 'not_in_list':  # リスト外
+#         animes = Anime.objects.all()
+#         print('リスト外')
+#     else:  # 無効なステータスの場合、全て非表示
+#         animes = Anime.objects.all()
+#         print('全て非表示')
 
     
 
 
-    # 検索条件の追加
-    # AND検索のために条件をまとめる
-    filter_conditions = Q()
+#     # 検索条件の追加
+#     # AND検索のために条件をまとめる
+#     filter_conditions = Q()
     
-    # 検索キーワードに対してAND検索を行う
-    if search_conditions.get('search'):
-        search_keywords = search_conditions['search']
-        for keyword in search_keywords:
-            # タイトル検索（タイトルにキーワードが含まれている場合）
-            filter_conditions &= Q(title__icontains=keyword)
+#     # 検索キーワードに対してAND検索を行う
+#     if search_conditions.get('search'):
+#         search_keywords = search_conditions['search']
+#         for keyword in search_keywords:
+#             # タイトル検索（タイトルにキーワードが含まれている場合）
+#             filter_conditions &= Q(title__icontains=keyword)
 
-            # 他のテーブル（ジャンル、タグ、キャラクター、ソング、声優、アーティストなど）にも適用
-            genres = Genres.objects.filter(name__icontains=keyword)
-            tags = Tags.objects.filter(name__icontains=keyword)
-            characters = Character.objects.filter(name__icontains=keyword)
-            voice_actors = VoiceActor.objects.filter(name__icontains=keyword)
-            songs = Song.objects.filter(title__icontains=keyword)
-            artists = Artist.objects.filter(name__icontains=keyword)
+#             # 他のテーブル（ジャンル、タグ、キャラクター、ソング、声優、アーティストなど）にも適用
+#             genres = Genres.objects.filter(name__icontains=keyword)
+#             tags = Tags.objects.filter(name__icontains=keyword)
+#             characters = Character.objects.filter(name__icontains=keyword)
+#             voice_actors = VoiceActor.objects.filter(name__icontains=keyword)
+#             songs = Song.objects.filter(title__icontains=keyword)
+#             artists = Artist.objects.filter(name__icontains=keyword)
 
 
 
-    # フィルタリングを適用
-    animes = animes.filter(filter_conditions)
+#     # フィルタリングを適用
+#     animes = animes.filter(filter_conditions)
                                 
     
     
 
-    # ジャンル検索
-    if search_conditions.get('genre'):
-        filter_conditions &= Q(genres__id__in=search_conditions['genre'])
-        print(f"ジャンルフィルタ: {filter_conditions}")
+#     # ジャンル検索
+#     if search_conditions.get('genre'):
+#         filter_conditions &= Q(genres__id__in=search_conditions['genre'])
+#         print(f"ジャンルフィルタ: {filter_conditions}")
     
-    # タグ検索
-    if search_conditions.get('tag'):
-        filter_conditions &= Q(tags__id__in=search_conditions['tag'])
-        print(f"タグフィルタ: {filter_conditions}")
+#     # タグ検索
+#     if search_conditions.get('tag'):
+#         filter_conditions &= Q(tags__id__in=search_conditions['tag'])
+#         print(f"タグフィルタ: {filter_conditions}")
     
-    # シーズン検索
-    if search_conditions.get('season'):
-        filter_conditions &= Q(seasons__id__in=search_conditions['season'])
-        print(f"シーズンフィルタ: {filter_conditions}")
+#     # シーズン検索
+#     if search_conditions.get('season'):
+#         filter_conditions &= Q(seasons__id__in=search_conditions['season'])
+#         print(f"シーズンフィルタ: {filter_conditions}")
     
-    # スタジオ検索
-    if search_conditions.get('studio'):
-        filter_conditions &= Q(studios__id__in=search_conditions['studio'])
-        print(f"スタジオフィルタ: {filter_conditions}")
+#     # スタジオ検索
+#     if search_conditions.get('studio'):
+#         filter_conditions &= Q(studios__id__in=search_conditions['studio'])
+#         print(f"スタジオフィルタ: {filter_conditions}")
 
-    # デバッグ: filter_conditionsが正しく設定されているか確認
-    print(f"filter_conditions: {filter_conditions}")
+#     # デバッグ: filter_conditionsが正しく設定されているか確認
+#     print(f"filter_conditions: {filter_conditions}")
     
-    # フィルタリングを適用
-    animes = animes.filter(filter_conditions)
+#     # フィルタリングを適用
+#     animes = animes.filter(filter_conditions)
 
         
-    print("sort_option:" + sort_option)
+#     print("sort_option:" + sort_option)
     
-    # 並び順の適用
+#     # 並び順の適用
+#     if sort_option == 'average_rating':
+#         animes = animes.order_by('-average_rating')
+#         print('平均評価が高い')
+#     elif sort_option == 'season-asc':
+#         animes = animes.order_by('start_date')  # 古い順
+#         print('古い順')
+#     elif sort_option == 'season-desc':
+#         animes = animes.order_by('-start_date')  # 新しい順
+#         print('新しい順')
+#     elif sort_option == 'watched_count-desc':
+#         animes = animes.order_by('-watched_count')
+#         print('登録数')
+#     else:
+#         animes = animes.order_by('-start_date')  # デフォルトでは新しい順
+#         print('外：新しい順')
+
+
+#     # 重複を排除
+#     animes = animes.distinct()
+
+#     # 重複を手動で排除（Python側で重複を取り除く）
+#     unique_animes = {}
+#     for anime in animes:
+#         unique_animes[anime.id] = anime
+
+#     # 重複を排除したアニメリストを返す
+#     return list(unique_animes.values())
+
+from collections import defaultdict
+
+import re
+
+
+def preprocess_keywords(search_query):
+    """
+    検索キーワードをスペース（全角・半角）で分割し、カタカナをひらがなに変換する関数。
+    """
+    if isinstance(search_query, list):
+        # リストの場合、空白で結合して文字列に変換
+        search_query = " ".join(search_query)
+    
+    # 全角スペースと半角スペースを正規表現で統一して分割
+    keywords = re.split(r'\s+', search_query.replace('\u3000', ' ').strip())
+    # カタカナをひらがなに変換
+    keywords = [kata2hira(keyword) for keyword in keywords if keyword]  # 空のキーワードを除外
+    return keywords
+
+
+
+# def get_animes(request, status, sort_option, search_conditions):
+#     user_anime_ids = User_anime_relations.objects.filter(user_id=request.user.id).values_list('anime_id', flat=True)
+
+#     # ステータスによるフィルタリング
+#     if status == 'watched':
+#         animes = Anime.objects.filter(user_anime_relations__status=2, user_anime_relations__user_id=request.user.id)
+#     elif status == 'favorite':
+#         animes = Anime.objects.filter(user_anime_relations__is_favorite=True, user_anime_relations__user_id=request.user.id)
+#     elif status == 'plan_to_watch':
+#         animes = Anime.objects.filter(user_anime_relations__status=1, user_anime_relations__user_id=request.user.id)
+#     elif status == 'not_in_list':
+#         animes = Anime.objects.all()
+#     else:
+#         animes = Anime.objects.none()
+
+#     # 検索キーワードの処理
+#     if search_conditions.get('search'):
+#         search_keywords = preprocess_keywords(search_conditions['search'])  # キーワードを取得
+        
+#         print(f"検索キーワード: {search_keywords}")
+        
+#         # 検索結果を格納する辞書
+#         search_results = defaultdict(set)
+
+#         for keyword in search_keywords:
+#             print(f"キーワード: {keyword}")
+
+#             # 各検索項目の結果を確認
+#             title_results = Anime.objects.filter(title__icontains=keyword).values_list('id', flat=True)
+#             print(f"タイトルヒット: {list(title_results)}")
+
+#             genre_results = Anime.objects.filter(genres__name__icontains=keyword).values_list('id', flat=True)
+#             print(f"ジャンルヒット: {list(genre_results)}")
+
+#             tag_results = Anime.objects.filter(tags__name__icontains=keyword).values_list('id', flat=True)
+#             print(f"タグヒット: {list(tag_results)}")
+
+#             character_results = Anime.objects.filter(characters__name__icontains=keyword).values_list('id', flat=True)
+#             print(f"キャラクターヒット: {list(character_results)}")
+
+#             voice_actor_results = Anime.objects.filter(characters__voice_actor__name__icontains=keyword).values_list('id', flat=True)
+#             print(f"声優ヒット: {list(voice_actor_results)}")
+
+
+#         # 検索結果のマージ
+#         all_results = set()
+#         for key, anime_ids in search_results.items():
+#             print(f"{key}でヒットしたアニメ: {anime_ids}")
+#             all_results.update(anime_ids)
+
+#         # 結果をフィルタリング
+#         animes = animes.filter(id__in=all_results)
+#         print(f"フィルタリング後のアニメ数: {animes.count()}")
+
+#     # 並び順の適用
+#     if sort_option == 'average_rating':
+#         animes = animes.order_by('-average_rating')
+#     elif sort_option == 'season-asc':
+#         animes = animes.order_by('start_date')
+#     elif sort_option == 'season-desc':
+#         animes = animes.order_by('-start_date')
+#     elif sort_option == 'watched_count-desc':
+#         animes = animes.order_by('-watched_count')
+#     else:
+#         animes = animes.order_by('-start_date')
+
+#     # 重複を排除
+#     return animes.distinct()
+
+def get_animes(request, status, sort_option, search_conditions):
+    user_anime_ids = User_anime_relations.objects.filter(user_id=request.user.id).values_list('anime_id', flat=True)
+
+    # ステータスによる基礎データセットの定義
+    if status == 'watched':
+        base_animes = Anime.objects.filter(user_anime_relations__status=2, user_anime_relations__user_id=request.user.id)
+    elif status == 'favorite':
+        base_animes = Anime.objects.filter(user_anime_relations__is_favorite=True, user_anime_relations__user_id=request.user.id)
+    elif status == 'plan_to_watch':
+        base_animes = Anime.objects.filter(user_anime_relations__status=1, user_anime_relations__user_id=request.user.id)
+    elif status == 'not_in_list':
+        base_animes = Anime.objects.all()
+    else:
+        base_animes = Anime.objects.none()
+#====================================================================================================================
+    # 検索の基礎データセットとしてベースを設定
+    animes = base_animes
+
+    # **ジャンル検索**
+    if search_conditions.get('genre'):
+        genre_ids = search_conditions['genre']  # 選択されたジャンルIDリスト
+        print(f"ジャンル検索: {genre_ids}")
+
+        # ジャンルIDごとに順次フィルタリング（累積適用）
+        for genre_id in genre_ids:
+            print(f"ジャンルID {genre_id} でフィルタリング")
+            animes = animes.filter(genres__id=genre_id)  # 現在の `animes` に対してさらに絞り込む
+            print(f"ジャンルID {genre_id} での検索結果: {animes.count()}")
+
+        print(f"最終ジャンル検索後のアニメ数: {animes.count()}")
+
+    # **タグ検索**
+    if search_conditions.get('tag'):
+        tag_ids = search_conditions['tag']  # 選択されたタグIDリスト
+        print(f"タグ検索: {tag_ids}")
+
+        # タグIDごとに順次フィルタリング（累積適用）
+        for tag_id in tag_ids:
+            print(f"タグID {tag_id} でフィルタリング")
+            animes = animes.filter(tags__id=tag_id)  # 現在の `animes` に対してさらに絞り込む
+            print(f"タグID {tag_id} での検索結果: {animes.count()}")
+
+        print(f"最終タグ検索後のアニメ数: {animes.count()}")
+
+    # **シーズン検索**
+    if search_conditions.get('season'):
+        season_ids = search_conditions['season']  # 選択されたシーズンIDリスト
+        print(f"シーズン検索: {season_ids}")
+
+        # シーズンIDごとに順次フィルタリング（累積適用）
+        for season_id in season_ids:
+            print(f"シーズンID {season_id} でフィルタリング")
+            animes = animes.filter(seasons__id=season_id)  # 現在の `animes` に対してさらに絞り込む
+            print(f"シーズンID {season_id} での検索結果: {animes.count()}")
+
+        print(f"最終シーズン検索後のアニメ数: {animes.count()}")
+
+    # **スタジオ検索**
+    if search_conditions.get('studio'):
+        studio_ids = search_conditions['studio']  # 選択されたスタジオIDリスト
+        print(f"スタジオ検索: {studio_ids}")
+
+        # スタジオIDごとに順次フィルタリング（累積適用）
+        for studio_id in studio_ids:
+            print(f"スタジオID {studio_id} でフィルタリング")
+            animes = animes.filter(studios__id=studio_id)  # 現在の `animes` に対してさらに絞り込む
+            print(f"スタジオID {studio_id} での検索結果: {animes.count()}")
+
+        print(f"最終スタジオ検索後のアニメ数: {animes.count()}")
+
+#====================================================================================================================
+
+    # **キーワード検索**
+    if search_conditions.get('search'):
+        search_keywords = preprocess_keywords(search_conditions['search'])  # キーワードを取得
+        print(f"キーワード検索: {search_keywords}")
+        
+        # キーワード検索用の条件を作成
+        keyword_conditions = Q()
+        for keyword in search_keywords:
+            keyword_conditions |= Q(title__icontains=keyword)
+            keyword_conditions |= Q(genres__name__icontains=keyword)
+            keyword_conditions |= Q(tags__name__icontains=keyword)
+            keyword_conditions |= Q(characters__name__icontains=keyword)
+            keyword_conditions |= Q(characters__voice_actor__name__icontains=keyword)
+            keyword_conditions |= Q(songs__title__icontains=keyword)
+            keyword_conditions |= Q(songs__artist__name__icontains=keyword)
+
+        animes = base_animes.filter(keyword_conditions)  # ベースデータからフィルタリング
+        print(f"キーワード検索後のアニメ数: {animes.count()}")
+
+#====================================================================================================================
+    # **並び順の適用**
     if sort_option == 'average_rating':
         animes = animes.order_by('-average_rating')
-        print('平均評価が高い')
     elif sort_option == 'season-asc':
-        animes = animes.order_by('start_date')  # 古い順
-        print('古い順')
+        animes = animes.order_by('start_date')
     elif sort_option == 'season-desc':
-        animes = animes.order_by('-start_date')  # 新しい順
-        print('新しい順')
+        animes = animes.order_by('-start_date')
     elif sort_option == 'watched_count-desc':
         animes = animes.order_by('-watched_count')
-        print('登録数')
     else:
-        animes = animes.order_by('-start_date')  # デフォルトでは新しい順
-        print('外：新しい順')
-
+        animes = animes.order_by('-start_date')
 
     # 重複を排除
-    animes = animes.distinct()
+    return animes.distinct()
 
-    # 重複を手動で排除（Python側で重複を取り除く）
-    unique_animes = {}
-    for anime in animes:
-        unique_animes[anime.id] = anime
 
-    # 重複を排除したアニメリストを返す
-    return list(unique_animes.values())
+    
+
 
 
 def index(request):
