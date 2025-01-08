@@ -392,23 +392,20 @@ def get_animes(request, status, sort_option, search_conditions):
 #====================================================================================================================
 
     # **キーワード検索**
+    # **キーワード検索**
     if search_conditions.get('search'):
         search_keywords = preprocess_keywords(search_conditions['search'])  # キーワードを取得
         print(f"キーワード検索: {search_keywords}")
-        
+
         # キーワード検索用の条件を作成
         keyword_conditions = Q()
         for keyword in search_keywords:
-            keyword_conditions |= Q(title__icontains=keyword)
-            keyword_conditions |= Q(genres__name__icontains=keyword)
-            keyword_conditions |= Q(tags__name__icontains=keyword)
-            keyword_conditions |= Q(characters__name__icontains=keyword)
-            keyword_conditions |= Q(characters__voice_actor__name__icontains=keyword)
-            keyword_conditions |= Q(songs__title__icontains=keyword)
-            keyword_conditions |= Q(songs__artist__name__icontains=keyword)
+            keyword_conditions |= Q(final_search_keyword__icontains=keyword)
 
-        animes = base_animes.filter(keyword_conditions)  # ベースデータからフィルタリング
+        # フィルタリング済みの `animes` にさらに適用
+        animes = animes.filter(keyword_conditions)
         print(f"キーワード検索後のアニメ数: {animes.count()}")
+
 
 #====================================================================================================================
     # **並び順の適用**

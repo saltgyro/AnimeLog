@@ -92,7 +92,7 @@ class Song(models.Model):
     SONG_CHOICES = [
         (0, 'OP'),      # 0がオープニング
         (1, 'ED'),      # 1がエンディング
-        (2, 'Insert'),  # 2が挿入歌
+        (2, '挿入歌'),  # 2が挿入歌
     ]
     title = models.CharField(max_length=255)  # 曲名
     song_type = models.IntegerField(choices=SONG_CHOICES, default=0)  # 曲のタイプ
