@@ -49,7 +49,7 @@ button[disabled] {
     width: 65%; /* 右側のアニメ情報部分は全体の2/3 */
 }
 
-.anime-info h1 {
+.anime-info h2 {
     font-size: 2em;
     margin-bottom: 20px;
 }
@@ -117,3 +117,4 @@ ul li {
     align-items: center; /* サムネイルとタイトルを中央揃えにする */
     text-align: center; /* タイトルを中央揃え */
 }
+

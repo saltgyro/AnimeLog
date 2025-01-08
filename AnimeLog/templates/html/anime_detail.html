@@ -20,7 +20,7 @@
 
     <!-- 右側: アニメ情報 -->
     <div class="anime-info">
-        <h1>{{ anime.title }}</h1>
+        <h2>{{ anime.title }}</h2>
         <div class="buttons">
             <!-- 視聴済ボタン -->
             <button id="watched-btn" data-anime-id="{{ anime.id }}" data-status="watched" {% if not user.is_authenticated %}disabled{% endif %} class="{% if user_relation and user_relation.is_watched %}btn-active{% else %}btn-inactive{% endif %}">
@@ -48,10 +48,16 @@
             <button id="rating-submit" data-anime-id="{{ anime.id }}">評価を更新</button>
         </div>
 
-        <p><strong>あらすじ:</strong> {{ anime.synopsis }}</p>
+        {% if anime.synopsis %}
+            <p><strong>あらすじ:</strong> {{ anime.synopsis }}</p>
+        {% endif %}
         <p><strong>放送開始日:</strong> {{ anime.start_date }}</p>
-        <p><strong>放送終了日:</strong> {{ anime.end_date }}</p>
-        <p><strong>総話数:</strong> {{ anime.episode_count }}</p>
+        {% if anime.end_date %}
+            <p><strong>放送終了日:</strong> {{ anime.end_date }}</p>
+        {% endif %}
+        {% if anime.episode_count > 0 %}
+            <p><strong>総話数:</strong> {{ anime.episode_count }}</p>
+        {% endif %}
         <p><strong>平均評価:</strong> {{ anime.average_rating }}</p>
         <p><strong>登録者数:</strong> {{ anime.watched_count }}</p>
         <p><strong>お気に入り数:</strong> {{ anime.favorite_count }}</p>

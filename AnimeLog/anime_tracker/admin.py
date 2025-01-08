@@ -90,11 +90,32 @@ class AnimeStudioInline(admin.TabularInline):
     extra = 1
     autocomplete_fields = ['studio_id']  # studio_idを指定
 
-# Animeモデル用Adminクラス
 @admin.register(Anime)
 class AnimeAdmin(admin.ModelAdmin):
-    inlines = [AnimeGenresInline, AnimeTagsInline, AnimeSeasonsInline, CharacterInline, SongInline,AnimeStudioInline]  # キャラクターと曲をインラインで表示
+    inlines = [AnimeGenresInline, AnimeTagsInline, AnimeSeasonsInline, CharacterInline, SongInline, AnimeStudioInline]  # インライン表示
+
+    # 一覧表示で表示するフィールド
     list_display = ['title', 'start_date', 'end_date', 'episode_count']
-    search_fields = ['title']
+    
+    # 検索対象のフィールド
+    search_fields = ['title', 'manual_keyword']
+    
+    # フィルタリング対象のフィールド
     list_filter = ['start_date', 'end_date']
-    readonly_fields = ['average_rating', 'watched_count', 'favorite_count']  # 編集禁止のフィールド
+    
+    # 読み取り専用フィールド
+    readonly_fields = ['average_rating', 'watched_count', 'favorite_count']
+    
+    # 管理画面で編集可能なフィールド（ManyToManyFieldを除外）
+    fields = [
+        'series_id',
+        'title', 
+        'synopsis', 
+        'start_date', 
+        'end_date', 
+        'episode_count', 
+        'thumbnail', 
+        'characters',  # ManyToManyFieldではないのでそのまま使える
+        'songs',       # 同上
+        'manual_keyword',  # 手動キーワードフィールド
+    ]

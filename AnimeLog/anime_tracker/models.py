@@ -116,9 +116,11 @@ class Anime(models.Model):
     favorite_count = models.IntegerField(null=True, blank=True, default=0)#お気に入りの数
     created_at = models.DateTimeField(auto_now_add=True)#登録日時
     updated_at = models.DateTimeField(auto_now=True)#更新日時
-    
     characters = models.ManyToManyField('Character', related_name='animes', blank=True)  # キャラクター
     songs = models.ManyToManyField('Song', related_name='animes', blank=True)  # 曲
+    auto_search_keyword = models.TextField(blank=True, null=True)  # 自動生成された検索キーワード
+    manual_keyword = models.TextField(blank=True, null=True)  # 手動で追加されたキーワード
+    final_search_keyword = models.TextField(blank=True, null=True)  # 最終的に検索に使用されるキーワード
     
     genres = models.ManyToManyField(
         'Genres',
@@ -146,6 +148,33 @@ class Anime(models.Model):
     
     def __str__(self):
         return self.title
+    
+    def save(self, *args, **kwargs):
+        # **自動生成されたキーワードを作成**
+        auto_keyword = [self.title]  # タイトルを追加
+        if self.synopsis:
+            auto_keyword.append(self.synopsis)  # シナリオを追加
+
+        if self.pk:  # オブジェクトが既に存在する場合
+            # 関連ジャンル、タグ、シーズン、スタジオの名前を追加
+            auto_keyword.extend([genre.name for genre in self.genres.all()])
+            auto_keyword.extend([tag.name for tag in self.tags.all()])
+            auto_keyword.extend([f"{season.year} {season.get_season_display()}" for season in self.seasons.all()])
+            auto_keyword.extend([studio.name for studio in self.studios.all()])
+
+        # 重複排除と結合
+        self.auto_search_keyword = ' '.join(set(auto_keyword))
+
+        # **最終検索キーワードを作成**
+        final_keywords = set(auto_keyword)  # 自動生成キーワードをセットに変換
+        if self.manual_keyword:
+            final_keywords.update(self.manual_keyword.split())  # 手動キーワードを追加
+            
+        self.final_search_keyword = ' '.join(final_keywords)
+
+        # **保存**
+        super().save(*args, **kwargs)
+
 
 class User_anime_relations(models.Model):#ユーザーのアニメの視聴管理
     user_id = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='user_anime_relations', null=True, blank=True)
