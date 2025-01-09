@@ -550,7 +550,7 @@ def user_edit(request):
 
 #アニメ詳細画面で追加
 @login_required
-def update_status(request):
+def update_status(request, pk):
     print('update_statusが呼び出された')
     if request.method == "POST":
         # 生のリクエストボディを出力
@@ -558,13 +558,13 @@ def update_status(request):
         try:
             # JSONデータを読み取る
             data = json.loads(request.body)  # リクエストボディをJSONとして解析
-            anime_id = data.get('anime_id')  # JSONからアニメIDを取得
+            # anime_id = data.get('anime_id')  # JSONからアニメIDを取得
             status = data.get('status')      # JSONからステータスを取得
 
-            print(f"アニメID: {anime_id}")
-            print(f"ステータス: {status}")
             
-            anime = get_object_or_404(Anime, id=anime_id)
+            print(f"ステータス: {status}")
+            anime = get_object_or_404(Anime, id=pk)
+            # anime = get_object_or_404(Anime, id=anime_id)
             user = request.user
             print(f"リクエストユーザー: {user.nickname}")
             # デバッグ用の出力
@@ -610,6 +610,7 @@ def animeDetailView(request, pk):
 
 #ユーザー評価入力
 def update_rating(request):
+    print("update_rating")
     if request.method == "POST":
         try:
             data = json.loads(request.body)

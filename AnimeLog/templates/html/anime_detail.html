@@ -21,26 +21,77 @@
     <!-- 右側: アニメ情報 -->
     <div class="anime-info">
         <h2>{{ anime.title }}</h2>
-        <div class="buttons">
+        {% comment %} <div class="buttons">
+            <!-- デバッグ用: user_relation を出力 -->
+            <p>デバッグ: {{ user_relation }}</p>
+            <p>デバッグ: {{ user_relation }}</p>
+
+
             <!-- 視聴済ボタン -->
-            <button id="watched-btn" data-anime-id="{{ anime.id }}" data-status="watched" {% if not user.is_authenticated %}disabled{% endif %} class="{% if user_relation and user_relation.is_watched %}btn-active{% else %}btn-inactive{% endif %}">
+            <button id="watched-btn" data-anime-id="{{ anime.id }}" data-status="watched"
+            class="{% if user_relation and user_relation.status == 2 %}btn-active{% else %}btn-inactive{% endif %}">
                 視聴済
             </button>
 
+
             <!-- お気に入りボタン -->
-            <button id="favorite-btn" data-anime-id="{{ anime.id }}" data-status="favorite" {% if not user.is_authenticated or not user_relation or not user_relation.is_watched %}disabled{% endif %} class="{% if user_relation and user_relation.is_favorite %}btn-active{% else %}btn-inactive{% endif %}">
+            <button id="favorite-btn" data-anime-id="{{ anime.id }}" data-status="favorite"
+                    {% if not user.is_authenticated or user_relation.status != 2 %}disabled{% endif %}
+                    class="{% if user_relation and user_relation.is_favorite %}btn-active{% else %}btn-inactive{% endif %}">
                 お気に入り
             </button>
 
+
+
             <!-- 視聴予定ボタン -->
-            <button id="plan-to-watch-btn" data-anime-id="{{ anime.id }}" data-status="plan_to_watch" {% if not user.is_authenticated %}disabled{% endif %} class="{% if user_relation and user_relation.is_plan_to_watch %}btn-active{% else %}btn-inactive{% endif %}">
+            <button id="plan-to-watch-btn" data-anime-id="{{ anime.id }}" data-status="plan_to_watch"
+            class="{% if user_relation and user_relation.status == 1 %}btn-active{% else %}btn-inactive{% endif %}">
                 視聴予定
             </button>
+
 
             {% if not user.is_authenticated %}
                 <p>これらの機能を利用するにはログインしてください。</p>
             {% endif %}
+        </div> {% endcomment %}
+        <div class="buttons">
+            <!-- 視聴済ボタン -->
+            <button id="watched-btn"
+                    data-anime-id="{{ anime.id }}"
+                    data-status="watched"
+                    {% if not user.is_authenticated %}disabled{% endif %}
+                    class="{% if user_relation and user_relation.is_watched %}btn-active{% else %}btn-inactive{% endif %}"
+                    onclick="toggleStatus('{{ anime.id }}', 'watched', this)">
+                視聴済
+            </button>
+        
+            <!-- お気に入りボタン -->
+            <button id="favorite-btn"
+                    data-anime-id="{{ anime.id }}"
+                    data-status="favorite"
+                    {% if not user.is_authenticated or not user_relation or not user_relation.is_watched %}disabled{% endif %}
+                    class="{% if user_relation and user_relation.is_favorite %}btn-active{% else %}btn-inactive{% endif %}"
+                    onclick="toggleStatus('{{ anime.id }}', 'favorite', this)">
+                お気に入り
+            </button>
+        
+            <!-- 視聴予定ボタン -->
+            <button id="plan-to-watch-btn"
+                    data-anime-id="{{ anime.id }}"
+                    data-status="plan_to_watch"
+                    {% if not user.is_authenticated %}disabled{% endif %}
+                    class="{% if user_relation and user_relation.is_plan_to_watch %}btn-active{% else %}btn-inactive{% endif %}"
+                    onclick="toggleStatus('{{ anime.id }}', 'plan_to_watch', this)">
+                視聴予定
+            </button>
+        
+            {% if not user.is_authenticated %}
+                <p>これらの機能を利用するにはログインしてください。</p>
+            {% endif %}
         </div>
+        
+
+        
 
         <div class="rating">
             <label for="rating-input">評価を入力してください (0〜5):</label>
@@ -106,7 +157,8 @@
 
 
 <script>
-    const updateStatusUrl = "{% url 'anime_tracker:update_status' %}";
+    {% comment %} const updateStatusUrl = "{% url 'anime_tracker:update_status' %}"; {% endcomment %}
+    const updateStatusUrl = `{% url 'anime_tracker:update_status' pk=anime.id %}`;
     const csrfToken = "{{ csrf_token }}";
 
     function toggleTag(button, animeId, tagId) {
@@ -148,6 +200,28 @@
 </script>
 <style>
     <!--
+.btn-active {
+    background-color: orange;
+    color: white;
+}
+
+.btn-inactive {
+    background-color: gray;
+    color: white;
+}
+
+/* ホバー時のアクティブ状態のボタン */
+.btn-active:hover {
+    background-color: #ff8c00 !important; /* より濃いオレンジ */
+    color: #fff !important;
+}
+
+/* ホバー時の非アクティブ状態のボタン */
+.btn-inactive:hover {
+    background-color: #d3d3d3 !important; /* より濃い灰色 */
+    color: #000 !important;
+}
+
     /* 関連付けられたタグを太字に */
 .tag-button.active-tag {
     font-weight: bold;

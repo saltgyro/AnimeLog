@@ -26,10 +26,6 @@
 
             <!-- 検索バー（home.htmlページでのみ表示） -->
             {% if request.resolver_match.view_name == 'anime_tracker:home' %}
-                {% comment %} <form method="get" action="{% url 'anime_tracker:home' %}" class="d-flex">
-                    <input type="text" name="search" class="form-control" placeholder="スペースで区切って検索" value="{{ request.GET.search }}">
-                    <button type="submit" class="btn btn-primary">検索</button>
-                </form> {% endcomment %}
                 <form id="search-form" method="get" action="{% url 'anime_tracker:home' %}" class="d-flex">
                     <input type="text" name="search" class="form-control" placeholder="スペースで区切って検索" value="{{ request.GET.search }}">
                     <button type="submit" class="btn btn-primary">検索</button>

@@ -22,9 +22,9 @@ urlpatterns = [
     path('user_logout/',UserLogoutView.as_view(),name='user_logout'),#ページへ遷移
     path('edit/', views.user_edit, name='user_edit'),#ページへ遷移
     
-    path('<int:pk>/', views.animeDetailView, name='anime_detail'),  # 詳細ページ
-    path('update_status/', views.update_status, name='update_status'), 
-    path('update_rating/', views.update_rating, name='update_rating'),
+    path('anime_detail/<int:pk>/', views.animeDetailView, name='anime_detail'),  # 詳細ページ
+    path('update_status/<int:pk>/', views.update_status, name='update_status'), 
+    path('update_rating/<int:pk>/', views.update_rating, name='update_rating'),
     path('search/', views.search_view, name='search'),  # 検索用URL
     
     path('toggle-tag/', views.toggle_tag, name='toggle_tag'), # タグ更新URL
