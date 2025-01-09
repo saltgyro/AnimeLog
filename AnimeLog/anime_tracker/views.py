@@ -549,52 +549,102 @@ def user_edit(request):
 
 
 #アニメ詳細画面で追加
-@login_required
-def update_status(request, pk):
-    print('update_statusが呼び出された')
-    if request.method == "POST":
-        # 生のリクエストボディを出力
-        print("リクエストボディ:", request.body)
-        try:
-            # JSONデータを読み取る
-            data = json.loads(request.body)  # リクエストボディをJSONとして解析
-            # anime_id = data.get('anime_id')  # JSONからアニメIDを取得
-            status = data.get('status')      # JSONからステータスを取得
+# @login_required
+# def update_status(request, pk):
+#     print('update_statusが呼び出された')
+#     if request.method == "POST":
+#         # 生のリクエストボディを出力
+#         print("リクエストボディ:", request.body)
+#         try:
+#             # JSONデータを読み取る
+#             data = json.loads(request.body)  # リクエストボディをJSONとして解析
+#             # anime_id = data.get('anime_id')  # JSONからアニメIDを取得
+#             status = data.get('status')      # JSONからステータスを取得
 
             
-            print(f"ステータス: {status}")
-            anime = get_object_or_404(Anime, id=pk)
-            # anime = get_object_or_404(Anime, id=anime_id)
+#             print(f"ステータス: {status}")
+#             anime = get_object_or_404(Anime, id=pk)
+#             # anime = get_object_or_404(Anime, id=anime_id)
+#             user = request.user
+#             print(f"リクエストユーザー: {user.nickname}")
+#             # デバッグ用の出力
+
+#             # ユーザーとアニメの関係を更新
+#             relation, created = User_anime_relations.objects.get_or_create(user_id=user, anime_id=anime)
+
+#             # ステータス更新処理
+#             if status == "watched":
+#                 relation.status = 2  # 視聴済みに変更
+#             elif status == "favorite":
+#                 if relation.status == 2:  # 視聴済みのみお気に入りに設定可能
+#                     relation.is_favorite = True
+#             elif status == "plan_to_watch":
+#                 relation.status = 1  # 視聴予定に変更
+#                 relation.is_favorite = False  # 視聴予定の場合はお気に入りを解除
+
+#             relation.save()
+
+#             # JSONレスポンスの内容
+#             return JsonResponse({
+#                 "status": relation.status,  # 1: 視聴予定, 2: 視聴済み
+#                 "is_favorite": relation.is_favorite,  # お気に入りの状態
+#             })
+
+#         except Exception as e:
+#             print(f"Anime の取得でエラー: {e}")
+#             return JsonResponse({"error": str(e)}, status=400)
+
+#     return JsonResponse({"error": "Invalid request method."}, status=400)
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from .models import Anime, User_anime_relations
+
+@login_required
+def update_status(request, pk):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            status_type = data.get('status')  # "watched", "favorite", "plan_to_watch"
             user = request.user
-            print(f"リクエストユーザー: {user.nickname}")
-            # デバッグ用の出力
 
-            # ユーザーとアニメの関係を更新
-            relation, created = User_anime_relations.objects.get_or_create(user_id=user, anime_id=anime)
+            # アニメ情報を取得
+            anime = Anime.objects.get(id=pk)
+            user_relation, created = User_anime_relations.objects.get_or_create(
+                user_id=user,
+                anime_id=anime,
+            )
 
-            # ステータス更新処理
-            if status == "watched":
-                relation.status = 2  # 視聴済みに変更
-            elif status == "favorite":
-                if relation.status == 2:  # 視聴済みのみお気に入りに設定可能
-                    relation.is_favorite = True
-            elif status == "plan_to_watch":
-                relation.status = 1  # 視聴予定に変更
-                relation.is_favorite = False  # 視聴予定の場合はお気に入りを解除
+            # ロジック: 視聴状態またはお気に入り状態の更新
+            if status_type == "watched":
+                # 0 or 2 を切り替える
+                user_relation.status = 2 if user_relation.status != 2 else 0
+                if user_relation.status == 0:
+                    user_relation.is_favorite = False
 
-            relation.save()
+            elif status_type == "plan_to_watch":
+                # 0 or 1 を切り替える
+                user_relation.status = 1 if user_relation.status != 1 else 0
+                user_relation.is_favorite = False
 
-            # JSONレスポンスの内容
+            elif status_type == "favorite":
+                # 視聴済みの場合のみお気に入りを反転
+                if user_relation.status == 2:
+                    user_relation.is_favorite = not user_relation.is_favorite
+
+            user_relation.save()
+
+            # JSONレスポンスを返す
             return JsonResponse({
-                "status": relation.status,  # 1: 視聴予定, 2: 視聴済み
-                "is_favorite": relation.is_favorite,  # お気に入りの状態
+                "success": True,
+                "status": user_relation.status,
+                "is_favorite": user_relation.is_favorite,
             })
 
         except Exception as e:
-            print(f"Anime の取得でエラー: {e}")
-            return JsonResponse({"error": str(e)}, status=400)
+            return JsonResponse({"success": False, "error": str(e)}, status=400)
 
-    return JsonResponse({"error": "Invalid request method."}, status=400)
+    return JsonResponse({"success": False, "error": "Invalid request method."}, status=400)
 
 
 #アニメ視聴管理更新
