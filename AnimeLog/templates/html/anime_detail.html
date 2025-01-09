@@ -62,6 +62,25 @@
         <p><strong>登録者数:</strong> {{ anime.watched_count }}</p>
         <p><strong>お気に入り数:</strong> {{ anime.favorite_count }}</p>
 
+
+        <h3>タグ一覧</h3>
+        <div class="all-tags">
+            {% for tag in tags %}
+                <button class="tag-button {% if tag in anime.tags.all %}active-tag{% else %}inactive-tag{% endif %}" 
+                        data-tag-id="{{ tag.id }}" 
+                        onclick="toggleTag(this, {{ anime.id }}, {{ tag.id }})">
+                    {{ tag.name }}
+                </button>
+            {% empty %}
+                <p>タグが登録されていません。</p>
+            {% endfor %}
+        </div>
+
+
+
+
+
+
         <h2>関連アニメ</h2>
         <div class="related-animes">
             <ul>
@@ -89,6 +108,69 @@
 <script>
     const updateStatusUrl = "{% url 'anime_tracker:update_status' %}";
     const csrfToken = "{{ csrf_token }}";
+
+    function toggleTag(button, animeId, tagId) {
+        const isActive = button.classList.contains('active-tag');
+        const newState = !isActive; // 新しい状態を切り替え
+    
+        // サーバーに新しい状態を送信
+        fetch(`/toggle-tag/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({ anime_id: animeId, tag_id: tagId, active: newState })
+        }).then(response => {
+            if (response.ok) {
+                // 成功時のリダイレクト（画面リロード）
+                location.reload();  // ページをリロード
+            } else {
+                alert("タグ状態の更新に失敗しました。");
+            }
+        });
+        {% comment %} }).then(response => {
+            if (response.ok) {
+                // ボタンの見た目を切り替え
+                if (newState) {
+                    button.classList.remove('inactive-tag');
+                    button.classList.add('active-tag');
+                } else {
+                    button.classList.remove('active-tag');
+                    button.classList.add('inactive-tag');
+                }
+            } else {
+                alert("タグ状態の更新に失敗しました。");
+            }
+        }); {% endcomment %}
+    }
+    
 </script>
+<style>
+    <!--
+    /* 関連付けられたタグを太字に */
+.tag-button.active-tag {
+    font-weight: bold;
+    color: black; /* テキストの色を目立たせる */
+}
+
+/* 関連付けられていないタグを薄字に */
+.tag-button.inactive-tag {
+    font-weight: normal;
+    color: gray; /* テキストを薄い色に */
+}
+
+/* ボタン全体のデフォルトスタイル */
+.tag-button {
+    background-color: transparent; /* ボタンの背景を透明に */
+    border: 1px solid #ccc; /* 枠線を追加 */
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+    -->
+</style>
 
 {% endblock %}

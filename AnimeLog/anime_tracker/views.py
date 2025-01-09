@@ -392,9 +392,9 @@ def get_animes(request, status, sort_option, search_conditions):
 #====================================================================================================================
 
     # **キーワード検索**
-    # **キーワード検索**
     if search_conditions.get('search'):
-        search_keywords = preprocess_keywords(search_conditions['search'])  # キーワードを取得
+        # search_keywords = preprocess_keywords(search_conditions['search'])  # キーワードを取得
+        search_keywords = search_conditions['search']  # キーワードを取得
         print(f"キーワード検索: {search_keywords}")
 
         # キーワード検索用の条件を作成
@@ -605,7 +605,8 @@ def animeDetailView(request, pk):
         user_relation = User_anime_relations.objects.filter(user_id=request.user, anime_id=anime).first()
     related_animes = Anime.objects.filter(series_id=anime.series_id).exclude(id=anime.id)
     print(related_animes.count())
-    return render(request, 'html/anime_detail.html', {'anime': anime, 'user_relation': user_relation,'related_animes': related_animes})
+    all_tags = Tags.objects.all()# タグ一覧を取得
+    return render(request, 'html/anime_detail.html', {'anime': anime, 'user_relation': user_relation,'related_animes': related_animes,'tags': all_tags})
 
 #ユーザー評価入力
 def update_rating(request):
@@ -676,4 +677,37 @@ def search_view(request):
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from .models import Anime, Tags
+
+
+def toggle_tag(request):
+    if request.method == "POST":
+        try:
+            # JSONデータを取得
+            data = json.loads(request.body)
+            anime_id = data.get('anime_id')
+            tag_id = data.get('tag_id')
+            active = data.get('active')
+
+            # アニメとタグを取得
+            anime = Anime.objects.get(id=anime_id)
+            tag = Tags.objects.get(id=tag_id)
+
+            if active:
+                anime.tags.add(tag)  # タグを追加
+            else:
+                anime.tags.remove(tag)  # タグを削除
+
+            return JsonResponse({'status': 'success', 'message': 'タグ状態を更新しました。'})
+        except Anime.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': '指定されたアニメが見つかりません。'}, status=404)
+        except Tags.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': '指定されたタグが見つかりません。'}, status=404)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+    return JsonResponse({'status': 'error', 'message': '無効なリクエストです。'}, status=400)
 
