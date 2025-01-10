@@ -8,7 +8,7 @@ from django.db.models import F,Q
 import json
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponseRedirect
 import requests
 from django.contrib.auth.views import PasswordResetDoneView,PasswordResetView,PasswordResetCompleteView,PasswordResetConfirmView
 
@@ -684,16 +684,53 @@ def animeDetailView(request, pk):
     related_animes = Anime.objects.filter(series_id=anime.series_id).exclude(id=anime.id)
     print(related_animes.count())
     all_tags = Tags.objects.all()# タグ一覧を取得
-    return render(request, 'html/anime_detail.html', {'anime': anime, 'user_relation': user_relation,'related_animes': related_animes,'tags': all_tags})
+    star_range = [i * 0.5 for i in range(1, 11)] # 0.5刻みの評価リストを作成
+    return render(request, 'html/anime_detail.html', {
+        'anime': anime, 'user_relation': user_relation,'related_animes': related_animes,'tags': all_tags,'star_range': star_range,})
 
 #ユーザー評価入力
-def update_rating(request):
-    print("update_rating")
+# def update_rating(request):
+#     print("update_rating")
+#     if request.method == "POST":
+#         try:
+#             data = json.loads(request.body)
+#             anime_id = data.get('anime_id')
+#             rating = data.get('rating')
+
+#             if not 0.0 <= rating <= 5.0:
+#                 return JsonResponse({"error": "Invalid rating value."}, status=400)
+
+#             anime = get_object_or_404(Anime, id=anime_id)
+#             user = request.user
+#             relation, created = User_anime_relations.objects.get_or_create(user_id=user, anime_id=anime)
+#             relation.rating = rating
+#             relation.save()
+            
+#             print("relation更新"+ str(relation.rating))
+#             # アニメの平均評価を更新
+
+
+#             return JsonResponse({"message": "Rating updated successfully.", "average_rating": anime.average_rating})
+#             # return JsonResponse({"message": "Rating updated successfully."})
+#         except Exception as e:
+#             return JsonResponse({"error": str(e)}, status=400)
+#     return JsonResponse({"error": "Invalid request method."}, status=400)
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+import json
+from django.utils.cache import add_never_cache_headers
+
+@login_required
+def update_rating(request, pk):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            anime_id = data.get('anime_id')
+            anime_id = pk
             rating = data.get('rating')
+
+            if rating is None:
+                return JsonResponse({"error": "Rating is required."}, status=400)
 
             if not 0.0 <= rating <= 5.0:
                 return JsonResponse({"error": "Invalid rating value."}, status=400)
@@ -704,15 +741,20 @@ def update_rating(request):
             relation.rating = rating
             relation.save()
             
-            print("relation更新"+ str(relation.rating))
-            # アニメの平均評価を更新
+            print(f"ユーザー評価が更新されました: {relation.rating}")
+            
+            return JsonResponse({
+                "message": "Rating updated successfully.",
+                "user_rating": relation.rating
+            })
 
-
-            return JsonResponse({"message": "Rating updated successfully.", "average_rating": anime.average_rating})
             # return JsonResponse({"message": "Rating updated successfully."})
+            # return JsonResponse({"message": "Rating updated successfully.", "average_rating": average_rating})
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
     return JsonResponse({"error": "Invalid request method."}, status=400)
+
+
 
 def search_view(request):
     if request.method == 'POST':

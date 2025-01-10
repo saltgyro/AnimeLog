@@ -129,43 +129,43 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 //ユーザー評価
-document.addEventListener("DOMContentLoaded", function () {
-    const ratingButton = document.getElementById("rating-submit");
-    console.log("評価押されました")
-    if (ratingButton) {
-        ratingButton.addEventListener("click", function () {
-            const animeId = this.dataset.animeId;
-            const rating = parseFloat(document.getElementById("rating-input").value);
-            // const updateRatingUrl = "{% url 'anime_tracker:update_rating' %}";
-            // const updateRatingUrl = `/update_rating/${animeId}/`; 
-            const updateRatingUrl = `/anime_tracker/update_rating/${animeId}/`;
+// document.addEventListener("DOMContentLoaded", function () {
+//     const ratingButton = document.getElementById("rating-submit");
+//     console.log("評価押されました")
+//     if (ratingButton) {
+//         ratingButton.addEventListener("click", function () {
+//             const animeId = this.dataset.animeId;
+//             const rating = parseFloat(document.getElementById("rating-input").value);
+//             // const updateRatingUrl = "{% url 'anime_tracker:update_rating' %}";
+//             // const updateRatingUrl = `/update_rating/${animeId}/`; 
+//             const updateRatingUrl = `/anime_tracker/update_rating/${animeId}/`;
 
 
-            if (isNaN(rating) || rating < 0 || rating > 5) {
-                alert("評価は0〜5の間で入力してください。");
-                return;
-            }
+//             if (isNaN(rating) || rating < 0 || rating > 5) {
+//                 alert("評価は0〜5の間で入力してください。");
+//                 return;
+//             }
 
-            fetch(updateRatingUrl, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": getCookie("csrftoken")
-                },
-                body: JSON.stringify({
-                    anime_id: animeId,
-                    rating: rating
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message) {
-                    alert(data.message);
-                } else if (data.error) {
-                    console.error(data.error);
-                }
-            })
-            .catch(error => console.error("エラーが発生しました:", error));
-        });
-    }
-});
+//             fetch(updateRatingUrl, {
+//                 method: "POST",
+//                 headers: {
+//                     "Content-Type": "application/json",
+//                     "X-CSRFToken": getCookie("csrftoken")
+//                 },
+//                 body: JSON.stringify({
+//                     anime_id: animeId,
+//                     rating: rating
+//                 })
+//             })
+//             .then(response => response.json())
+//             .then(data => {
+//                 if (data.message) {
+//                     alert(data.message);
+//                 } else if (data.error) {
+//                     console.error(data.error);
+//                 }
+//             })
+//             .catch(error => console.error("エラーが発生しました:", error));
+//         });
+//     }
+// });
