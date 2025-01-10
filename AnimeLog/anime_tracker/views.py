@@ -423,6 +423,32 @@ def get_animes(request, status, sort_option, search_conditions):
     # 重複を排除
     return animes.distinct()
 
+from datetime import datetime
+
+def generate_seasons():
+    """2003年から現在の年までのシーズンを生成し、現在の月に基づいて制限する"""
+    seasons = ["冬", "春", "夏", "秋"]
+    current_year = datetime.now().year
+    current_month = datetime.now().month
+
+    # 現在の月に基づいてシーズンを制限
+    if current_month in [1, 2, 3]:
+        max_season = 0  # 冬
+    elif current_month in [4, 5, 6]:
+        max_season = 1  # 春
+    elif current_month in [7, 8, 9]:
+        max_season = 2  # 夏
+    else:
+        max_season = 3  # 秋
+
+    # 2003年から現在の年までシーズンを生成
+    grouped_seasons = defaultdict(list)
+    for year in range(2003, current_year + 1):
+        for i, season in enumerate(seasons):
+            if year == current_year and i > max_season:
+                break  # 現在のシーズンを超えたら終了
+            grouped_seasons[year].append({"season_index": i, "season_name": season})
+    return grouped_seasons
 
     
 
@@ -480,6 +506,7 @@ def home(request):
     tags = Tags.objects.all()
     studios = Studios.objects.all()
     seasons = Seasons.objects.all()
+    grouped_seasons = generate_seasons()  # 動的に生成したシーズンを取得
     
     
     # 未ログインの場合、ステータスを「リスト外」に強制
@@ -503,6 +530,7 @@ def home(request):
         'tags': tags,
         'studios': studios,
         'seasons': seasons,
+        'grouped_seasons': dict(grouped_seasons),
         'status': status , # 現在のステータスをテンプレートに渡す
         'search_conditions': search_conditions,#検索条件
     })
