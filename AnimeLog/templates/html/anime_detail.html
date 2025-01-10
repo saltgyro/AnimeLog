@@ -236,6 +236,22 @@ const createStar = () => {
     // 初期表示で星の幅を設定
     const widthPercentage = review * 20; // 評価を%に変換（5.0 -> 100%）
     starElement.style.setProperty('--starWidth', `${widthPercentage}%`);
+    
+    //ホバー時の動作、
+    starElement.addEventListener('mousemove', (event) => {
+        console.log("mousemoveイベントが発火しました"); // ログを追加
+        const rect = starElement.getBoundingClientRect();
+        const offsetX = event.clientX - rect.left;
+        const hoverRating = Math.min(Math.max((offsetX / rect.width) * 5, 0), 5).toFixed(1);
+        console.log("ホバー中の評価:", hoverRating); // ログを追加
+    
+        updateStarWidth(starElement, hoverRating);
+    
+        if (userRatingElement) {
+            userRatingElement.textContent = hoverRating;
+        }
+    });
+    
 
     // 星をクリックして評価を更新
     starElement.addEventListener('click', (event) => {
