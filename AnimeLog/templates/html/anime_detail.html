@@ -98,7 +98,7 @@
             <input type="number" id="rating-input" min="0" max="5" step="0.1" value="{{ user_relation.rating|default:0.0 }}">
             <button id="rating-submit" data-anime-id="{{ anime.id }}">評価を更新</button>
         </div> {% endcomment %}
-        <div class="anime-rating">
+        {% comment %} <div class="anime-rating">
             <!-- 評価星の表示 -->
             <div class="card-review_star" data-anime-id="{{ anime.id }}" data-rating="{{ user_relation.rating|default:0 }}"></div>
         
@@ -116,7 +116,44 @@
                 <p>ログインして評価を変更できます</p>
             </div>
             {% endif %}
+        </div> {% endcomment %}
+
+        <div class="anime-rating">
+            <!-- 評価星の表示 -->
+            <div class="rating-container">
+                <div class="card-review_star" data-anime-id="{{ anime.id }}" data-rating="{{ user_relation.rating|default:0 }}"></div>
+                <div id="rating-tooltip" class="rating-tooltip" style="display: none;"></div>
+                {% if user.is_authenticated %}
+                <div class="rating-action">
+                    ドラッグして評価を変更できます
+                </div>
+                {% else %}
+                <div class="rating-disabled">
+                    <p>ログインして評価を変更できます</p>
+                </div>
+                {% endif %}
+
+            </div>
+            <!-- 操作ガイド -->
+            
+        
+            <!-- ログインしている場合、ユーザーの評価を表示 -->
+            {% if user.is_authenticated %}
+            <div class="user-rating">
+                あなたの評価: 
+                <span id="user-rating">
+                    {% if user_relation.rating %}
+                        {{ user_relation.rating }}
+                    {% else %}
+                        評価未入力
+                    {% endif %}
+                </span>
+            </div>
+        
+            
+            {% endif %}
         </div>
+        
         
         
         
@@ -228,93 +265,90 @@
 // 以下が星に関するJavaスクリプト
 const createStar = () => {
     const starElement = document.querySelector('.card-review_star');
-    const userRatingElement = document.querySelector('#user-rating'); // ユーザー評価の表示エリア
-    const averageRatingElement = document.querySelector('#average-rating'); // 平均評価の表示エリア
-    const review = parseFloat(starElement.getAttribute('data-rating')) || 0; // 現在の評価値
+    const userRatingElement = document.querySelector('#user-rating');
+    const tooltip = document.getElementById('rating-tooltip'); // ツールチップ要素
     const animeId = starElement.getAttribute('data-anime-id'); // アニメのID
+    let isDragging = false; // ドラッグ状態を管理
 
     // 初期表示で星の幅を設定
-    const widthPercentage = review * 20; // 評価を%に変換（5.0 -> 100%）
-    starElement.style.setProperty('--starWidth', `${widthPercentage}%`);
-    
-    //ホバー時の動作、
-    starElement.addEventListener('mousemove', (event) => {
-        console.log("mousemoveイベントが発火しました"); // ログを追加
-        const rect = starElement.getBoundingClientRect();
-        const offsetX = event.clientX - rect.left;
-        const hoverRating = Math.min(Math.max((offsetX / rect.width) * 5, 0), 5).toFixed(1);
-        console.log("ホバー中の評価:", hoverRating); // ログを追加
-    
-        updateStarWidth(starElement, hoverRating);
-    
-        if (userRatingElement) {
-            userRatingElement.textContent = hoverRating;
-        }
-    });
-    
-
-    // 星をクリックして評価を更新
-    starElement.addEventListener('click', (event) => {
-        const rect = starElement.getBoundingClientRect();
-        const offsetX = event.clientX - rect.left;
-        const newRating = Math.min(Math.max((offsetX / rect.width) * 5, 0), 5).toFixed(1); // 新しい評価値
-        starElement.setAttribute('data-rating', newRating); // 星の評価を更新
-
-        console.log("新しい評価:", newRating); // デバッグ用
-
-        // 評価をサーバーに送信
-        fetch(`/update_rating/${animeId}/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-            },
-            body: JSON.stringify({ rating: parseFloat(newRating) }),
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTPエラー: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log('評価が更新されました:', data);
-
-                if (data.user_rating !== undefined) {
-                    userRatingElement.textContent = data.user_rating.toFixed(1);
-                } else {
-                    console.error('user_rating がレスポンスに含まれていません');
-                }
-
-                {% comment %} // ユーザー評価要素を更新
-                let userRatingElement = document.querySelector('#user-rating');
-                if (userRatingElement) {
-                    userRatingElement.textContent = data.user_rating.toFixed(1);
-                } else {
-                    console.error("ユーザー評価要素が見つかりません");
-                } {% endcomment %}
-
-                // 動的にUIを更新
-                userRatingElement.textContent = newRating; // ユーザー評価を更新
-                {% comment %} averageRatingElement.textContent = data.average_rating.toFixed(1); // 平均評価を更新 {% endcomment %}
-                updateStarWidth(starElement, newRating); // 星評価を更新
-                window.location.reload();
-            })
-            .catch((error) => {
-                console.error('エラーが発生しました:', error);
-            });
-    });
-
-    // 星の塗りつぶし幅を更新する関数
+    const review = parseFloat(starElement.getAttribute('data-rating')) || 0;
     const updateStarWidth = (element, rating) => {
         const percentage = (rating / 5) * 100;
-        console.log('星の塗りつぶし幅:', percentage); // デバッグ用
         element.style.setProperty('--starWidth', `${percentage}%`);
+    };
+    updateStarWidth(starElement, review);
+
+    // ドラッグ開始
+    starElement.addEventListener('mousedown', (event) => {
+        isDragging = true;
+        updateRating(event);
+    });
+
+    // ドラッグ中
+    document.addEventListener('mousemove', (event) => {
+        if (!isDragging) return;
+        updateRating(event);
+    });
+
+    // ドラッグ終了
+    document.addEventListener('mouseup', (event) => {
+        if (!isDragging) return;
+        isDragging = false;
+        updateRating(event, true); // 評価を確定
+        tooltip.style.display = 'none'; // ツールチップを非表示
+    });
+
+    // 評価を更新する関数
+    const updateRating = (event, confirm = false) => {
+        const rect = starElement.getBoundingClientRect();
+        const offsetX = event.clientX - rect.left;
+        let newRating = Math.min(Math.max((offsetX / rect.width) * 5, 0), 5);
+
+        
+        newRating = Math.round(newRating * 2) / 2;// 0.5刻みに丸める
+
+        // 星の塗りつぶしを更新
+        updateStarWidth(starElement, newRating);
+
+        // ツールチップを表示
+        tooltip.style.display = 'block';
+        tooltip.style.left = `${event.clientX}px`; // マウス位置に基づく横位置
+        tooltip.style.top = `${event.clientY - 40}px`; // マウス位置の少し上
+        tooltip.textContent = `評価: ${newRating}`;
+
+        // ドラッグ終了時にサーバーに送信
+        if (confirm) {
+            fetch(`/update_rating/${animeId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                },
+                body: JSON.stringify({ rating: newRating }),
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error(`HTTPエラー: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    console.log('評価が更新されました:', data);
+                    if (userRatingElement) {
+                        userRatingElement.textContent = newRating; // 確定後の評価を更新
+                    }
+                })
+                .catch((error) => {
+                    console.error('エラーが発生しました:', error);
+                });
+        }
     };
 };
 
-// スター評価を初期化
-createStar();
+document.addEventListener('DOMContentLoaded', createStar);
+
+
+
 
 
 
@@ -369,7 +403,11 @@ createStar();
 }
 /* 以下星に関して */
 
-
+.rating-container {
+    display: flex; /* 子要素を横並びにする */
+    align-items: center; /* 垂直方向を中央揃え */
+    gap: 8px; /* 要素間の間隔を設定 */
+}
 
 .card-review_star {
     position: relative;
@@ -405,10 +443,10 @@ createStar();
 }
 
 .rating-action {
-    color: #000;
+    cursor: default; /
     font-size: 14px;
-    margin-top: 5px;
-    cursor: pointer;
+    margin-top: 8px;
+
 }
 
 
@@ -421,6 +459,25 @@ createStar();
 .card-review_star.hovering::after {
     color: #ffd700; /* ホバー中の明るい黄色 */
 }
+
+/* ツールチップ */
+.rating-tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    pointer-events: none; /* ツールチップに対するクリックを無効化 */
+    white-space: nowrap;
+    z-index: 10;
+    transform: translate(-50%, -150%); /* マウス位置に基づく調整 */
+    transition: opacity 0.2s ease-in-out;
+    display: none; /* 初期状態で非表示 */
+}
+
+
+
 
 
 
