@@ -21,46 +21,15 @@
     <!-- 右側: アニメ情報 -->
     <div class="anime-info">
         <h2>{{ anime.title }}</h2>
-        {% comment %} <div class="buttons">
-            <!-- デバッグ用: user_relation を出力 -->
-            <p>デバッグ: {{ user_relation }}</p>
-            <p>デバッグ: {{ user_relation }}</p>
-
-
-            <!-- 視聴済ボタン -->
-            <button id="watched-btn" data-anime-id="{{ anime.id }}" data-status="watched"
-            class="{% if user_relation and user_relation.status == 2 %}btn-active{% else %}btn-inactive{% endif %}">
-                視聴済
-            </button>
-
-
-            <!-- お気に入りボタン -->
-            <button id="favorite-btn" data-anime-id="{{ anime.id }}" data-status="favorite"
-                    {% if not user.is_authenticated or user_relation.status != 2 %}disabled{% endif %}
-                    class="{% if user_relation and user_relation.is_favorite %}btn-active{% else %}btn-inactive{% endif %}">
-                お気に入り
-            </button>
-
-
-
-            <!-- 視聴予定ボタン -->
-            <button id="plan-to-watch-btn" data-anime-id="{{ anime.id }}" data-status="plan_to_watch"
-            class="{% if user_relation and user_relation.status == 1 %}btn-active{% else %}btn-inactive{% endif %}">
-                視聴予定
-            </button>
-
-
-            {% if not user.is_authenticated %}
-                <p>これらの機能を利用するにはログインしてください。</p>
-            {% endif %}
-        </div> {% endcomment %}
+        
         <div class="buttons">
             <!-- 視聴済ボタン -->
             <button id="watched-btn"
                     data-anime-id="{{ anime.id }}"
                     data-status="watched"
+                    data-update-url="{% url 'anime_tracker:update_status' pk=anime.id %}"
                     {% if not user.is_authenticated %}disabled{% endif %}
-                    class="{% if user_relation and user_relation.is_watched %}btn-active{% else %}btn-inactive{% endif %}"
+                    class="{% if user_relation and user_relation.status == 2 %}btn-active{% else %}btn-inactive{% endif %}"
                     onclick="toggleStatus('{{ anime.id }}', 'watched', this)">
                 視聴済
             </button>
@@ -69,7 +38,8 @@
             <button id="favorite-btn"
                     data-anime-id="{{ anime.id }}"
                     data-status="favorite"
-                    {% if not user.is_authenticated or not user_relation or not user_relation.is_watched %}disabled{% endif %}
+                    data-update-url="{% url 'anime_tracker:update_status' pk=anime.id %}"
+                    {% if not user.is_authenticated or not user_relation or user_relation.status != 2 %}disabled{% endif %}
                     class="{% if user_relation and user_relation.is_favorite %}btn-active{% else %}btn-inactive{% endif %}"
                     onclick="toggleStatus('{{ anime.id }}', 'favorite', this)">
                 お気に入り
@@ -79,8 +49,9 @@
             <button id="plan-to-watch-btn"
                     data-anime-id="{{ anime.id }}"
                     data-status="plan_to_watch"
+                    data-update-url="{% url 'anime_tracker:update_status' pk=anime.id %}"
                     {% if not user.is_authenticated %}disabled{% endif %}
-                    class="{% if user_relation and user_relation.is_plan_to_watch %}btn-active{% else %}btn-inactive{% endif %}"
+                    class="{% if user_relation and user_relation.status == 1 %}btn-active{% else %}btn-inactive{% endif %}"
                     onclick="toggleStatus('{{ anime.id }}', 'plan_to_watch', this)">
                 視聴予定
             </button>
@@ -91,32 +62,6 @@
         </div>
         
 
-        
-
-        {% comment %} <div class="rating">
-            <label for="rating-input">評価を入力してください (0〜5):</label>
-            <input type="number" id="rating-input" min="0" max="5" step="0.1" value="{{ user_relation.rating|default:0.0 }}">
-            <button id="rating-submit" data-anime-id="{{ anime.id }}">評価を更新</button>
-        </div> {% endcomment %}
-        {% comment %} <div class="anime-rating">
-            <!-- 評価星の表示 -->
-            <div class="card-review_star" data-anime-id="{{ anime.id }}" data-rating="{{ user_relation.rating|default:0 }}"></div>
-        
-            <!-- ログインしている場合、ユーザーの評価を表示 -->
-            {% if user.is_authenticated %}
-            <div class="user-rating">
-                あなたの評価: <span id="user-rating">{{ user_relation.rating }}</span>
-            </div>
-            
-            <div class="rating-action">
-                <p>クリックして評価を変更</p>
-            </div>
-            {% else %}
-            <div class="rating-disabled">
-                <p>ログインして評価を変更できます</p>
-            </div>
-            {% endif %}
-        </div> {% endcomment %}
 
         <div class="anime-rating">
             <!-- 評価星の表示 -->
@@ -149,8 +94,6 @@
                     {% endif %}
                 </span>
             </div>
-        
-            
             {% endif %}
         </div>
         
@@ -173,7 +116,7 @@
             <p><strong>総話数:</strong> {{ anime.episode_count }}</p>
         {% endif %}
         <p><strong>平均評価:</strong> {{ anime.average_rating }}</p>
-        <p><strong>登録者数:</strong> {{ anime.watched_count }}</p>
+        <p><strong>視聴済みユーザー数:</strong> {{ anime.watched_count }}</p>
         <p><strong>お気に入り数:</strong> {{ anime.favorite_count }}</p>
 
 
@@ -220,7 +163,7 @@
 
 
 <script>
-    {% comment %} const updateStatusUrl = "{% url 'anime_tracker:update_status' %}"; {% endcomment %}
+    
     const updateStatusUrl = `{% url 'anime_tracker:update_status' pk=anime.id %}`;
     const csrfToken = "{{ csrf_token }}";
 
@@ -244,22 +187,46 @@
                 alert("タグ状態の更新に失敗しました。");
             }
         });
-        {% comment %} }).then(response => {
-            if (response.ok) {
-                // ボタンの見た目を切り替え
-                if (newState) {
-                    button.classList.remove('inactive-tag');
-                    button.classList.add('active-tag');
-                } else {
-                    button.classList.remove('active-tag');
-                    button.classList.add('inactive-tag');
-                }
-            } else {
-                alert("タグ状態の更新に失敗しました。");
-            }
-        }); {% endcomment %}
+        
     }
 
+// ↓が視聴済/お気に入り/視聴予定に関するJavaスクリプト
+document.addEventListener("DOMContentLoaded", function () {
+    const buttons = document.querySelectorAll("button[data-status]");
+    buttons.forEach(button => {
+        button.addEventListener("click", function () {
+            const animeId = this.dataset.animeId;
+            const status = this.dataset.status;
+            const updateUrl = button.getAttribute("data-update-url");
+
+            console.log("アニメID:", animeId);
+            console.log("ステータス:", status);
+            console.log("更新URL:", updateUrl);
+
+            fetch(updateUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie('csrftoken'),
+                },
+                body: JSON.stringify({
+                    anime_id: animeId,
+                    status: status,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("更新成功:", data);
+
+                // ページをリロードして最新状態を反映
+                location.reload();
+            })
+            .catch(error => console.error("エラーが発生しました:", error));
+        });
+    });
+});
+// ↑が視聴済/お気に入り/視聴予定に関するJavaスクリプト
+    
 
 
 // 以下が星に関するJavaスクリプト

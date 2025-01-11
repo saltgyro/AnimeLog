@@ -88,44 +88,7 @@ function getCookie(name) {
 //         });
 //     });
 // });
-document.addEventListener("DOMContentLoaded", function () {
-    const buttons = document.querySelectorAll("button[data-status]");
-    buttons.forEach(button => {
-        button.addEventListener("click", function () {
-            const animeId = this.dataset.animeId;
-            const status = this.dataset.status;
-            const updateUrl = this.dataset.updateUrl; // ボタンから動的に取得
 
-            console.log("アニメID:", animeId);
-            console.log("ステータス:", status);
-            console.log("更新URL:", updateUrl);
-
-            fetch(updateUrl, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": getCookie('csrftoken'),
-                },
-                body: JSON.stringify({
-                    anime_id: animeId,
-                    status: status,
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("更新成功:", data);
-
-                // ボタンのクラスを動的に更新
-                if (data.status === 2) {
-                    button.className = "btn-active";
-                } else {
-                    button.className = "btn-inactive";
-                }
-            })
-            .catch(error => console.error("エラーが発生しました:", error));
-        });
-    });
-});
 
 
 //ユーザー評価
