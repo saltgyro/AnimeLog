@@ -23,6 +23,8 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.core.paginator import Paginator
 
+from django.db.models.functions import Lower
+
 
 class CustomPasswordResetView(PasswordResetView):
     # パスワードリセットページのカスタムビュー
@@ -336,6 +338,15 @@ def get_animes(request, status, sort_option, search_conditions):
 #====================================================================================================================
     # 検索の基礎データセットとしてベースを設定
     animes = base_animes
+    
+    # **50音順検索**
+    if search_conditions.get('alphabet_search'):
+        alphabets = search_conditions['alphabet_search']  # 選択された頭文字
+        print(f"50音順検索: {alphabets}")
+        for alphabet in alphabets:
+            print(f"50音順検索: {alphabet}でフィルタリング")
+            animes = animes.filter(initial=alphabet)  # initial フィールドでフィルタリング
+            print(f"50音順検索後のアニメ数: {animes.count()}")
 
     # **ジャンル検索**
     if search_conditions.get('genre'):
@@ -417,6 +428,8 @@ def get_animes(request, status, sort_option, search_conditions):
         animes = animes.order_by('-start_date')
     elif sort_option == 'watched_count-desc':
         animes = animes.order_by('-watched_count')
+    elif sort_option == 'alphabet':
+        animes = animes.order_by(Lower('title'))
     else:
         animes = animes.order_by('-start_date')
 
@@ -480,6 +493,9 @@ def home(request):
     search_query = request.GET.getlist('search')   # 検索バーのキーワードを取得
     print("studio_search")
     print(studio_search)
+    alphabet_search = request.GET.getlist('alphabet')   # 検索バーの50音順を取得
+    print("alphabet_search")
+    print(alphabet_search)
     
     # ユーザーの入力をひらがなに変換
     # ユーザーの入力をカタカナ→ひらがなに変換
@@ -499,6 +515,7 @@ def home(request):
         'season': season_search,
         'studio': studio_search,
         'search': search_query,
+        'alphabet_search':alphabet_search
     }
     
     # データを取得
