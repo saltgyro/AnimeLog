@@ -79,6 +79,21 @@
                     {% endfor %}
                 </li>
             {% endif %}
+
+            <!-- 50音順 - 条件表示 -->
+            {% if formatted_conditions %}
+            <li>50音順: 
+                <span>
+                    {% for condition in formatted_conditions %}
+                    <span>{{ condition }}
+                        <button class="btn btn-sm btn-danger remove-condition" data-type="alphabet" data-value="{{ condition }}">×</button>
+                    </span>
+                    {% endfor %}
+                </span>
+            </li>
+            {% endif %}
+
+
         </ul>
 
         <!-- リセットボタン -->
@@ -475,11 +490,12 @@
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-a" aria-expanded="false" aria-controls="row-a">あ行</a>
                                 <div id="row-a" class="collapse">
                                     <ul>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="あ">あ</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="い">い</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="う">う</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="え">え</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="お">お</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="あ行">あ行</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="あ行あ">あ</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="あ行い">い</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="あ行う">う</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="あ行え">え</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="あ行お">お</button></li>
                                     </ul>
                                 </div>
                             </li>
@@ -488,120 +504,138 @@
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ka" aria-expanded="false" aria-controls="row-ka">か行</a>
                                 <div id="row-ka" class="collapse">
                                     <ul>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="か">か</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="き">き</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="く">く</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="け">け</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="こ">こ</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="か行">か行</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="か行か">か</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="か行き">き</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="か行く">く</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="か行け">け</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="か行こ">こ</button></li>
                                     </ul>
                                 </div>
                             </li>
+                            
                             <!-- さ行 -->
                             <li>
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-sa" aria-expanded="false" aria-controls="row-sa">さ行</a>
                                 <div id="row-sa" class="collapse">
                                     <ul>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="さ">さ</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="し">し</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="す">す</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="せ">せ</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="そ">そ</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="さ行">さ行</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="さ行さ">さ</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="さ行し">し</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="さ行す">す</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="さ行せ">せ</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="さ行そ">そ</button></li>
                                     </ul>
                                 </div>
                             </li>
+                            
                             <!-- た行 -->
                             <li>
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ta" aria-expanded="false" aria-controls="row-ta">た行</a>
                                 <div id="row-ta" class="collapse">
                                     <ul>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="た">た</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ち">ち</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="つ">つ</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="て">て</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="と">と</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="た行">た行</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="た行た">た</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="た行ち">ち</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="た行つ">つ</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="た行て">て</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="た行と">と</button></li>
                                     </ul>
                                 </div>
                             </li>
+                            
 
                             <!-- な行 -->
                             <li>
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-na" aria-expanded="false" aria-controls="row-na">な行</a>
                                 <div id="row-na" class="collapse">
                                     <ul>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="な">な</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="に">に</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ぬ">ぬ</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ね">ね</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="の">の</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="な行">な行</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="な行な">な</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="な行に">に</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="な行ぬ">ぬ</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="な行ね">ね</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="な行の">の</button></li>
                                     </ul>
                                 </div>
                             </li>
+                            
 
                             <!-- は行 -->
                             <li>
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ha" aria-expanded="false" aria-controls="row-ha">は行</a>
                                 <div id="row-ha" class="collapse">
                                     <ul>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="は">は</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ひ">ひ</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ふ">ふ</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="へ">へ</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ほ">ほ</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="は行">は行</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="は行は">は</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="は行ひ">ひ</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="は行ふ">ふ</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="は行へ">へ</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="は行ほ">ほ</button></li>
                                     </ul>
                                 </div>
                             </li>
+                            
 
                             <!-- ま行 -->
                             <li>
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ma" aria-expanded="false" aria-controls="row-ma">ま行</a>
                                 <div id="row-ma" class="collapse">
                                     <ul>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ま">ま</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="み">み</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="む">む</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="め">め</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="も">も</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ま行">ま行</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ま行ま">ま</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ま行み">み</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ま行む">む</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ま行め">め</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ま行も">も</button></li>
                                     </ul>
                                 </div>
                             </li>
+                            
 
                             <!-- や行 -->
                             <li>
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ya" aria-expanded="false" aria-controls="row-ya">や行</a>
                                 <div id="row-ya" class="collapse">
                                     <ul>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="や">や</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ゆ">ゆ</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="よ">よ</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="や行">や行</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="や行や">や</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="や行ゆ">ゆ</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="や行よ">よ</button></li>
                                     </ul>
                                 </div>
                             </li>
+                            
 
                             <!-- ら行 -->
                             <li>
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ra" aria-expanded="false" aria-controls="row-ra">ら行</a>
                                 <div id="row-ra" class="collapse">
                                     <ul>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ら">ら</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="り">り</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="る">る</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="れ">れ</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ろ">ろ</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ら行">ら行</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ら行ら">ら</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ら行り">り</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ら行る">る</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ら行れ">れ</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ら行ろ">ろ</button></li>
                                     </ul>
                                 </div>
                             </li>
+                            
 
                             <!-- わ行 -->
                             <li>
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-wa" aria-expanded="false" aria-controls="row-wa">わ行</a>
                                 <div id="row-wa" class="collapse">
                                     <ul>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="わ">わ</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="を">を</button></li>
-                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="ん">ん</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="わ行">わ行</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="わ行わ">わ</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="わ行を">を</button></li>
+                                        <li><button class="btn btn-outline-primary alphabet-button" data-type="alphabet" data-id="わ行ん">ん</button></li>
                                     </ul>
                                 </div>
                             </li>
+                            
 
                             
                         </ul>
@@ -670,6 +704,18 @@
                 {% endif %}
             {% endfor %}
         </li>
+    {% endif %}
+
+    <!-- 50音順 - 条件表示 -->
+    {% if formatted_conditions %}
+    <li>50音順: 
+        <span>
+            {% for condition in formatted_conditions %}
+            <span>{{ condition }}
+            </span>
+            {% endfor %}
+        </span>
+    </li>
     {% endif %}
 </ul>
 
@@ -851,18 +897,26 @@ document.addEventListener('DOMContentLoaded', () => {
             // 既存の検索条件を取得
             var params = newUrl.searchParams;
 
+            if (type === 'row') {
+                // 行ボタンがクリックされた場合
+                params.delete('row'); // 行検索条件をクリア
+                params.append('row', id); // 新しい行条件を追加
+            } else if (type === 'alphabet') {
+                // 列ボタンがクリックされた場合
+                params.delete('alphabet'); // 列検索条件をクリア
+                params.append('alphabet', id); // 新しい列条件を追加
+            }
+
             // 複数のタグを選択可能にするために、既存のタグを追加
-            if (params.has(type)) {
-                // すでに同じタイプのパラメータが存在する場合、追加する
-                let existingValues = params.getAll(type);
-                existingValues.push(id);
-                params.delete(type);  // 既存の値を削除
-                existingValues.forEach(value => {
-                    params.append(type, value);  // 新しい値を追加
-                });
+            // 行検索または列検索の場合、他の同種の条件を削除して新しい条件を追加
+            if (type === 'row' || type === 'alphabet') {
+                params.delete(type); // 現在の条件を削除
+                params.append(type, id); // 新しい条件を追加
             } else {
-                // タグがまだ選択されていない場合はそのまま追加
-                params.append(type, id);
+                // その他の条件（ジャンル、タグなど）は既存の条件を保持しつつ追加
+                if (!params.getAll(type).includes(id)) {
+                    params.append(type, id);
+                }
             }
 
             // 新しいURLを適用

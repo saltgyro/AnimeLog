@@ -25,6 +25,27 @@ from django.core.paginator import Paginator
 
 from django.db.models.functions import Lower
 
+# 行と文字の対応を定義
+ROW_ALPHABET_MAPPING = {
+    "あ行": ["あ", "い", "う", "え", "お"],
+    "か行": ["か", "き", "く", "け", "こ"],
+    "さ行": ["さ", "し", "す", "せ", "そ"],
+    "た行": ["た", "ち", "つ", "て", "と"],
+    "な行": ["な", "に", "ぬ", "ね", "の"],
+    "は行": ["は", "ひ", "ふ", "へ", "ほ"],
+    "ま行": ["ま", "み", "む", "め", "も"],
+    "や行": ["や", "ゆ", "よ"],
+    "ら行": ["ら", "り", "る", "れ", "ろ"],
+    "わ行": ["わ", "を", "ん"],
+}
+
+# DISPLAY_MAPPING を動的に生成
+DISPLAY_MAPPING = {}
+for row, characters in ROW_ALPHABET_MAPPING.items():
+    DISPLAY_MAPPING[row] = f"{row}"  # 行単体
+    for char in characters:
+        DISPLAY_MAPPING[f"{row}{char}"] = f"{char}（{row}）"
+
 
 class CustomPasswordResetView(PasswordResetView):
     # パスワードリセットページのカスタムビュー
@@ -345,7 +366,7 @@ def get_animes(request, status, sort_option, search_conditions):
         print(f"50音順検索: {alphabets}")
         for alphabet in alphabets:
             print(f"50音順検索: {alphabet}でフィルタリング")
-            animes = animes.filter(initial=alphabet)  # initial フィールドでフィルタリング
+            animes = animes.filter(initial__icontains=alphabet) # initial フィールドでフィルタリング
             print(f"50音順検索後のアニメ数: {animes.count()}")
 
     # **ジャンル検索**
@@ -479,23 +500,24 @@ def home(request):
     
     # URLのクエリパラメータから検索条件を取得
     genre_search = request.GET.getlist('genre')
-    print(" genre_search ")
-    print( genre_search )
+    print(" genre_search ",genre_search)
     tag_search = request.GET.getlist('tag')
-    print("tag_search")
-    print(tag_search)
+    print("tag_search",tag_search)
     season_search = request.GET.getlist('season')
-    print("season_search")
-    print(season_search)
+    print("season_search",season_search,season_search)
     studio_search = request.GET.getlist('studio')
-    print("studio_search")
-    print(studio_search)
+    print("studio_search",studio_search)
     search_query = request.GET.getlist('search')   # 検索バーのキーワードを取得
-    print("studio_search")
-    print(studio_search)
-    alphabet_search = request.GET.getlist('alphabet')   # 検索バーの50音順を取得
-    print("alphabet_search")
-    print(alphabet_search)
+    print("studio_search",studio_search)
+    # alphabet_search = request.GET.getlist('alphabet')   # 検索バーの50音順を取得
+    alphabet_search = request.GET.getlist('alphabet', [])# 検索バーの50音順を取得
+    print("alphabet_search:", alphabet_search)
+    
+    # 表示用条件を変換
+    formatted_conditions = [
+        DISPLAY_MAPPING.get(cond, cond) for cond in alphabet_search
+    ]
+
     
     # ユーザーの入力をひらがなに変換
     # ユーザーの入力をカタカナ→ひらがなに変換
@@ -507,6 +529,10 @@ def home(request):
     # 出力確認用
     print("search_query_hiragana:", search_query_hiragana)  # 変換後のひらがな
     print("search_keywords:", search_keywords)  # スペースで区切ったキーワードリスト
+    
+    # 行検索が優先される場合の条件設定
+    
+    
     
     # 検索条件をまとめてディクショナリに格納
     search_conditions = {
@@ -550,6 +576,7 @@ def home(request):
         'grouped_seasons': dict(grouped_seasons),
         'status': status , # 現在のステータスをテンプレートに渡す
         'search_conditions': search_conditions,#検索条件
+        'formatted_conditions': formatted_conditions,
     })
 
 

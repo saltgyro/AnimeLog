@@ -122,6 +122,7 @@ class Anime(models.Model):
     manual_keyword = models.TextField(blank=True, null=True)  # 手動で追加されたキーワード
     final_search_keyword = models.TextField(blank=True, null=True)  # 最終的に検索に使用されるキーワード
     initial = models.CharField(max_length=5, blank=True, null=True) #50音順検索用
+    row_initial = models.CharField(max_length=5, blank=True, null=True) #不要データ削除
     
     genres = models.ManyToManyField(
         'Genres',
