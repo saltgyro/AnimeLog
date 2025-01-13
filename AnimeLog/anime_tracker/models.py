@@ -4,6 +4,42 @@ from django.urls import reverse_lazy
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 
+def generate_sort_key(kana, max_length=5):
+    """
+    ふりがなを基に固定桁数のソートキーを生成する。
+    :param kana: ふりがな（例: "さくら"）
+    :param max_length: ソートキーに含める最大文字数
+    :return: ソートキー（例: "11001200"）
+    """
+    gojuon = {
+        "あ": "10", "い": "11", "う": "12", "え": "13", "お": "14",
+        "か": "15", "が": "16", "き": "17", "ぎ": "18", "く": "19", "ぐ": "20", 
+        "け": "21", "げ": "22", "こ": "23", "ご": "24",
+        "さ": "25", "ざ": "26", "し": "27", "じ": "28", "す": "29", "ず": "30",
+        "せ": "31", "ぜ": "32", "そ": "33", "ぞ": "34",
+        "た": "35", "だ": "36", "ち": "37", "ぢ": "38", "つ": "39", "づ": "40",
+        "て": "41", "で": "42", "と": "43", "ど": "44",
+        "な": "45", "に": "46", "ぬ": "47", "ね": "48", "の": "49",
+        "は": "50", "ば": "51", "ぱ": "52", "ひ": "53", "び": "54", "ぴ": "55",
+        "ふ": "56", "ぶ": "57", "ぷ": "58", "へ": "59", "べ": "60", "ぺ": "61",
+        "ほ": "62", "ぼ": "63", "ぽ": "64",
+        "ま": "65", "み": "66", "む": "67", "め": "68", "も": "69",
+        "や": "70", "ゆ": "71", "よ": "72",
+        "ら": "73", "り": "74", "る": "75", "れ": "76", "ろ": "77",
+        "わ": "78", "を": "79", "ん": "80"
+    }
+
+    # ソートキーの生成
+    sort_key = ""
+    for char in kana[:max_length]:  # 最大文字数で制限
+        sort_key += gojuon.get(char, "99")  # 不明な文字は末尾扱い
+
+    # 長さを揃えるためにゼロパディング
+    total_digits = max_length * 2
+    sort_key = sort_key.ljust(total_digits, "9")
+    return sort_key
+
+
 class UserManager(BaseUserManager):
     def create_user(self,email,password):
         if not email:
@@ -106,6 +142,8 @@ class Song(models.Model):
 class Anime(models.Model):
     series_id = models.ForeignKey(Series, on_delete=models.SET_NULL, related_name='animes', null=True, blank=True)#シリーズID
     title = models.CharField(max_length=128)#タイトル名
+    title_kana = models.CharField(max_length=128, blank=True, null=True)  # ふりがな
+    
     synopsis = models.TextField(null=True, blank=True)#シナリオ
     start_date = models.DateField(null=True, blank=True)#放送開始日
     end_date = models.DateField(null=True, blank=True)#放送終了日
@@ -122,7 +160,6 @@ class Anime(models.Model):
     manual_keyword = models.TextField(blank=True, null=True)  # 手動で追加されたキーワード
     final_search_keyword = models.TextField(blank=True, null=True)  # 最終的に検索に使用されるキーワード
     initial = models.CharField(max_length=5, blank=True, null=True) #50音順検索用
-    row_initial = models.CharField(max_length=5, blank=True, null=True) #不要データ削除
     
     genres = models.ManyToManyField(
         'Genres',
@@ -151,6 +188,7 @@ class Anime(models.Model):
     def __str__(self):
         return self.title
     
+    
     def save(self, *args, **kwargs):
         # **自動生成されたキーワードを作成**
         auto_keyword = [self.title]  # タイトルを追加
@@ -173,9 +211,11 @@ class Anime(models.Model):
             final_keywords.update(self.manual_keyword.split())  # 手動キーワードを追加
             
         self.final_search_keyword = ' '.join(final_keywords)
-
+        
         # **保存**
         super().save(*args, **kwargs)
+    
+    
 
 
 class User_anime_relations(models.Model):#ユーザーのアニメの視聴管理

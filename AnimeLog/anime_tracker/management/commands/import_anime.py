@@ -11,154 +11,91 @@ def parse_date(date_str):
     日付形式をパースする関数。
     無効な形式の場合はNoneを返す。
     """
-    if not date_str:  # 空の場合
-        return None
     try:
-        # 日付形式をパース
-        return datetime.strptime(date_str, "%Y-%m-%d").date()
+        return datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else None
     except ValueError:
-        # 無効な形式の場合
+        print(f"無効な日付形式: {date_str}")
         return None
 
-# サムネイル画像の保存ディレクトリ
-THUMBNAILS_DIR = os.path.join(settings.MEDIA_ROOT, "thumbnails")
-
-# サムネイル保存用ディレクトリを事前に作成
-Path(THUMBNAILS_DIR).mkdir(parents=True, exist_ok=True)
+def save_thumbnail(anime, thumbnail_url):
+    """
+    サムネイル画像を保存する関数。
+    """
+    try:
+        response = requests.get(thumbnail_url)
+        if response.status_code == 200:
+            thumbnails_dir = os.path.join(settings.MEDIA_ROOT, "thumbnails")
+            Path(thumbnails_dir).mkdir(parents=True, exist_ok=True)
+            file_name = os.path.join(thumbnails_dir, f"{anime.id}.jpg")
+            with open(file_name, "wb") as f:
+                f.write(response.content)
+            anime.thumbnail.name = f"thumbnails/{anime.id}.jpg"
+            anime.save()
+            print(f"サムネイル保存完了: {file_name}")
+        else:
+            print(f"サムネイル取得失敗: {thumbnail_url}")
+    except Exception as e:
+        print(f"サムネイル保存中にエラー: {e}")
 
 class Command(BaseCommand):
     help = "Annict APIからアニメデータをインポートします"
 
     def handle(self, *args, **kwargs):
-        self.stdout.write("Annict APIからデータを取得します...")
+        print("Annict APIからデータを取得開始...")
 
-        # Annict API設定
-        API_URL = "https://api.annict.com/v1/works"
+        # APIトークンの取得
         ACCESS_TOKEN = "QBsj4vOUWkqM4IjJTEm-ZzUkQKPc2C9JSXUnxd4wwnY"
+        if not ACCESS_TOKEN:
+            print("APIトークンが設定されていません。settings.pyにANNICT_ACCESS_TOKENを追加してください。")
+            return
+
+        API_URL = "https://api.annict.com/v1/works"
 
         headers = {
-            'Authorization': f'Bearer {ACCESS_TOKEN}',
+            "Authorization": f"Bearer {ACCESS_TOKEN}",
         }
 
-        # APIリクエスト
         params = {
-            "per_page": 10,  # 取得件数
-            "page": 1,  # ページ番号
-            "sort_season": "desc",  # シーズン順（降順）
+            "per_page": 10,
+            "sort_season": "desc",
         }
 
         response = requests.get(API_URL, headers=headers, params=params)
+        print(f"APIリクエストステータスコード: {response.status_code}")
+
         if response.status_code == 200:
-            self.stdout.write(f"APIリクエストのステータスコード: {response.status_code}")
-            data = response.json().get("works", [])
+            works = response.json().get("works", [])
+            print(f"{len(works)}件のデータを取得")
 
-            for work in data:
-                print("レスポンスデータ:", work)
+            for work in works:
                 title = work.get("title", "No Title")
-                synopsis = work.get("synopsis", "")  # synopsisは未提供の場合が多い
-                start_date_raw = work.get("released_on", None)  # 放送開始日
-                end_date_raw = None  # end_dateはAPIから取得できない可能性あり
-                episode_count = work.get("episodes_count", 0)  # エピソード数
-                thumbnail_url = work.get("images", {}).get("recommended_url", None)  # サムネイル画像
+                synopsis = work.get("synopsis", "")
+                released_on = work.get("released_on") or work.get("released_on_about") or None
+                start_date = parse_date(released_on)
+                episode_count = work.get("episodes_count", 0)
+                thumbnail_url = work.get("images", {}).get("recommended_url") or work.get("images", {}).get("facebook", {}).get("og_image_url")
 
-                # 日付を変換
-                start_date = parse_date(start_date_raw)
-                end_date = parse_date(end_date_raw)
-                # サムネイルがある場合のみ処理を行う
-                if thumbnail_url:
-                    anime, created = Anime.objects.get_or_create(
-                        title=title,
-                        defaults={
-                            "synopsis": synopsis,
-                            "start_date": start_date,
-                            "episode_count": episode_count,
-                        }
-                    )
+                # 保存予定データを確認
+                print(f"保存予定データ: タイトル={title}, 開始日={start_date}, サムネイルURL={thumbnail_url}")
 
-                    if created:
-                        print(f"新しいアニメを作成: {title}")
+                if not title:
+                    print("タイトルが存在しないデータをスキップ")
+                    continue
 
-                        # サムネイル画像を保存
-                        response = requests.get(thumbnail_url)
-                        if response.status_code == 200:
-                            file_name = f"{THUMBNAILS_DIR}/{anime.id}.jpg"
-                            with open(file_name, 'wb') as f:
-                                f.write(response.content)
-                            anime.thumbnail.name = f"thumbnails/{anime.id}.jpg"
-                            anime.save()
-                    else:
-                        print(f"既存のアニメをスキップ: {title}")
+                anime, created = Anime.objects.get_or_create(
+                    title=title,
+                    defaults={
+                        "synopsis": synopsis,
+                        "start_date": start_date,
+                        "episode_count": episode_count,
+                    },
+                )
+
+                if created:
+                    print(f"新しいアニメを作成: {title}")
+                    if thumbnail_url:
+                        save_thumbnail(anime, thumbnail_url)
                 else:
-                    print(f"サムネイルがないためスキップ: {title}")
-
-            
-            
-            
-            # for anime_data in data:
-            #     # データ取得
-            #     title = anime_data.get("title", "No Title")
-            #     synopsis = anime_data.get("synopsis", "")
-            #     start_date = anime_data.get("released_on", None) or None  # 空文字列をNoneに変換
-            #     end_date = anime_data.get("released_on_about", None) or None  # 空文字列をNoneに変換
-            #     episode_count = anime_data.get("episodes_count", 0)
-            #     thumbnail_url = anime_data.get("images", {}).get("recommended_url", None)
-
-
-            #     # データベースに保存
-            #     anime, created = Anime.objects.get_or_create(
-            #         title=title,
-            #         defaults={
-            #             "synopsis": synopsis,
-            #             "start_date": start_date,
-            #             "end_date": end_date,
-            #             "episode_count": episode_count,
-            #         }
-            #     )
-
-            #     if created:
-            #         self.stdout.write(f"新しいアニメを作成: {title}")
-
-            #         # サムネイル画像の保存
-            #         # if thumbnail_url:
-            #         #     thumbnail_response = requests.get(thumbnail_url)
-            #         #     if thumbnail_response.status_code == 200:
-            #         #         file_name = f"thumbnails/{anime.id}.jpg"
-            #         #         with open(file_name, 'wb') as f:
-            #         #             f.write(thumbnail_response.content)
-            #         #         anime.thumbnail.name = file_name
-            #         #         anime.save()
-            #         #     else:
-            #         #         self.stdout.write(f"サムネイルの取得に失敗しました: {thumbnail_url}")
-                    
-            #         if thumbnail_url:
-            #             print(f"サムネイルURL: {thumbnail_url}")  # デバッグ用に出力
-            #             response = requests.get(thumbnail_url)
-            #             if response.status_code == 200:
-            #                 file_name = f"{THUMBNAILS_DIR}/{anime.id}.jpg"
-            #                 with open(file_name, 'wb') as f:
-            #                     f.write(response.content)
-            #                 anime.thumbnail.name = f"thumbnails/{anime.id}.jpg"
-            #                 anime.save()
-            #             else:
-            #                 print(f"サムネイル画像の取得に失敗しました: {response.status_code}")
-            #         else:
-            #             print(f"サムネイル未提供: {title}")
-                    
-            #         # if thumbnail_url:
-            #         #     response = requests.get(thumbnail_url)
-            #         #     if response.status_code == 200:
-            #         #         file_name = f"{THUMBNAILS_DIR}/{anime.id}.jpg"
-            #         #         with open(file_name, 'wb') as f:
-            #         #             f.write(response.content)
-            #         #         anime.thumbnail.name = f"thumbnails/{anime.id}.jpg"  # メディアルートからの相対パスを保存
-            #         #         anime.save()
-            #         #     else:
-            #         #         self.stdout.write(f"サムネイルの取得に失敗しました: {thumbnail_url}")
-                    
-            #     else:
-            #         self.stdout.write(f"既存のアニメをスキップ: {title}")
-
-            self.stdout.write("データベースへの保存が完了しました！")
+                    print(f"既存のアニメをスキップ: {title}")
         else:
-            self.stderr.write(f"APIリクエストが失敗しました: {response.status_code}")
-            self.stderr.write(response.text)
+            print(f"APIリクエスト失敗: {response.status_code} - {response.text}")

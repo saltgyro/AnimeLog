@@ -131,7 +131,10 @@ AUTH_USER_MODEL = 'anime_tracker.Users'
 
 # SESSION_COOKIE_AGE = 10 #クッキー設定時間
 
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True #ブラウザ閉じた時
+# セッション有効期限（秒単位、例: 1日）
+SESSION_COOKIE_AGE = 86400  # 1日
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # ブラウザ終了時にセッション削除
+
 
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIA_URL = '/media/'

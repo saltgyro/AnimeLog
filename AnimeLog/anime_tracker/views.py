@@ -25,6 +25,68 @@ from django.core.paginator import Paginator
 
 from django.db.models.functions import Lower
 
+import locale
+
+def sort_by_japanese_alphabet_custom(anime_list):
+    """
+    アニメタイトルを50音順でソートし、濁点・半濁点は元の行の最後に配置。
+    """
+    # 50音順の基準データ
+    gojuon = {
+        "あ": 0, "い": 1, "う": 2, "え": 3, "お": 4,
+        "か": 5, "き": 6, "く": 7, "け": 8, "こ": 9,
+        "さ": 10, "し": 11, "す": 12, "せ": 13, "そ": 14,
+        "た": 15, "ち": 16, "つ": 17, "て": 18, "と": 19,
+        "な": 20, "に": 21, "ぬ": 22, "ね": 23, "の": 24,
+        "は": 25, "ひ": 26, "ふ": 27, "へ": 28, "ほ": 29,
+        "ま": 30, "み": 31, "む": 32, "め": 33, "も": 34,
+        "や": 35, "ゆ": 36, "よ": 37,
+        "ら": 38, "り": 39, "る": 40, "れ": 41, "ろ": 42,
+        "わ": 43, "を": 44, "ん": 45,
+    }
+
+    # 濁点・半濁点の対応
+    dakuten_map = {"が": "か", "ぎ": "き", "ぐ": "く", "げ": "け", "ご": "こ",
+                    "ざ": "さ", "じ": "し", "ず": "す", "ぜ": "せ", "ぞ": "そ",
+                    "だ": "た", "ぢ": "ち", "づ": "つ", "で": "て", "ど": "と",
+                    "ば": "は", "び": "ひ", "ぶ": "ふ", "べ": "へ", "ぼ": "ほ",
+                    "ぱ": "は", "ぴ": "ひ", "ぷ": "ふ", "ぺ": "へ", "ぽ": "ほ"}
+
+    def sort_key(title):
+        """タイトルをソートキーに変換"""
+        if not title:  # タイトルが空の場合
+            return (float('inf'), float('inf'))  # 最後尾に配置
+
+        first_char = title[0]
+        # 元の行と濁点扱いを区別
+        if first_char in dakuten_map:
+            normalized_char = dakuten_map[first_char]
+            base_index = gojuon[normalized_char] + 0.5  # 元の行の最後に配置
+        else:
+            base_index = gojuon.get(first_char, float('inf'))  # 該当しない文字は最後尾
+
+        return base_index
+
+    # タイトルをソート
+    return sorted(anime_list, key=lambda anime: sort_key(anime.title or ""))
+
+
+
+
+def sort_by_japanese_alphabet(anime_queryset):
+    """
+    アニメのQuerySetを50音順でソートしてリストとして返す関数
+    """
+    # 日本語ロケールを設定
+    locale.setlocale(locale.LC_COLLATE, 'ja_JP.UTF-8')
+
+    # QuerySetをリストに変換し、titleで50音順ソート
+    sorted_anime_list = sorted(anime_queryset, key=lambda anime: locale.strxfrm(anime.title))
+    
+    # 並び替えたリストを再度QuerySetに変換
+    sorted_ids = [anime.id for anime in sorted_anime_list]
+    return Anime.objects.filter(id__in=sorted_ids).order_by('id')
+
 # 行と文字の対応を定義
 ROW_ALPHABET_MAPPING = {
     "あ行": ["あ", "い", "う", "え", "お"],
@@ -364,6 +426,7 @@ def get_animes(request, status, sort_option, search_conditions):
     if search_conditions.get('alphabet_search'):
         alphabets = search_conditions['alphabet_search']  # 選択された頭文字
         print(f"50音順検索: {alphabets}")
+        sort_option = 'alphabet'
         for alphabet in alphabets:
             print(f"50音順検索: {alphabet}でフィルタリング")
             animes = animes.filter(initial__icontains=alphabet) # initial フィールドでフィルタリング
@@ -450,7 +513,9 @@ def get_animes(request, status, sort_option, search_conditions):
     elif sort_option == 'watched_count-desc':
         animes = animes.order_by('-watched_count')
     elif sort_option == 'alphabet':
-        animes = animes.order_by(Lower('title'))
+        print('sort_option:' + sort_option)
+        animes = animes.order_by('title_kana')
+        
     else:
         animes = animes.order_by('-start_date')
 
@@ -494,6 +559,7 @@ def index(request):
 
 # homeビュー
 def home(request):
+    
     # URLパラメータから条件を取得
     sort_option = request.GET.get('sort', 'start-date-desc')  # デフォルトは新しい順
     status = request.GET.get('status', 'not_in_list')  # デフォルトはリスト外

@@ -95,7 +95,7 @@ class AnimeAdmin(admin.ModelAdmin):
     inlines = [AnimeGenresInline, AnimeTagsInline, AnimeSeasonsInline, CharacterInline, SongInline, AnimeStudioInline]  # インライン表示
 
     # 一覧表示で表示するフィールド
-    list_display = ['title', 'start_date', 'end_date', 'episode_count', 'initial','row_initial']
+    list_display = ['title', 'start_date', 'end_date', 'episode_count', 'initial']
     
     # 検索対象のフィールド
     search_fields = ['title', 'manual_keyword']
@@ -108,8 +108,10 @@ class AnimeAdmin(admin.ModelAdmin):
     
     # 管理画面で編集可能なフィールド（ManyToManyFieldを除外）
     fields = [
+        'sort_key',
         'series_id',
         'title', 
+        'title_kana',
         'synopsis', 
         'start_date', 
         'end_date', 
@@ -119,5 +121,4 @@ class AnimeAdmin(admin.ModelAdmin):
         'songs',       # 同上
         'manual_keyword',  # 手動キーワードフィールド
         'initial',
-        'row_initial'
     ]
