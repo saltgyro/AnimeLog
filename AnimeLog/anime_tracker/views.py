@@ -11,81 +11,33 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse,HttpResponseRedirect
 import requests
 from django.contrib.auth.views import PasswordResetDoneView,PasswordResetView,PasswordResetCompleteView,PasswordResetConfirmView
-
 from django.shortcuts import render
 from django.contrib.auth.tokens import default_token_generator
 from django.urls import reverse
 from django.core.mail import send_mail
 from django.conf import settings
 from django.template.loader import render_to_string
-
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.core.paginator import Paginator
-
 from django.db.models.functions import Lower
-
 import locale
+from collections import defaultdict
+import re
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from .models import Anime, User_anime_relations
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+import json
+from django.utils.cache import add_never_cache_headers
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from .models import Anime, Tags
 
-def sort_by_japanese_alphabet_custom(anime_list):
-    """
-    アニメタイトルを50音順でソートし、濁点・半濁点は元の行の最後に配置。
-    """
-    # 50音順の基準データ
-    gojuon = {
-        "あ": 0, "い": 1, "う": 2, "え": 3, "お": 4,
-        "か": 5, "き": 6, "く": 7, "け": 8, "こ": 9,
-        "さ": 10, "し": 11, "す": 12, "せ": 13, "そ": 14,
-        "た": 15, "ち": 16, "つ": 17, "て": 18, "と": 19,
-        "な": 20, "に": 21, "ぬ": 22, "ね": 23, "の": 24,
-        "は": 25, "ひ": 26, "ふ": 27, "へ": 28, "ほ": 29,
-        "ま": 30, "み": 31, "む": 32, "め": 33, "も": 34,
-        "や": 35, "ゆ": 36, "よ": 37,
-        "ら": 38, "り": 39, "る": 40, "れ": 41, "ろ": 42,
-        "わ": 43, "を": 44, "ん": 45,
-    }
-
-    # 濁点・半濁点の対応
-    dakuten_map = {"が": "か", "ぎ": "き", "ぐ": "く", "げ": "け", "ご": "こ",
-                    "ざ": "さ", "じ": "し", "ず": "す", "ぜ": "せ", "ぞ": "そ",
-                    "だ": "た", "ぢ": "ち", "づ": "つ", "で": "て", "ど": "と",
-                    "ば": "は", "び": "ひ", "ぶ": "ふ", "べ": "へ", "ぼ": "ほ",
-                    "ぱ": "は", "ぴ": "ひ", "ぷ": "ふ", "ぺ": "へ", "ぽ": "ほ"}
-
-    def sort_key(title):
-        """タイトルをソートキーに変換"""
-        if not title:  # タイトルが空の場合
-            return (float('inf'), float('inf'))  # 最後尾に配置
-
-        first_char = title[0]
-        # 元の行と濁点扱いを区別
-        if first_char in dakuten_map:
-            normalized_char = dakuten_map[first_char]
-            base_index = gojuon[normalized_char] + 0.5  # 元の行の最後に配置
-        else:
-            base_index = gojuon.get(first_char, float('inf'))  # 該当しない文字は最後尾
-
-        return base_index
-
-    # タイトルをソート
-    return sorted(anime_list, key=lambda anime: sort_key(anime.title or ""))
-
-
-
-
-def sort_by_japanese_alphabet(anime_queryset):
-    """
-    アニメのQuerySetを50音順でソートしてリストとして返す関数
-    """
-    # 日本語ロケールを設定
-    locale.setlocale(locale.LC_COLLATE, 'ja_JP.UTF-8')
-
-    # QuerySetをリストに変換し、titleで50音順ソート
-    sorted_anime_list = sorted(anime_queryset, key=lambda anime: locale.strxfrm(anime.title))
-    
-    # 並び替えたリストを再度QuerySetに変換
-    sorted_ids = [anime.id for anime in sorted_anime_list]
-    return Anime.objects.filter(id__in=sorted_ids).order_by('id')
 
 # 行と文字の対応を定義
 ROW_ALPHABET_MAPPING = {
@@ -108,7 +60,7 @@ for row, characters in ROW_ALPHABET_MAPPING.items():
     for char in characters:
         DISPLAY_MAPPING[f"{row}{char}"] = f"{char}（{row}）"
 
-
+#====================================================================================================================
 class CustomPasswordResetView(PasswordResetView):
     # パスワードリセットページのカスタムビュー
     template_name = 'registration/password_reset.html'  # カスタムテンプレートを指定
@@ -147,7 +99,7 @@ class CustomPasswordResetCompleteView(PasswordResetCompleteView):
 class CustomPasswordResetDoneView(PasswordResetDoneView):
     template_name = 'registration/password_reset_done.html'  # カスタムテンプレートを指定
 
-    
+#====================================================================================================================   
 
 def kata2hira(text):
     """
@@ -204,119 +156,8 @@ class RegistUseView(CreateView):
     form_class = RegistForm
     success_url = reverse_lazy('anime:home')
 
-# アニメのリストを取得し、フィルタリング、並び替えを行う共通メソッド
-# def get_animes(request, status, sort_option,search_conditions):
-#     user_anime_ids = User_anime_relations.objects.filter(user_id=request.user.id).values_list('anime_id', flat=True)
-    
-    
-#     # ステータスごとのフィルタリング
-#     if status == 'watched':  # 視聴済
-#         animes = Anime.objects.filter(user_anime_relations__status=2, user_anime_relations__user_id=request.user.id)
-#         print('視聴済')
-#     elif status == 'favorite':  # お気に入り
-#         animes = Anime.objects.filter(user_anime_relations__is_favorite=True, user_anime_relations__user_id=request.user.id)
-#         print('お気に入り')
-#     elif status == 'plan_to_watch':  # 視聴予定
-#         animes = Anime.objects.filter(user_anime_relations__status=1, user_anime_relations__user_id=request.user.id)
-#         print('視聴予定')
-#     elif status == 'not_in_list':  # リスト外
-#         animes = Anime.objects.all()
-#         print('リスト外')
-#     else:  # 無効なステータスの場合、全て非表示
-#         animes = Anime.objects.all()
-#         print('全て非表示')
-
-    
 
 
-#     # 検索条件の追加
-#     # AND検索のために条件をまとめる
-#     filter_conditions = Q()
-    
-#     # 検索キーワードに対してAND検索を行う
-#     if search_conditions.get('search'):
-#         search_keywords = search_conditions['search']
-#         for keyword in search_keywords:
-#             # タイトル検索（タイトルにキーワードが含まれている場合）
-#             filter_conditions &= Q(title__icontains=keyword)
-
-#             # 他のテーブル（ジャンル、タグ、キャラクター、ソング、声優、アーティストなど）にも適用
-#             genres = Genres.objects.filter(name__icontains=keyword)
-#             tags = Tags.objects.filter(name__icontains=keyword)
-#             characters = Character.objects.filter(name__icontains=keyword)
-#             voice_actors = VoiceActor.objects.filter(name__icontains=keyword)
-#             songs = Song.objects.filter(title__icontains=keyword)
-#             artists = Artist.objects.filter(name__icontains=keyword)
-
-
-
-#     # フィルタリングを適用
-#     animes = animes.filter(filter_conditions)
-                                
-    
-    
-
-#     # ジャンル検索
-#     if search_conditions.get('genre'):
-#         filter_conditions &= Q(genres__id__in=search_conditions['genre'])
-#         print(f"ジャンルフィルタ: {filter_conditions}")
-    
-#     # タグ検索
-#     if search_conditions.get('tag'):
-#         filter_conditions &= Q(tags__id__in=search_conditions['tag'])
-#         print(f"タグフィルタ: {filter_conditions}")
-    
-#     # シーズン検索
-#     if search_conditions.get('season'):
-#         filter_conditions &= Q(seasons__id__in=search_conditions['season'])
-#         print(f"シーズンフィルタ: {filter_conditions}")
-    
-#     # スタジオ検索
-#     if search_conditions.get('studio'):
-#         filter_conditions &= Q(studios__id__in=search_conditions['studio'])
-#         print(f"スタジオフィルタ: {filter_conditions}")
-
-#     # デバッグ: filter_conditionsが正しく設定されているか確認
-#     print(f"filter_conditions: {filter_conditions}")
-    
-#     # フィルタリングを適用
-#     animes = animes.filter(filter_conditions)
-
-        
-#     print("sort_option:" + sort_option)
-    
-#     # 並び順の適用
-#     if sort_option == 'average_rating':
-#         animes = animes.order_by('-average_rating')
-#         print('平均評価が高い')
-#     elif sort_option == 'season-asc':
-#         animes = animes.order_by('start_date')  # 古い順
-#         print('古い順')
-#     elif sort_option == 'season-desc':
-#         animes = animes.order_by('-start_date')  # 新しい順
-#         print('新しい順')
-#     elif sort_option == 'watched_count-desc':
-#         animes = animes.order_by('-watched_count')
-#         print('登録数')
-#     else:
-#         animes = animes.order_by('-start_date')  # デフォルトでは新しい順
-#         print('外：新しい順')
-
-
-#     # 重複を排除
-#     animes = animes.distinct()
-
-#     # 重複を手動で排除（Python側で重複を取り除く）
-#     unique_animes = {}
-#     for anime in animes:
-#         unique_animes[anime.id] = anime
-
-#     # 重複を排除したアニメリストを返す
-#     return list(unique_animes.values())
-
-from collections import defaultdict
-
-import re
 
 
 def preprocess_keywords(search_query):
@@ -333,76 +174,6 @@ def preprocess_keywords(search_query):
     keywords = [kata2hira(keyword) for keyword in keywords if keyword]  # 空のキーワードを除外
     return keywords
 
-
-
-# def get_animes(request, status, sort_option, search_conditions):
-#     user_anime_ids = User_anime_relations.objects.filter(user_id=request.user.id).values_list('anime_id', flat=True)
-
-#     # ステータスによるフィルタリング
-#     if status == 'watched':
-#         animes = Anime.objects.filter(user_anime_relations__status=2, user_anime_relations__user_id=request.user.id)
-#     elif status == 'favorite':
-#         animes = Anime.objects.filter(user_anime_relations__is_favorite=True, user_anime_relations__user_id=request.user.id)
-#     elif status == 'plan_to_watch':
-#         animes = Anime.objects.filter(user_anime_relations__status=1, user_anime_relations__user_id=request.user.id)
-#     elif status == 'not_in_list':
-#         animes = Anime.objects.all()
-#     else:
-#         animes = Anime.objects.none()
-
-#     # 検索キーワードの処理
-#     if search_conditions.get('search'):
-#         search_keywords = preprocess_keywords(search_conditions['search'])  # キーワードを取得
-        
-#         print(f"検索キーワード: {search_keywords}")
-        
-#         # 検索結果を格納する辞書
-#         search_results = defaultdict(set)
-
-#         for keyword in search_keywords:
-#             print(f"キーワード: {keyword}")
-
-#             # 各検索項目の結果を確認
-#             title_results = Anime.objects.filter(title__icontains=keyword).values_list('id', flat=True)
-#             print(f"タイトルヒット: {list(title_results)}")
-
-#             genre_results = Anime.objects.filter(genres__name__icontains=keyword).values_list('id', flat=True)
-#             print(f"ジャンルヒット: {list(genre_results)}")
-
-#             tag_results = Anime.objects.filter(tags__name__icontains=keyword).values_list('id', flat=True)
-#             print(f"タグヒット: {list(tag_results)}")
-
-#             character_results = Anime.objects.filter(characters__name__icontains=keyword).values_list('id', flat=True)
-#             print(f"キャラクターヒット: {list(character_results)}")
-
-#             voice_actor_results = Anime.objects.filter(characters__voice_actor__name__icontains=keyword).values_list('id', flat=True)
-#             print(f"声優ヒット: {list(voice_actor_results)}")
-
-
-#         # 検索結果のマージ
-#         all_results = set()
-#         for key, anime_ids in search_results.items():
-#             print(f"{key}でヒットしたアニメ: {anime_ids}")
-#             all_results.update(anime_ids)
-
-#         # 結果をフィルタリング
-#         animes = animes.filter(id__in=all_results)
-#         print(f"フィルタリング後のアニメ数: {animes.count()}")
-
-#     # 並び順の適用
-#     if sort_option == 'average_rating':
-#         animes = animes.order_by('-average_rating')
-#     elif sort_option == 'season-asc':
-#         animes = animes.order_by('start_date')
-#     elif sort_option == 'season-desc':
-#         animes = animes.order_by('-start_date')
-#     elif sort_option == 'watched_count-desc':
-#         animes = animes.order_by('-watched_count')
-#     else:
-#         animes = animes.order_by('-start_date')
-
-#     # 重複を排除
-#     return animes.distinct()
 
 def get_animes(request, status, sort_option, search_conditions):
     user_anime_ids = User_anime_relations.objects.filter(user_id=request.user.id).values_list('anime_id', flat=True)
@@ -685,62 +456,6 @@ def user_edit(request):
 
 
 
-
-
-
-
-#アニメ詳細画面で追加
-# @login_required
-# def update_status(request, pk):
-#     print('update_statusが呼び出された')
-#     if request.method == "POST":
-#         # 生のリクエストボディを出力
-#         print("リクエストボディ:", request.body)
-#         try:
-#             # JSONデータを読み取る
-#             data = json.loads(request.body)  # リクエストボディをJSONとして解析
-#             # anime_id = data.get('anime_id')  # JSONからアニメIDを取得
-#             status = data.get('status')      # JSONからステータスを取得
-
-            
-#             print(f"ステータス: {status}")
-#             anime = get_object_or_404(Anime, id=pk)
-#             # anime = get_object_or_404(Anime, id=anime_id)
-#             user = request.user
-#             print(f"リクエストユーザー: {user.nickname}")
-#             # デバッグ用の出力
-
-#             # ユーザーとアニメの関係を更新
-#             relation, created = User_anime_relations.objects.get_or_create(user_id=user, anime_id=anime)
-
-#             # ステータス更新処理
-#             if status == "watched":
-#                 relation.status = 2  # 視聴済みに変更
-#             elif status == "favorite":
-#                 if relation.status == 2:  # 視聴済みのみお気に入りに設定可能
-#                     relation.is_favorite = True
-#             elif status == "plan_to_watch":
-#                 relation.status = 1  # 視聴予定に変更
-#                 relation.is_favorite = False  # 視聴予定の場合はお気に入りを解除
-
-#             relation.save()
-
-#             # JSONレスポンスの内容
-#             return JsonResponse({
-#                 "status": relation.status,  # 1: 視聴予定, 2: 視聴済み
-#                 "is_favorite": relation.is_favorite,  # お気に入りの状態
-#             })
-
-#         except Exception as e:
-#             print(f"Anime の取得でエラー: {e}")
-#             return JsonResponse({"error": str(e)}, status=400)
-
-#     return JsonResponse({"error": "Invalid request method."}, status=400)
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
-from .models import Anime, User_anime_relations
-
 @login_required
 def update_status(request, pk):
     if request.method == "POST":
@@ -801,38 +516,6 @@ def animeDetailView(request, pk):
     return render(request, 'html/anime_detail.html', {
         'anime': anime, 'user_relation': user_relation,'related_animes': related_animes,'tags': all_tags,'star_range': star_range,})
 
-#ユーザー評価入力
-# def update_rating(request):
-#     print("update_rating")
-#     if request.method == "POST":
-#         try:
-#             data = json.loads(request.body)
-#             anime_id = data.get('anime_id')
-#             rating = data.get('rating')
-
-#             if not 0.0 <= rating <= 5.0:
-#                 return JsonResponse({"error": "Invalid rating value."}, status=400)
-
-#             anime = get_object_or_404(Anime, id=anime_id)
-#             user = request.user
-#             relation, created = User_anime_relations.objects.get_or_create(user_id=user, anime_id=anime)
-#             relation.rating = rating
-#             relation.save()
-            
-#             print("relation更新"+ str(relation.rating))
-#             # アニメの平均評価を更新
-
-
-#             return JsonResponse({"message": "Rating updated successfully.", "average_rating": anime.average_rating})
-#             # return JsonResponse({"message": "Rating updated successfully."})
-#         except Exception as e:
-#             return JsonResponse({"error": str(e)}, status=400)
-#     return JsonResponse({"error": "Invalid request method."}, status=400)
-from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
-import json
-from django.utils.cache import add_never_cache_headers
 
 @login_required
 def update_rating(request, pk):
@@ -911,10 +594,7 @@ def search_view(request):
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
-from .models import Anime, Tags
+
 
 
 def toggle_tag(request):
