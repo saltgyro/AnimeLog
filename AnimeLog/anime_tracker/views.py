@@ -133,7 +133,7 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
 
     def get_success_url(self):
         # パスワードリセット完了ページにリダイレクト
-        return reverse_lazy('anime_tracker:password_reset_done')
+        return reverse_lazy('anime_tracker:password_reset_complete')
 
 class CustomPasswordResetCompleteView(PasswordResetCompleteView):
     template_name = 'registration/password_reset_complete.html'  # カスタムテンプレートを指定
