@@ -108,7 +108,6 @@ class AnimeAdmin(admin.ModelAdmin):
     
     # 管理画面で編集可能なフィールド（ManyToManyFieldを除外）
     fields = [
-        'sort_key',
         'series_id',
         'title', 
         'title_kana',
