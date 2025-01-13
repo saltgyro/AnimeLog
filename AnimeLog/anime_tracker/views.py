@@ -559,6 +559,8 @@ def index(request):
 
 # homeビュー
 def home(request):
+    # 現在の検索条件を取得
+    query_params = request.GET.copy()
     
     # URLパラメータから条件を取得
     sort_option = request.GET.get('sort', 'start-date-desc')  # デフォルトは新しい順
@@ -643,6 +645,7 @@ def home(request):
         'status': status , # 現在のステータスをテンプレートに渡す
         'search_conditions': search_conditions,#検索条件
         'formatted_conditions': formatted_conditions,
+        'query_params': query_params,
     })
 
 

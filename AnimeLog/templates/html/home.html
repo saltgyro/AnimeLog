@@ -764,7 +764,7 @@
     <div class="anime-list">
         {% for anime in page_obj %}
             <div class="anime-item">
-                <a href="{% url 'anime_tracker:anime_detail' anime.id %}">
+                <a href="{% url 'anime_tracker:anime_detail' anime.id %}?{{ request.GET.urlencode }}">
                     {% if anime.thumbnail %}
                         <img src="{{ anime.thumbnail.url }}" alt="{{ anime.title }}" width="150">
                     {% else %}
