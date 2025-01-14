@@ -394,7 +394,7 @@ def home(request):
     animes = get_animes(request, status, sort_option, search_conditions)
     
     # ページネーションの設定
-    paginator = Paginator(animes, 24)  # 1ページに表示するアイテム数
+    paginator = Paginator(animes, 16)  # 1ページに表示するアイテム数
     page_number = request.GET.get('page')  # 現在のページ番号
     page_obj = paginator.get_page(page_number)  # 該当のページを取得
     
