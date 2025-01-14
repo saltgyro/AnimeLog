@@ -259,18 +259,17 @@ def get_animes(request, status, sort_option, search_conditions):
 
     # **キーワード検索**
     if search_conditions.get('search'):
-        # search_keywords = preprocess_keywords(search_conditions['search'])  # キーワードを取得
-        search_keywords = search_conditions['search']  # キーワードを取得
+        search_keywords = search_conditions['search']  # キーワードリストを取得
         print(f"キーワード検索: {search_keywords}")
 
-        # キーワード検索用の条件を作成
-        keyword_conditions = Q()
+        # キーワードごとに順次フィルタリング（累積適用）
         for keyword in search_keywords:
-            keyword_conditions |= Q(final_search_keyword__icontains=keyword)
+            print(f"キーワード {keyword} でフィルタリング")
+            animes = animes.filter(final_search_keyword__icontains=keyword)  # 現在の `animes` に対してさらに絞り込む
+            print(f"キーワード {keyword} での検索結果: {animes.count()}")
 
-        # フィルタリング済みの `animes` にさらに適用
-        animes = animes.filter(keyword_conditions)
-        print(f"キーワード検索後のアニメ数: {animes.count()}")
+        print(f"最終キーワード検索後のアニメ数: {animes.count()}")
+
 
 
 #====================================================================================================================
@@ -358,20 +357,15 @@ def home(request):
     ]
 
     
-    # ユーザーの入力をひらがなに変換
-    # ユーザーの入力をカタカナ→ひらがなに変換
-    search_query_hiragana = kata2hira(search_query)  # カタカナをひらがなに変換
+    # 入力された検索クエリをそのまま使用
+    search_querys = request.GET.get('search', '').strip()  # 検索バーのキーワードを取得
+    search_querys = search_querys.replace("\u3000", " ")  # 全角スペースを半角スペースに変換
     
-    # スペースで区切ってキーワードリストを作成
-    search_keywords = search_query_hiragana.split() if search_query_hiragana else []
+    search_keywords = search_querys.split() if search_querys else []
     
     # 出力確認用
-    print("search_query_hiragana:", search_query_hiragana)  # 変換後のひらがな
+    print("search_querys:", search_querys)  # 入力された検索クエリ
     print("search_keywords:", search_keywords)  # スペースで区切ったキーワードリスト
-    
-    # 行検索が優先される場合の条件設定
-    
-    
     
     # 検索条件をまとめてディクショナリに格納
     search_conditions = {
@@ -379,7 +373,7 @@ def home(request):
         'tag': tag_search,
         'season': season_search,
         'studio': studio_search,
-        'search': search_query,
+        'search': search_keywords,
         'alphabet_search':alphabet_search
     }
     

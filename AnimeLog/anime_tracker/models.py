@@ -67,7 +67,7 @@ class UserManager(BaseUserManager):
 class Users(AbstractBaseUser,PermissionsMixin):
     nickname = models.CharField(max_length=128)
     email = models.EmailField(max_length=255,unique=True)
-    is_active = models.BooleanField(default=True)  # 管理画面用
+    is_staff = models.BooleanField(default=True)  # 管理画面用
     is_active = models.BooleanField(default=False)  # 管理画面用
     created_at = models.DateTimeField(auto_now_add=True)#登録日時
     updated_at = models.DateTimeField(auto_now=True)#更新日時

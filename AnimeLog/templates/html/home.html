@@ -17,12 +17,13 @@
         <h6>検索条件</h6>
         <ul>
             <!-- フリーワード検索 -->
+            <pre>{{ search_conditions.search }}</pre>
             {% if search_conditions.search %}
             <li>フリーワード検索: 
                 {% for keyword in search_conditions.search %}
                     <span>{{ keyword }}
                         <button class="btn btn-sm btn-danger remove-condition" data-type="search" data-value="{{ keyword }}">×</button>
-                    </span>{% if not forloop.last %}, {% endif %}
+                    </span>{% if not forloop.last %} {% endif %}
                 {% endfor %}
             </li>
             {% endif %}
@@ -865,15 +866,51 @@
                 const url = new URL(window.location.href);
                 const params = url.searchParams;
 
-                // 該当する条件を削除
-                const values = params.getAll(type); // すべての値を取得
-                params.delete(type); // まずそのパラメータを削除
-                values.forEach(val => {
-                    if (val !== value) { // 削除対象以外を再追加
-                        params.append(type, val);
-                    }
-                });
+                // デバッグ用ログ
+                console.log("クリックされたタイプ:", type);
+                console.log("クリックされた値:", value);
+                console.log("現在のパラメータ:", [...params.entries()]);
 
+                // 該当する条件を削除
+                if (type === "search") {
+                    // search 用の特別処理
+                    // search 用の特別処理
+                    const currentSearch = params.get(type) || "";
+                    console.log(`現在の検索クエリ: ${currentSearch}`);
+                    
+                    // 全角スペースを半角スペースに置換
+                    const normalizedSearch = currentSearch.replace(/\u3000/g, " ");
+                    console.log(`正規化後の検索クエリ: ${normalizedSearch}`);
+
+                    // 半角スペースで分割
+                    const keywords = normalizedSearch.split(" ");
+                    console.log(`分割されたキーワード: ${keywords}`);
+                    
+                    // 削除対象を除外
+                    const updatedKeywords = keywords.filter(keyword => keyword !== value);
+                    console.log(`削除後のキーワード: ${updatedKeywords}`);
+                    if (updatedKeywords.length > 0) {
+                        params.set(type, updatedKeywords.join(" "));
+                    } else {
+                        params.delete(type);
+                    }
+                } else {
+                    // 通常の処理
+                    const values = params.getAll(type);
+                    params.delete(type);
+                    values.forEach(val => {
+                        if (val !== value) {
+                            params.append(type, val);
+                        }
+                    });
+                }
+                
+
+                console.log("変更後のパラメータ:", [...params.entries()]);
+
+                // 遷移を一時停止
+                console.log("リダイレクト先URL:", url.toString());
+                
                 // 新しいURLにリダイレクト
                 window.location.href = url.toString();
             });
