@@ -610,27 +610,48 @@ def toggle_tag(request):
         try:
             # JSONデータを取得
             data = json.loads(request.body)
+            print("受信データ:", data)
             anime_id = data.get('anime_id')
             tag_id = data.get('tag_id')
             active = data.get('active')
+            print(f"アニメID: {anime_id}, タグID: {tag_id}, 状態: {active}")
             
             # ユーザーの視聴済みステータスを確認
             relation = User_anime_relations.objects.filter(
-                user=request.user,
+                user_id=request.user,  # 修正点
                 anime_id=anime_id,
                 status=2  # 視聴済み
             ).first()
             
             if not relation:
+                print("操作許可されてない")
                 return JsonResponse({'error': '操作が許可されていません。'}, status=403)
+            
+            # **必須データの検証**
+            if not anime_id or not tag_id:
+                print("アニメIDまたはタグIDが不正です")
+                return JsonResponse({"error": "無効なリクエストデータ"}, status=400)
 
-            # アニメとタグを取得
-            anime = Anime.objects.get(id=anime_id)
-            tag = Tags.objects.get(id=tag_id)
+            # # アニメとタグを取得
+            # anime = Anime.objects.get(id=anime_id)
+            # tag = Tags.objects.get(id=tag_id)
+            
+            try:
+                anime = Anime.objects.get(pk=anime_id)
+                tag = Tags.objects.get(pk=tag_id)
+                print("データベースからアニメとタグを取得成功")
+            except Anime.DoesNotExist:
+                print(f"アニメID {anime_id} が存在しません")
+                return JsonResponse({"error": "アニメが見つかりません"}, status=404)
+            except Tags.DoesNotExist:
+                print(f"タグID {tag_id} が存在しません")
+                return JsonResponse({"error": "タグが見つかりません"}, status=404)
 
             if active:
+                print("タグを追加します")
                 anime.tags.add(tag)  # タグを追加
             else:
+                print("タグを削除します")
                 anime.tags.remove(tag)  # タグを削除
 
             return JsonResponse({'status': 'success', 'message': 'タグ状態を更新しました。'})
@@ -639,6 +660,7 @@ def toggle_tag(request):
         except Tags.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': '指定されたタグが見つかりません。'}, status=404)
         except Exception as e:
+            print("エラー発生:", str(e))
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
     return JsonResponse({'status': 'error', 'message': '無効なリクエストです。'}, status=400)

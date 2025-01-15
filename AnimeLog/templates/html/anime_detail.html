@@ -118,33 +118,28 @@
 
 
         <h3>タグ一覧</h3>
-        {% comment %} <div class="all-tags">
+        <div class="all-tags">
             {% for tag in tags %}
-                <button class="tag-button {% if tag in anime.tags.all %}active-tag{% else %}inactive-tag{% endif %}" 
-                        data-tag-id="{{ tag.id }}" 
-                        onclick="toggleTag(this, {{ anime.id }}, {{ tag.id }})">
+                <button 
+                    class="tag-button {% if tag in anime.tags.all %}active-tag{% else %}inactive-tag{% endif %}"
+                    data-tag-id="{{ tag.id }}"
+                    {% if can_edit_tags %}
+                        onclick="toggleTag(this, {{ anime.id }}, {{ tag.id }})"
+                    {% else %}
+                        disabled
+                    {% endif %}
+                >
                     {{ tag.name }}
                 </button>
             {% empty %}
                 <p>タグが登録されていません。</p>
             {% endfor %}
-        </div> {% endcomment %}
-        <p>can_edit_tags: {{ can_edit_tags }}デバッグ用消し忘れ注意！！！</p>
-        <div class="all-tags">
-            {% if can_edit_tags %}
-                {% for tag in tags %}
-                    <button class="tag-button {% if tag in anime.tags.all %}active-tag{% else %}inactive-tag{% endif %}" 
-                            data-tag-id="{{ tag.id }}" 
-                            onclick="toggleTag(this, {{ anime.id }}, {{ tag.id }})">
-                        {{ tag.name }}
-                    </button>
-                {% empty %}
-                    <p>タグが登録されていません。</p>
-                {% endfor %}
-            {% else %}
+        
+            {% if not can_edit_tags %}
                 <p>タグ操作はログインユーザーで視聴済みの方のみ可能です。</p>
             {% endif %}
         </div>
+        
 
         <h2>関連アニメ</h2>
         <div class="related-animes">
@@ -178,6 +173,11 @@
     function toggleTag(button, animeId, tagId) {
         const isActive = button.classList.contains('active-tag');
         const newState = !isActive; // 新しい状態を切り替え
+
+        console.log("タグ操作デバッグ");
+        console.log("アニメID:", animeId);
+        console.log("タグID:", tagId);
+        console.log("新しい状態:", newState);
     
         // サーバーに新しい状態を送信
         fetch(`/toggle-tag/`,  {
