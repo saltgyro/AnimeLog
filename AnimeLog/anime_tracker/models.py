@@ -41,34 +41,31 @@ def generate_sort_key(kana, max_length=5):
 
 
 class UserManager(BaseUserManager):
-    def create_user(self,email,password):
+    def create_user(self,email, password=None, nickname=None):
         if not email:
             raise ValueError('メールアドレスは必須です')
         if not password:
             raise ValueError('パスワードを入力してください')
-        user = self.model(email=self.normalize_email(email))
+        
+        email = self.normalize_email(email)
+        user = self.model(email=email, nickname=nickname)
         user.set_password(password)
-        user.save()
+        user.is_active = True  # デフォルトで有効化
+        user.save(using=self._db)
         return user
     
-    def create_superuser(self,email, password,nickname):
-        user = self.model(
-            email=email,
-            password=password,
-            nickname=nickname
-        )
-        user.set_password(password)
+    def create_superuser(self,email, password=None, nickname=None):
+        user = self.create_user(email=email, password=password, nickname=nickname)
         user.is_staff = True
-        user.is_active = True
         user.is_superuser = True
-        user.save(using = self._db)
+        user.save(using=self._db)
         return user
     
 class Users(AbstractBaseUser,PermissionsMixin):
     nickname = models.CharField(max_length=128)
     email = models.EmailField(max_length=255,unique=True)
-    is_staff = models.BooleanField(default=True)  # 管理画面用
-    is_active = models.BooleanField(default=False)  # 管理画面用
+    is_staff = models.BooleanField(default=False)  # 管理画面用
+    is_active = models.BooleanField(default=True)  # 管理画面用
     created_at = models.DateTimeField(auto_now_add=True)#登録日時
     updated_at = models.DateTimeField(auto_now=True)#更新日時
     
