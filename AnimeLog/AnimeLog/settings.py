@@ -15,9 +15,11 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
+PORTFOLIO_TEMPLATE_DIR = os.path.join(BASE_DIR, 'portfolio', 'templates')
 STATIC_URL = '/static/'  # URLの接頭辞
 STATICFILES_DIRS = [     # 静的ファイルの場所を追加
     os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'portfolio', 'static'),  # ポートフォリオ用の静的ファイル
 ]
 
 # Quick-start development settings - unsuitable for production
@@ -59,7 +61,7 @@ ROOT_URLCONF = 'AnimeLog.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATE_DIR,],
+        'DIRS': [TEMPLATE_DIR,PORTFOLIO_TEMPLATE_DIR, ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
