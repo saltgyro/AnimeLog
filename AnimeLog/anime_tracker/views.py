@@ -509,14 +509,20 @@ def update_status(request, pk):
 def animeDetailView(request, pk):
     anime = get_object_or_404(Anime, pk=pk)
     user_relation = None
+    can_edit_tags = False  # タグ操作可能フラグ
+    
     if request.user.is_authenticated:
         user_relation = User_anime_relations.objects.filter(user_id=request.user, anime_id=anime).first()
+        # 視聴済み（status=2）の場合にタグ操作可能
+        can_edit_tags = user_relation and user_relation.status == 2
+
+
     related_animes = Anime.objects.filter(series_id=anime.series_id).exclude(id=anime.id)
     print(related_animes.count())
     all_tags = Tags.objects.all()# タグ一覧を取得
     star_range = [i * 0.5 for i in range(1, 11)] # 0.5刻みの評価リストを作成
     return render(request, 'html/anime_detail.html', {
-        'anime': anime, 'user_relation': user_relation,'related_animes': related_animes,'tags': all_tags,'star_range': star_range,})
+        'anime': anime, 'user_relation': user_relation,'related_animes': related_animes,'tags': all_tags,'star_range': star_range,'can_edit_tags': can_edit_tags,})
 
 
 @login_required
@@ -598,7 +604,7 @@ def search_view(request):
 
 
 
-
+@login_required
 def toggle_tag(request):
     if request.method == "POST":
         try:
@@ -607,6 +613,16 @@ def toggle_tag(request):
             anime_id = data.get('anime_id')
             tag_id = data.get('tag_id')
             active = data.get('active')
+            
+            # ユーザーの視聴済みステータスを確認
+            relation = User_anime_relations.objects.filter(
+                user=request.user,
+                anime_id=anime_id,
+                status=2  # 視聴済み
+            ).first()
+            
+            if not relation:
+                return JsonResponse({'error': '操作が許可されていません。'}, status=403)
 
             # アニメとタグを取得
             anime = Anime.objects.get(id=anime_id)

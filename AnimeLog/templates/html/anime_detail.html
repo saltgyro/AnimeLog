@@ -65,25 +65,28 @@
 
         <div class="anime-rating">
             <!-- 評価星の表示 -->
-            <div class="rating-container">
-                <div class="card-review_star" data-anime-id="{{ anime.id }}" data-rating="{{ user_relation.rating|default:0 }}"></div>
+            <div class="rating-container" {% if not can_edit_tags %}disabled{% endif %}">
+                <div class="card-review_star"
+                    {% if can_edit_tags %}
+                    data-anime-id="{{ anime.id }}"
+                    data-rating="{{ user_relation.rating|default:0 }}"
+                    {% endif %}
+                    data-disabled="{% if not can_edit_tags %}true{% else %}false{% endif %}">
+                </div>
                 <div id="rating-tooltip" class="rating-tooltip" style="display: none;"></div>
-                {% if user.is_authenticated %}
+                {% if can_edit_tags %}
                 <div class="rating-action">
                     ドラッグして評価を変更できます
                 </div>
                 {% else %}
                 <div class="rating-disabled">
-                    <p>ログインして評価を変更できます</p>
+                    <p>視聴済で評価を変更できます</p>
                 </div>
                 {% endif %}
 
             </div>
-            <!-- 操作ガイド -->
-            
-        
             <!-- ログインしている場合、ユーザーの評価を表示 -->
-            {% if user.is_authenticated %}
+            {% if can_edit_tags %}
             <div class="user-rating">
                 あなたの評価: 
                 <span id="user-rating">
@@ -96,13 +99,7 @@
             </div>
             {% endif %}
         </div>
-        
-        
-        
-        
 
-        
-        
         
 
         {% if anime.synopsis %}
@@ -121,7 +118,7 @@
 
 
         <h3>タグ一覧</h3>
-        <div class="all-tags">
+        {% comment %} <div class="all-tags">
             {% for tag in tags %}
                 <button class="tag-button {% if tag in anime.tags.all %}active-tag{% else %}inactive-tag{% endif %}" 
                         data-tag-id="{{ tag.id }}" 
@@ -131,12 +128,23 @@
             {% empty %}
                 <p>タグが登録されていません。</p>
             {% endfor %}
+        </div> {% endcomment %}
+        <p>can_edit_tags: {{ can_edit_tags }}デバッグ用消し忘れ注意！！！</p>
+        <div class="all-tags">
+            {% if can_edit_tags %}
+                {% for tag in tags %}
+                    <button class="tag-button {% if tag in anime.tags.all %}active-tag{% else %}inactive-tag{% endif %}" 
+                            data-tag-id="{{ tag.id }}" 
+                            onclick="toggleTag(this, {{ anime.id }}, {{ tag.id }})">
+                        {{ tag.name }}
+                    </button>
+                {% empty %}
+                    <p>タグが登録されていません。</p>
+                {% endfor %}
+            {% else %}
+                <p>タグ操作はログインユーザーで視聴済みの方のみ可能です。</p>
+            {% endif %}
         </div>
-
-
-
-
-
 
         <h2>関連アニメ</h2>
         <div class="related-animes">
@@ -172,7 +180,7 @@
         const newState = !isActive; // 新しい状態を切り替え
     
         // サーバーに新しい状態を送信
-        fetch(`/toggle-tag/`, {
+        fetch(`/toggle-tag/`,  {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -235,6 +243,13 @@ const createStar = () => {
     const userRatingElement = document.querySelector('#user-rating');
     const tooltip = document.getElementById('rating-tooltip'); // ツールチップ要素
     const animeId = starElement.getAttribute('data-anime-id'); // アニメのID
+    const isDisabled = starElement.getAttribute('data-disabled') === "true"; // 操作禁止フラグ
+
+    if (isDisabled) {
+        console.log("視聴済みでないため、評価操作は無効です。");
+        return; // 視聴済みでない場合は何もしない
+    }
+
     let isDragging = false; // ドラッグ状態を管理
 
     // 初期表示で星の幅を設定
@@ -443,7 +458,12 @@ document.addEventListener('DOMContentLoaded', createStar);
     display: none; /* 初期状態で非表示 */
 }
 
-
+/* ユーザー評価が操作不可の場合 */
+.user-rating-container.disabled {
+    opacity: 0.5; /* 半透明 */
+    pointer-events: none; /* ユーザー操作を無効化 */
+    cursor: not-allowed; /* マウスカーソルを「禁止」に変更 */
+}
 
 
 
