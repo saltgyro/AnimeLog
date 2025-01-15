@@ -352,10 +352,16 @@ def home(request):
     print("alphabet_search:", alphabet_search)
     
     # 表示用条件を変換
-    formatted_conditions = [
-        DISPLAY_MAPPING.get(cond, cond) for cond in alphabet_search
-    ]
-
+    # 表示用と内部用のマッピングを作成
+    formatted_conditions = {
+        original: DISPLAY_MAPPING.get(original, original)
+        for original in alphabet_search
+    }
+    # formatted_conditions = [
+    #     DISPLAY_MAPPING.get(cond, cond) for cond in alphabet_search
+    # ]
+    
+    
     
     # 入力された検索クエリをそのまま使用
     search_querys = request.GET.get('search', '').strip()  # 検索バーのキーワードを取得
@@ -367,6 +373,8 @@ def home(request):
     print("search_querys:", search_querys)  # 入力された検索クエリ
     print("search_keywords:", search_keywords)  # スペースで区切ったキーワードリスト
     
+    print("alphabet_search:", alphabet_search)
+    print("formatted_conditions(表示用条件を変換)::", formatted_conditions)
     # 検索条件をまとめてディクショナリに格納
     search_conditions = {
         'genre': genre_search,

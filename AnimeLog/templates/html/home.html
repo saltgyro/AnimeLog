@@ -84,9 +84,9 @@
             {% if formatted_conditions %}
             <li>50音順: 
                 <span>
-                    {% for condition in formatted_conditions %}
-                    <span>{{ condition }}
-                        <button class="btn btn-sm btn-danger remove-condition" data-type="alphabet" data-value="{{ condition }}">×</button>
+                    {% for original, display in formatted_conditions.items %}
+                    <span>{{ display }}
+                        <button class="btn btn-sm btn-danger remove-condition" data-type="alphabet" data-value="{{ original }}">×</button>
                     </span>
                     {% endfor %}
                 </span>
@@ -717,15 +717,15 @@
 
     <!-- 50音順 - 条件表示 -->
     {% if formatted_conditions %}
-    <li>50音順: 
-        <span>
-            {% for condition in formatted_conditions %}
-            <span>{{ condition }}
-            </span>
-            {% endfor %}
-        </span>
-    </li>
-    {% endif %}
+            <li>50音順: 
+                <span>
+                    {% for original, display in formatted_conditions.items %}
+                    <span>{{ display }}</span>
+                    {% endfor %}
+                </span>
+            </li>
+        {% endif %}
+
 </ul>
 
 <div class="filters">
@@ -866,6 +866,7 @@
             button.addEventListener("click", function(event) {
                 event.preventDefault(); // デフォルトのリンク動作を防ぐ
                 
+
                 // ボタンから条件タイプと値を取得
                 const type = this.getAttribute("data-type");
                 const value = this.getAttribute("data-value");
@@ -881,7 +882,6 @@
 
                 // 該当する条件を削除
                 if (type === "search") {
-                    // search 用の特別処理
                     // search 用の特別処理
                     const currentSearch = params.get(type) || "";
                     console.log(`現在の検索クエリ: ${currentSearch}`);
@@ -919,7 +919,9 @@
                 // 遷移を一時停止
                 console.log("リダイレクト先URL:", url.toString());
                 
+                event.stopImmediatePropagation(); // 他のリスナーを停止
                 // 新しいURLにリダイレクト
+                
                 window.location.href = url.toString();
             });
         });
