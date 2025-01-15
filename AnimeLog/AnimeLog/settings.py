@@ -149,7 +149,4 @@ EMAIL_USE_TLS = True  # TLSを使用
 EMAIL_HOST_USER = 'lingmuguibo8@gmail.com'  # Gmailのメールアドレス
 EMAIL_HOST_PASSWORD = 'solr znpx dpsc bsmy'  # Gmailのパスワード
 
-if DEBUG:
-    BASE_URL = "http://127.0.0.1:8000"  # ローカル環境
-else:
-    BASE_URL = "https://gyro02.pythonanywhere.com"  # 本番環境
+PASSWORD_RESET_TIMEOUT = 60 * 60   # リンクの有効期限を1時間に設定
