@@ -779,18 +779,41 @@
                     <p>{{ anime.title }}</p>
                 </a>
 
-                <div class="anime-detail" style="display: none;">
-                    <p><strong>放送開始日:</strong> {{ anime.start_date }}</p>
-                    {% if anime.end_date %}
-                        <p><strong>放送終了日:</strong> {{ anime.end_date }}</p>
-                    {% endif %}
-                    {% if anime.episode_count > 0 %}
-                        <p><strong>総話数:</strong> {{ anime.episode_count }}</p>
-                    {% endif %}
-                    <p><strong>平均評価:</strong> {{ anime.average_rating }}</p>
-                    <p><strong>視聴済みユーザー数:</strong> {{ anime.watched_count }}</p>
-                    <p><strong>お気に入り数:</strong> {{ anime.favorite_count }}</p>
+                <div class="anime-detail" style="display: none;"> 
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <th>放送開始日</th>
+                                <td>{{ anime.start_date }}</td>
+                            </tr>
+                            {% if anime.end_date %}
+                            <tr>
+                                <th>放送終了日</th>
+                                <td>{{ anime.end_date }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if anime.episode_count > 0 %}
+                            <tr>
+                                <th>総話数</th>
+                                <td>{{ anime.episode_count }}</td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                <th>平均評価</th>
+                                <td>{{ anime.average_rating }}</td>
+                            </tr>
+                            <tr>
+                                <th>視聴済みユーザー数</th>
+                                <td>{{ anime.watched_count }}</td>
+                            </tr>
+                            <tr>
+                                <th>お気に入り数</th>
+                                <td>{{ anime.favorite_count }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
+                
             </div>
         {% empty %}
             <p>該当するアニメはありません。</p>
@@ -1003,70 +1026,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <style>
 <!--
-.anime-list {
-    display: flex; /* 横並びに配置 */
-    flex-wrap: wrap; /* 行を折り返す */
-    gap: 20px; /* アイテム間の間隔 */
-    justify-content: center; /* コンテナ内で中央揃え */
-    padding: 20px;
-}
-
-.anime-item {
-    width: calc(12.5% - 20px); /* 1行に8枚 (12.5% の幅)、間隔分を引く */
-    box-sizing: border-box; /* パディングとボーダーを含めて計算 */
-    text-align: center; /* タイトルを中央揃え */
-}
-
-.anime-item img {
-    width: 100%; /* コンテナの幅に合わせる */
-    height: auto; /* アスペクト比を維持 */
-    border-radius: 8px; /* 角を丸める（任意） */
-}
-
-.anime-item p {
-    margin-top: 8px; /* 画像との間隔を設定 */
-    font-size: 14px; /* フォントサイズを調整 */
-    color: #333; /* テキストカラーを設定 */
-}
-/* 全体のレイアウト */
-.filters {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px; /* ボタン間の隙間 */
-    margin-top: 20px;
-}
-
-
-/* ソート */
-.form-select {
-    width: 200px; /* 横幅を固定 */
-    padding: 5px; /* 内側に余白を追加 */
-    border: 1px solid #ccc; /* 境界線を追加 */
-    border-radius: 5px; /* 角を丸くする */
-    background-color: #f9f9f9; /* 背景色を淡いグレーに */
-    font-size: 0.9rem; /* 文字サイズを調整 */
-}
-
-/* すべてのボタンのデフォルトのスタイル */
-.filter-btn {
-    margin: 0 10px;
-}
-/* 選択中のボタンの色をオレンジに変更 */
-.filter-btn.selected {
-    background-color: orange;
-    border-color: orange;
-    color: white;
-}
-/* ホバー時のボタン色 */
-.filter-btn:hover {
-    background-color: #ff7f50;
-    border-color: #ff7f50;
-}
-/* 未ログイン時の視聴済/お気に入り/視聴予定のホバー時動作 */
-
-
-
 
     
     
