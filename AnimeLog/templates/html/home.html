@@ -744,9 +744,24 @@
         </a>
     {% else %}
         <!-- 未ログイン時はボタンを無効化 -->
-        <a class="btn btn-secondary disabled" aria-disabled="true" tabindex="-1">視聴済み</a>
-        <a class="btn btn-secondary disabled" aria-disabled="true" tabindex="-1">お気に入り</a>
-        <a class="btn btn-secondary disabled" aria-disabled="true" tabindex="-1">視聴予定</a>
+        <div class="tooltip-container">
+            <a class="btn btn-secondary disabled" aria-disabled="true" tabindex="-1">
+            視聴済み
+            </a>
+            <span class="tooltip-text">ログインすると使用できます</span>
+        </div>
+        <div class="tooltip-container">
+            <a class="btn btn-secondary disabled" aria-disabled="true" tabindex="-1">
+            お気に入り
+            </a>
+            <span class="tooltip-text">ログインすると使用できます</span>
+        </div>
+        <div class="tooltip-container">
+            <a class="btn btn-secondary disabled" aria-disabled="true" tabindex="-1">
+            視聴予定
+            </a>
+            <span class="tooltip-text">ログインすると使用できます</span>
+        </div>
     {% endif %}
 </div>
 
@@ -1020,7 +1035,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-</script>
+
+
+
 {% endblock %}
 
 
