@@ -75,7 +75,11 @@ class CustomUserCreationForm(UserCreationForm):
 class UserLoginForm(forms.Form):#ログインの際に使用するフォーム
     email = forms.EmailField(label='メールアドレス')
     password = forms.CharField(label='パスワード',widget=forms.PasswordInput())
-    remember = forms.BooleanField(label='ログインしたままにする',required=False)
+    remember = forms.BooleanField(
+    label='ログインしたままにする',
+    required=False,
+    widget=forms.CheckboxInput(attrs={'class': 'form-check-input', 'style': 'display: inline-block; margin-right: 5px;'})
+)
 
 class UserEditForm(forms.ModelForm):#更新処理するフォーム
     

@@ -28,6 +28,16 @@ input[type="password2"] {
     box-sizing: border-box; /* ボックスモデルを調整 */
     font-size: 1em;
 }
+input[type="checkbox"] {
+    appearance: none; /* ブラウザのデフォルトスタイルをリセット */
+    width: 20px; /* チェックボックスの幅 */
+    height: 20px; /* チェックボックスの高さ */
+    border: 2px solid #000; /* 濃い黒色の枠線 */
+    border-radius: 4px; /* 枠線を少し丸くする（必要なら） */
+    background-color: #fff; /* 背景色を白に */
+    cursor: pointer; /* マウスホバー時にポインターを表示 */
+}
+
 
 /* ラベルのスタイル */
 label {
@@ -56,6 +66,5 @@ h1 {
     font-weight: bold; /* 太字 */
     text-align: center; /* 中央揃え */
     margin-bottom: 20px; /* 下に余白 */
+    letter-spacing: 4px; /* 文字の間に2pxの余白を追加 */
 }
-
-
