@@ -35,15 +35,20 @@
             </button>
         
             <!-- お気に入りボタン -->
+            {% if can_edit_tags %}
             <button id="favorite-btn"
                     data-anime-id="{{ anime.id }}"
                     data-status="favorite"
                     data-update-url="{% url 'anime_tracker:update_status' pk=anime.id %}"
-                    {% if not user.is_authenticated or not user_relation or user_relation.status != 2 %}disabled{% endif %}
+                    {% if not can_edit_tags %}disabled{% endif %}
                     class="{% if user_relation and user_relation.is_favorite %}btn-active{% else %}btn-inactive{% endif %}"
                     onclick="toggleStatus('{{ anime.id }}', 'favorite', this)">
                 お気に入り
             </button>
+            {% else %}
+                <!-- 空白のプレースホルダー -->
+                <button class="btn-inactive placeholder-btn" disabled></button>
+            {% endif %}
         
             <!-- 視聴予定ボタン -->
             <button id="plan-to-watch-btn"
@@ -443,12 +448,6 @@ document.addEventListener('DOMContentLoaded', createStar);
 
 }
 
-
-
-
-
-
-
 /* ホバー時のフィードバック */
 .card-review_star.hovering::after {
     color: #ffd700; /* ホバー中の明るい黄色 */
@@ -477,7 +476,14 @@ document.addEventListener('DOMContentLoaded', createStar);
     cursor: not-allowed; /* マウスカーソルを「禁止」に変更 */
 }
 
-
+.placeholder-btn {
+    visibility: hidden; /* 見た目を隠すが、スペースを確保 */
+    width: 100px; /* お気に入りボタンの幅に合わせる */
+    height: 40px; /* お気に入りボタンの高さに合わせる */
+    background-color: transparent; /* 背景を透明にする */
+    border: none; /* 枠線をなくす */
+    cursor: default; /* ホバー時のポインタ変更を防ぐ */
+}
 
 
     -->
