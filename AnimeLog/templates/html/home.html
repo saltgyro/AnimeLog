@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 
 <button class="btn btn-primary m-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-    メニューを開く
+    →
 </button>
 <!-- オフキャンバスメニュー -->
 <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
@@ -104,9 +104,9 @@
         
         <label class="switch">
             <input type="checkbox" id="toggle-detail">
-            <span class="slider">詳細画面</span>
+            <span class="slider">アニメ詳細情報を一覧に表示する</span>
         </label>
-
+        <div style="height: 10px;"></div> <!-- 空白を作るダミー要素 -->
         <ul class="list-unstyled">
             
 
@@ -124,7 +124,7 @@
                     </div>
                 </li>
 
-            
+                <div style="height: 10px;"></div> <!-- 空白を作るダミー要素 -->
 
                 <li>
                     <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#tagMenu" aria-expanded="false" aria-controls="tagMenu">🏷 タグ</a>
@@ -140,6 +140,7 @@
                     </div>
                 </li>
 
+                <div style="height: 10px;"></div> <!-- 空白を作るダミー要素 -->
                 
                 <li>
                     <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#seasonMenu" aria-expanded="false" aria-controls="seasonMenu">📅 年代</a>
@@ -464,19 +465,12 @@
                                     </ul>
                                 </div>
                             </li>
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
                         </ul>
                     </div>
                 </li>
+
+                <div style="height: 10px;"></div> <!-- 空白を作るダミー要素 -->
+
                 <li>
                     <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#studioMenu" aria-expanded="false" aria-controls="studioMenu">🎬 制作スタジオ</a>
                     <div id="studioMenu" class="collapse">
@@ -490,6 +484,7 @@
                         {% endfor %}
                     </div>
                 </li>
+                <div style="height: 10px;"></div> <!-- 空白を作るダミー要素 -->
                 <li>
                     <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#alphabetMenu" aria-expanded="false" aria-controls="alphabetMenu">🔤 50音順</a>
                     <div id="alphabetMenu" class="collapse">
@@ -760,13 +755,15 @@
 <!-- ソートボタン -->
 <div class="sort-options mb-3 d-flex justify-content-end">
     <label for="sort-select" class="form-label">並び順:</label>
-    <select id="sort-select" class="form-select" onchange="applySort()">
-        <option value="season-desc" {% if request.GET.sort == 'season-desc' %}selected{% endif %}>シーズン（新しい順）</option>
-        <option value="season-asc" {% if request.GET.sort == 'season-asc' %}selected{% endif %}>シーズン（古い順）</option>
-        <option value="average_rating" {% if request.GET.sort == 'average_rating' %}selected{% endif %}>人気順</option>
-        <option value="watched_count-desc" {% if request.GET.sort == 'watched_count-desc' %}selected{% endif %}>ユーザー視聴済順</option>
-        <option value="alphabet" {% if request.GET.sort == 'alphabet' %}selected{% endif %}>50音順</option>
-    </select>
+    <div style="margin-right: 30px;">
+        <select id="sort-select" class="form-select" onchange="applySort()">
+            <option value="season-desc" {% if request.GET.sort == 'season-desc' %}selected{% endif %}>シーズン（新しい順）</option>
+            <option value="season-asc" {% if request.GET.sort == 'season-asc' %}selected{% endif %}>シーズン（古い順）</option>
+            <option value="average_rating" {% if request.GET.sort == 'average_rating' %}selected{% endif %}>人気順</option>
+            <option value="watched_count-desc" {% if request.GET.sort == 'watched_count-desc' %}selected{% endif %}>ユーザー視聴数順</option>
+            <option value="alphabet" {% if request.GET.sort == 'alphabet' %}selected{% endif %}>50音順</option>
+        </select>
+    </div>
 </div>
 
 <div class="search-results">
@@ -997,9 +994,81 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ↑が検索機能
-    
+
+
 
 </script>
 {% endblock %}
 
 
+<style>
+<!--
+.anime-list {
+    display: flex; /* 横並びに配置 */
+    flex-wrap: wrap; /* 行を折り返す */
+    gap: 20px; /* アイテム間の間隔 */
+    justify-content: center; /* コンテナ内で中央揃え */
+    padding: 20px;
+}
+
+.anime-item {
+    width: calc(12.5% - 20px); /* 1行に8枚 (12.5% の幅)、間隔分を引く */
+    box-sizing: border-box; /* パディングとボーダーを含めて計算 */
+    text-align: center; /* タイトルを中央揃え */
+}
+
+.anime-item img {
+    width: 100%; /* コンテナの幅に合わせる */
+    height: auto; /* アスペクト比を維持 */
+    border-radius: 8px; /* 角を丸める（任意） */
+}
+
+.anime-item p {
+    margin-top: 8px; /* 画像との間隔を設定 */
+    font-size: 14px; /* フォントサイズを調整 */
+    color: #333; /* テキストカラーを設定 */
+}
+/* 全体のレイアウト */
+.filters {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* ボタン間の隙間 */
+    margin-top: 20px;
+}
+
+
+/* ソート */
+.form-select {
+    width: 200px; /* 横幅を固定 */
+    padding: 5px; /* 内側に余白を追加 */
+    border: 1px solid #ccc; /* 境界線を追加 */
+    border-radius: 5px; /* 角を丸くする */
+    background-color: #f9f9f9; /* 背景色を淡いグレーに */
+    font-size: 0.9rem; /* 文字サイズを調整 */
+}
+
+/* すべてのボタンのデフォルトのスタイル */
+.filter-btn {
+    margin: 0 10px;
+}
+/* 選択中のボタンの色をオレンジに変更 */
+.filter-btn.selected {
+    background-color: orange;
+    border-color: orange;
+    color: white;
+}
+/* ホバー時のボタン色 */
+.filter-btn:hover {
+    background-color: #ff7f50;
+    border-color: #ff7f50;
+}
+/* 未ログイン時の視聴済/お気に入り/視聴予定のホバー時動作 */
+
+
+
+
+    
+    
+-->
+</style>

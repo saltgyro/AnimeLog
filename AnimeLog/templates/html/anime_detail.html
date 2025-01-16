@@ -62,15 +62,13 @@
         </div>
         
 
-
+        <p>can_edit_tags の値: {{ can_edit_tags }}</p>
         <div class="anime-rating">
             <!-- 評価星の表示 -->
             <div class="rating-container" {% if not can_edit_tags %}disabled{% endif %}">
                 <div class="card-review_star"
-                    {% if can_edit_tags %}
-                    data-anime-id="{{ anime.id }}"
-                    data-rating="{{ user_relation.rating|default:0 }}"
-                    {% endif %}
+                    data-anime-id="{% if can_edit_tags %}{{ anime.id }}{% else %}null{% endif %}"
+                    data-rating="{% if can_edit_tags %}{{ user_relation.rating|default:0 }}{% else %}0{% endif %}"
                     data-disabled="{% if not can_edit_tags %}true{% else %}false{% endif %}">
                 </div>
                 <div id="rating-tooltip" class="rating-tooltip" style="display: none;"></div>
@@ -180,7 +178,7 @@
         console.log("新しい状態:", newState);
     
         // サーバーに新しい状態を送信
-        fetch(`/toggle-tag/`,  {
+        fetch(`/Animelog/toggle-tag/`,  {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -245,15 +243,23 @@ const createStar = () => {
     const animeId = starElement.getAttribute('data-anime-id'); // アニメのID
     const isDisabled = starElement.getAttribute('data-disabled') === "true"; // 操作禁止フラグ
 
+    console.log("Anime ID:", animeId);
+    console.log("Is Disabled:", isDisabled);
+
     if (isDisabled) {
         console.log("視聴済みでないため、評価操作は無効です。");
         return; // 視聴済みでない場合は何もしない
+    }else {
+        console.log("Anime ID:", starElement.getAttribute('data-anime-id'));
+        console.log("Rating:", starElement.getAttribute('data-rating'));
+        console.log("Disabled:", starElement.getAttribute('data-disabled'));
     }
 
     let isDragging = false; // ドラッグ状態を管理
 
     // 初期表示で星の幅を設定
     const review = parseFloat(starElement.getAttribute('data-rating')) || 0;
+    console.log("Initial Rating:", review);
     const updateStarWidth = (element, rating) => {
         const percentage = (rating / 5) * 100;
         element.style.setProperty('--starWidth', `${percentage}%`);
@@ -288,6 +294,7 @@ const createStar = () => {
 
         
         newRating = Math.round(newRating * 2) / 2;// 0.5刻みに丸める
+        console.log("Calculated Rating:", newRating);
 
         // 星の塗りつぶしを更新
         updateStarWidth(starElement, newRating);
@@ -300,7 +307,11 @@ const createStar = () => {
 
         // ドラッグ終了時にサーバーに送信
         if (confirm) {
-            fetch(`/update_rating/${animeId}/`, {
+            console.log("Sending rating to server:", {
+                animeId,
+                rating: newRating,
+            });
+            fetch(`/Animelog/update_rating/${animeId}/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -309,6 +320,7 @@ const createStar = () => {
                 body: JSON.stringify({ rating: newRating }),
             })
                 .then((response) => {
+                    console.log("Server Response Status:", response.status);
                     if (!response.ok) {
                         throw new Error(`HTTPエラー: ${response.status}`);
                     }
