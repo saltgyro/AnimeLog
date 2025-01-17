@@ -113,13 +113,18 @@
                     <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#genreMenu" aria-expanded="false" aria-controls="genreMenu">🎭 ジャンル</a>
                     <div id="genreMenu" class="collapse">
                         {% for genre in genres %}
-                            <button 
-                                class="btn btn-outline-primary genre-button" 
-                                data-type="genre" 
-                                data-id="{{ genre.id }}">
-                                {{ genre.name }}
-                            </button>
+                        <div class="form-check">
+                            <input 
+                                type="checkbox" 
+                                class="form-check-input" 
+                                name="genre" 
+                                id="genre-{{ genre.id }}" 
+                                value="{{ genre.id }}"
+                                {% if genre.id in selected_genres %}checked{% endif %}>
+                            <label class="form-check-label" for="genre-{{ genre.id }}">{{ genre.name }}</label>
+                        </div>
                         {% endfor %}
+                        <button type="button" class="btn btn-primary mt-2 confirm-filters">確定</button>
                     </div>
                 </li>
 
@@ -129,13 +134,18 @@
                     <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#tagMenu" aria-expanded="false" aria-controls="tagMenu">🏷 タグ</a>
                     <div id="tagMenu" class="collapse">
                         {% for tag in tags %}
-                            <button 
-                                class="btn btn-outline-primary tag-button" 
-                                data-type="tag" 
-                                data-id="{{ tag.id }}">
-                                {{ tag.name }}
-                            </button>
+                        <div class="form-check">
+                            <input 
+                                type="checkbox" 
+                                class="form-check-input" 
+                                name="tag" 
+                                id="tag-{{ tag.id }}" 
+                                value="{{ tag.id }}"
+                                {% if tag.id in selected_tags %}checked{% endif %}>
+                            <label class="form-check-label" for="tag-{{ tag.id }}">{{ tag.name }}</label>
+                        </div>
                         {% endfor %}
+                        <button type="button" class="btn btn-primary mt-2 confirm-filters">確定</button>
                     </div>
                 </li>
 
@@ -965,48 +975,32 @@
 // ↓が検索機能
 const selectedConditions = {}; // 検索条件を保存するオブジェクト
 
+
 document.addEventListener('DOMContentLoaded', () => {
-    // すべてのボタンを取得し、クリックイベントを設定
-    document.querySelectorAll('.genre-button, .tag-button, .season-button, .studio-button, .alphabet-button').forEach(button => {
-        button.addEventListener('click', (event) => {
-            var type = event.target.getAttribute('data-type'); // 条件の種類 (例: genre, tag, season, studio,alphabe、)
-            console.log(type)
-            var id = event.target.getAttribute('data-id'); // 各条件のID
-            console.log(id)
-            var currentUrl = window.location.href;
-            var newUrl = new URL(currentUrl);
+    // 確定ボタン（すべてのセクション）にイベントリスナーを設定
+    document.querySelectorAll('.confirm-filters').forEach(button => {
+        button.addEventListener('click', () => {
+            const currentUrl = new URL(window.location.href);
+            const params = currentUrl.searchParams;
 
-            // 既存の検索条件を取得
-            var params = newUrl.searchParams;
+            // 全条件をリセット
+            ['genre', 'tag', 'season', 'studio', 'alphabet'].forEach(type => params.delete(type));
 
-            if (type === 'row') {
-                // 行ボタンがクリックされた場合
-                params.delete('row'); // 行検索条件をクリア
-                params.append('row', id); // 新しい行条件を追加
-            } else if (type === 'alphabet') {
-                // 列ボタンがクリックされた場合
-                params.delete('alphabet'); // 列検索条件をクリア
-                params.append('alphabet', id); // 新しい列条件を追加
-            }
+            // 各条件を再収集
+            ['genre', 'tag', 'season', 'studio', 'alphabet'].forEach(type => {
+                const selectedValues = Array.from(
+                    document.querySelectorAll(`input[name="${type}"]:checked`)
+                ).map(checkbox => checkbox.value);
 
-            // 複数のタグを選択可能にするために、既存のタグを追加
-            // 行検索または列検索の場合、他の同種の条件を削除して新しい条件を追加
-            if (type === 'row' || type === 'alphabet') {
-                params.delete(type); // 現在の条件を削除
-                params.append(type, id); // 新しい条件を追加
-            } else {
-                // その他の条件（ジャンル、タグなど）は既存の条件を保持しつつ追加
-                if (!params.getAll(type).includes(id)) {
-                    params.append(type, id);
-                }
-            }
+                // URLパラメータに追加
+                selectedValues.forEach(value => params.append(type, value));
+            });
 
-            // 新しいURLを適用
-            newUrl.search = params.toString();
-            window.location.href = newUrl; // ページ遷移
+            // 新しいURLに遷移
+            currentUrl.search = params.toString();
+            window.location.href = currentUrl.toString();
         });
     });
-
     // 検索リセットボタンを取得
     document.getElementById('reset-search').addEventListener('click', () => {
         // 現在のURLを取得
@@ -1025,12 +1019,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // リセットしたURLに遷移
         window.location.href = currentUrl.toString();  // ページ遷移
     });
-
-    
-    
 });
 
+
 // ↑が検索機能
+
+
+
 </script>
 {% endblock %}
 
