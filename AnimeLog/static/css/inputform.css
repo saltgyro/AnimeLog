@@ -39,6 +39,7 @@ input[type="checkbox"] {
 }
 
 
+
 /* ラベルのスタイル */
 label {
     font-weight: bold;
@@ -67,5 +68,31 @@ h1 {
     text-align: center; /* 中央揃え */
     margin-bottom: 20px; /* 下に余白 */
     letter-spacing: 4px; /* 文字の間に2pxの余白を追加 */
+}
+
+#toggle-detail {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #000;
+    background-color: #fff;
+    cursor: pointer;
+    position: relative; /* 疑似要素の基準を設定 */
+}
+
+#toggle-detail:checked {
+    background-color: #0626f7; /* チェック時の背景 */
+    border-color: #f0f6f1;
+}
+
+#toggle-detail:checked::after {
+    content: "✓"; /* チェックマークを表示 */
+    color: white; /* チェックマークの色 */
+    font-size: 16px; /* チェックマークのサイズ */
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
