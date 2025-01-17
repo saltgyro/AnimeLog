@@ -6,9 +6,47 @@
 <h2 class="h2">アカウント設定</h2>
 <form method="post" class="account-form">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">変更を保存</button>
+
+    
+    <!-- ニックネーム -->
+    <div class="form-group">
+        <label for="id_nickname">ニックネーム</label>
+        {{ form.nickname }}
+        <button type="submit" name="field" value="nickname" class="btn btn-primary">変更を保存</button>
+    </div>
+    
+    <!-- メールアドレス -->
+    <div class="form-group">
+        <label for="id_email">メールアドレス</label>
+        {{ form.email }}
+        <button type="submit" name="field" value="email" class="btn btn-primary">変更を保存</button>
+    </div>
+    
+    <!-- 現在のパスワード -->
+    <div class="form-group">
+        <label for="id_current_password">現在のパスワード</label>
+        {{ form.current_password }}
+    </div>
+    
+    <!-- 新しいパスワード -->
+    <div class="form-group">
+        <label for="id_new_password">新しいパスワード</label>
+        {{ form.new_password }}
+    </div>
+    
+    <!-- 新しいパスワード（確認用） -->
+    <div class="form-group">
+        <label for="id_new_password_confirm">新しいパスワード(確認用)</label>
+        {{ form.new_password_confirm }}
+        <button type="submit" name="field" value="new_password_confirm" class="btn btn-primary">変更を保存</button>
+    </div>
 </form>
+
+
+
+
+
+
 {% if messages %}
     <ul class="messages">
         {% for message in messages %}
@@ -18,3 +56,17 @@
 {% endif %}
 
 {% endblock %}
+
+<style>
+    .account-form .btn {
+        padding: 5px 10px; /* ボタンの余白を調整 */
+        font-size: 0.9em; /* ボタンの文字サイズを調整 */
+        background-color: #4CAF50; /* 緑色 */
+        color: white; /* テキスト色 */
+        border-radius: 5px; /* 角を丸く */
+    }
+    .account-form .btn:hover {
+        background-color: #45a049; /* ホバー時の背景色 */
+    }
+    
+</style>

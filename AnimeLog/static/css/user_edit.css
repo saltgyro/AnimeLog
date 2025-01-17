@@ -25,14 +25,14 @@
 
 .account-form button {
     display: block;
-    width: 100%;
-    padding: 10px;
-    
+    width: 50%;
+    padding: 4px;
     color: white;
     border: none;
     border-radius: 5px;
     font-size: 1.2em;
     cursor: pointer;
+    /* margin: 0 auto; 真ん中に*/
 }
 
 .account-form button:hover {

@@ -49,7 +49,7 @@ label {
 button[type="submit"] {
     background-color: #4CAF50; /* 緑色 */
     color: white; /* テキスト色 */
-    padding: 10px 20px;
+    padding: 5px 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -68,3 +68,4 @@ h1 {
     margin-bottom: 20px; /* 下に余白 */
     letter-spacing: 4px; /* 文字の間に2pxの余白を追加 */
 }
+
