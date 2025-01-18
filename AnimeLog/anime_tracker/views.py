@@ -85,7 +85,6 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
 
     def get_success_url(self):
         print("パスワードリセットビューが呼び出されました")
-        print(f"UID: {kwargs.get('uidb64')}, Token: {kwargs.get('token')}")
         # パスワードリセット完了ページにリダイレクト
         return reverse_lazy('anime_tracker:password_reset_complete')
 

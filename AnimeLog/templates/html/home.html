@@ -111,19 +111,21 @@
         <ul class="list-unstyled">
                 <li>
                     <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#genreMenu" aria-expanded="false" aria-controls="genreMenu">🎭 ジャンル</a>
+                    
                     <div id="genreMenu" class="collapse">
                         {% for genre in genres %}
-                        <div class="form-check">
-                            <input 
-                                type="checkbox" 
-                                class="form-check-input" 
-                                name="genre" 
-                                id="genre-{{ genre.id }}" 
-                                value="{{ genre.id }}"
-                                {% if genre.id in selected_genres %}checked{% endif %}>
-                            <label class="form-check-label" for="genre-{{ genre.id }}">{{ genre.name }}</label>
-                        </div>
+                            <div class="form-check">
+                                <input 
+                                    type="checkbox" 
+                                    class="form-check-input" 
+                                    name="genre" 
+                                    id="genre-{{ genre.id }}" 
+                                    value="{{ genre.id }}"
+                                    {% if genre.id|stringformat:"s" in search_conditions.genre %}checked{% endif %}>
+                                <label class="form-check-label" for="genre-{{ genre.id }}">{{ genre.name }}</label>
+                            </div>
                         {% endfor %}
+
                         <button type="button" class="btn btn-primary mt-2 confirm-filters">確定</button>
                     </div>
                 </li>
@@ -134,17 +136,18 @@
                     <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#tagMenu" aria-expanded="false" aria-controls="tagMenu">🏷 タグ</a>
                     <div id="tagMenu" class="collapse">
                         {% for tag in tags %}
-                        <div class="form-check">
-                            <input 
-                                type="checkbox" 
-                                class="form-check-input" 
-                                name="tag" 
-                                id="tag-{{ tag.id }}" 
-                                value="{{ tag.id }}"
-                                {% if tag.id in selected_tags %}checked{% endif %}>
-                            <label class="form-check-label" for="tag-{{ tag.id }}">{{ tag.name }}</label>
-                        </div>
+                            <div class="form-check">
+                                <input 
+                                    type="checkbox" 
+                                    class="form-check-input" 
+                                    name="tag" 
+                                    id="tag-{{ tag.id }}" 
+                                    value="{{ tag.id }}"
+                                    {% if tag.id|stringformat:"s" in search_conditions.tag %}checked{% endif %}>  
+                                <label class="form-check-label" for="tag-{{ tag.id }}">{{ tag.name }}</label>
+                            </div>
                         {% endfor %}
+
                         <button type="button" class="btn btn-primary mt-2 confirm-filters">確定</button>
                     </div>
                 </li>
@@ -177,6 +180,7 @@
                                         <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="86">春</button></li>
                                         <li><button class="btn btn-outline-primary season-button" data-type="season"data-id="87">夏</button></li>
                                         <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="88">秋</button></li>
+                                        
                                     </ul>
                                 </div>
                             </li>
