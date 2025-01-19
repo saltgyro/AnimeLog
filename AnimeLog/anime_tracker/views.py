@@ -85,7 +85,6 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
 
     def get_success_url(self):
         print("パスワードリセットビューが呼び出されました")
-        print(f"UID: {kwargs.get('uidb64')}, Token: {kwargs.get('token')}")
         # パスワードリセット完了ページにリダイレクト
         return reverse_lazy('anime_tracker:password_reset_complete')
 
@@ -390,7 +389,7 @@ def home(request):
     # データを取得
     genres = Genres.objects.all()
     tags = Tags.objects.all()
-    studios = Studios.objects.all()
+    studios = Studios.objects.all().order_by('name')
     seasons = Seasons.objects.all()
     grouped_seasons = generate_seasons()  # 動的に生成したシーズンを取得
     
