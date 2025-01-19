@@ -1940,73 +1940,67 @@
 <ul>
     <!-- フリーワード検索 -->
     {% if search_conditions.search %}
-    <li>フリーワード検索: 
+    <strong>フリーワード検索: 
         {% for keyword in search_conditions.search %}
             <span>{{ keyword }}
             </span>{% if not forloop.last %}, {% endif %}
         {% endfor %}
-    </li>
+    </strong>
     {% endif %}
-    
     <!-- ジャンル -->
     {% if search_conditions.genre %}
-        <li>ジャンル: 
+        <strong>ジャンル: 
             {% for genre in genres %}
                 {% if genre.id|stringformat:"s" in search_conditions.genre %}
                     <span>{{ genre.name }}
                     </span>
                 {% endif %}
             {% endfor %}
-        </li>
+        </strong>
     {% endif %}
-
     <!-- タグ -->
     {% if search_conditions.tag %}
-        <li>タグ: 
+        <strong>タグ: 
             {% for tag in tags %}
                 {% if tag.id|stringformat:"s" in search_conditions.tag %}
                     <span>{{ tag.name }}
                     </span>
                 {% endif %}
             {% endfor %}
-        </li>
+        </strong>
     {% endif %}
-
     <!-- シーズン -->
     {% if search_conditions.season %}
-        <li>シーズン: 
+        <strong>シーズン: 
             {% for season in seasons %}
                 {% if season.id|stringformat:"s" in search_conditions.season %}
                     <span>{{ season.year }} 年 {{ season.get_season_display }}
                     </span>
                 {% endif %}
             {% endfor %}
-        </li>
+        </strong>
     {% endif %}
-
     <!-- スタジオ -->
     {% if search_conditions.studio %}
-        <li>スタジオ: 
+        <strong>スタジオ: 
             {% for studio in studios %}
                 {% if studio.id|stringformat:"s" in search_conditions.studio %}
                     <span>{{ studio.name }}
                     </span>
                 {% endif %}
             {% endfor %}
-        </li>
+        </strong>
     {% endif %}
-
     <!-- 50音順 - 条件表示 -->
     {% if formatted_conditions %}
-            <li>50音順: 
+            <strong>50音順: 
                 <span>
                     {% for original, display in formatted_conditions.items %}
                     <span>{{ display }}</span>
                     {% endfor %}
                 </span>
-            </li>
+            </strong>
         {% endif %}
-
 </ul>
 
 <div class="filters">
