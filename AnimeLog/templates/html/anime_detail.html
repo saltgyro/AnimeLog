@@ -72,7 +72,7 @@
         
         <div class="anime-rating">
             <!-- 評価星の表示 -->
-            <div class="rating-container" {% if not can_edit_tags %}disabled{% endif %}">
+            <div class="{% if not user.is_authenticated %}rating-no-hover{% elif not can_edit_tags %}disabled{% else %}rating-container{% endif %}">
                 <div class="card-review_star"
                     data-anime-id="{% if can_edit_tags %}{{ anime.id }}{% else %}null{% endif %}"
                     data-rating="{% if can_edit_tags %}{{ user_relation.rating|default:0 }}{% else %}0{% endif %}"
@@ -452,6 +452,13 @@ document.addEventListener('DOMContentLoaded', createStar);
 /* ホバー時のフィードバック */
 .card-review_star.hovering::after {
     color: #ffd700; /* ホバー中の明るい黄色 */
+}
+
+/* 非ログイン時（rating-no-hover クラス） */
+.rating-no-hover {
+    pointer-events: none; /* マウスイベントを無効化 */
+    opacity: 0.5; /* 非アクティブ状態を視覚的に示す */
+    cursor: not-allowed; /* カーソルを無効状態に変更 */
 }
 
 /* ツールチップ */
