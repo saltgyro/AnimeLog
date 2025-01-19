@@ -1262,18 +1262,15 @@
                 <li>
                     <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#studioMenu" aria-expanded="false" aria-controls="studioMenu">🎬 制作スタジオ</a>
                     <div id="studioMenu" class="collapse">
-                        {% for studio in studios %}
-                            <div class="form-check">
-                                <input 
-                                    type="checkbox" 
-                                    class="form-check-input" 
-                                    name="studio" 
-                                    id="studio-{{ studio.id }}" 
-                                    value="{{ studio.id }}"
-                                    {% if studio.id|stringformat:"s" in search_conditions.studio %}checked{% endif %}>
-                                <label class="form-check-label" for="studio-{{ studio.id }}">{{ studio.name }}</label>
-                            </div>
-                        {% endfor %}
+                        <input type="text" id="studio-search" placeholder="スタジオを検索">
+                        <div id="studio-list">
+                            {% for studio in studios %}
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" name="studio" id="studio-{{ studio.id }}" value="{{ studio.id }}" {% if studio.id|stringformat:"s" in search_conditions.studio %}checked{% endif %}>
+                                    <label class="form-check-label" for="studio-{{ studio.id }}">{{ studio.name }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
                         <button type="button" class="btn btn-primary mt-2 confirm-filters">検索を実行</button>
                     </div>
                 </li>
@@ -2304,7 +2301,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ↑が検索機能
 
-
+document.getElementById('studio-search').addEventListener('input', function () {
+    const query = this.value.toLowerCase();
+    const studios = document.querySelectorAll('#studio-list .form-check');
+    studios.forEach(studio => {
+        const name = studio.querySelector('label').textContent.toLowerCase();
+        studio.style.display = name.includes(query) ? 'block' : 'none';
+    });
+});
 
 </script>
 {% endblock %}
