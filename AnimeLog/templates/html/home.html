@@ -624,7 +624,8 @@
                                     2015年
                                 </a>
                                 <div id="year-2015" class="collapse">
-                                    <input 
+                                    <div class="form-check">
+                                        <input 
                                             type="checkbox" 
                                             class="form-check-input" 
                                             name="season" 
@@ -672,7 +673,8 @@
                                     2014年
                                 </a>
                                 <div id="year-2014" class="collapse">
-                                    <input 
+                                    <div class="form-check">
+                                        <input 
                                             type="checkbox" 
                                             class="form-check-input" 
                                             name="season" 
@@ -720,7 +722,8 @@
                                     2013年
                                 </a>
                                 <div id="year-2013" class="collapse">
-                                    <input 
+                                    <div class="form-check">
+                                        <input 
                                             type="checkbox" 
                                             class="form-check-input" 
                                             name="season" 
@@ -768,14 +771,15 @@
                                     2012年
                                 </a>
                                 <div id="year-2012" class="collapse">
-                                    <input 
+                                    <div class="form-check">
+                                        <input 
                                             type="checkbox" 
                                             class="form-check-input" 
                                             name="season" 
                                             id="season-37" 
                                             value="37"
                                             {% if 37|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
-                                        <label class="form-check-label" for="season-41">2012年冬</label>
+                                        <label class="form-check-label" for="season-37">2012年冬</label>
                                     </div>
                                     <div class="form-check">
                                         <input 
@@ -816,7 +820,8 @@
                                     2011年
                                 </a>
                                 <div id="year-2011" class="collapse">
-                                    <input 
+                                    <div class="form-check">
+                                        <input 
                                             type="checkbox" 
                                             class="form-check-input" 
                                             name="season" 
@@ -864,7 +869,8 @@
                                     2010年
                                 </a>
                                 <div id="year-2010" class="collapse">
-                                    <input 
+                                    <div class="form-check">
+                                        <input 
                                             type="checkbox" 
                                             class="form-check-input" 
                                             name="season" 
@@ -912,12 +918,47 @@
                                     2009年
                                 </a>
                                 <div id="year-2009" class="collapse">
-                                    <ul>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="25">冬</button></li>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="26">春</button></li>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="27">夏</button></li>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="28">秋</button></li>
-                                    </ul>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-25" 
+                                            value="25"
+                                            {% if 25|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-25">2009年冬</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-26" 
+                                            value="26"
+                                            {% if 26|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-26">2009年春</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-27" 
+                                            value="27"
+                                            {% if 27|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-27">2009年夏</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-28" 
+                                            value="28"
+                                            {% if 28|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-28">2009年秋</label>
+                                    </div>
+                                    <button type="button" class="btn btn-primary mt-2 confirm-filters">確定</button>
                                 </div>
                             </li>
                             <!-- 2008年 -->
@@ -926,12 +967,47 @@
                                     2008年
                                 </a>
                                 <div id="year-2008" class="collapse">
-                                    <ul>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="21">冬</button></li>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="22">春</button></li>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="23">夏</button></li>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="24">秋</button></li>
-                                    </ul>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-21" 
+                                            value="21"
+                                            {% if 21|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-21">2008年冬</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-22" 
+                                            value="22"
+                                            {% if 22|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-22">2008年春</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-23" 
+                                            value="23"
+                                            {% if 23|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-23">2008年夏</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-24" 
+                                            value="24"
+                                            {% if 24|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-24">2008年秋</label>
+                                    </div>
+                                    <button type="button" class="btn btn-primary mt-2 confirm-filters">確定</button>
                                 </div>
                             </li>
                             <!-- 2007年 -->
@@ -940,12 +1016,47 @@
                                     2007年
                                 </a>
                                 <div id="year-2007" class="collapse">
-                                    <ul>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="17">冬</button></li>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="18">春</button></li>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="19">夏</button></li>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="20">秋</button></li>
-                                    </ul>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-17" 
+                                            value="17"
+                                            {% if 17|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-17">2007年冬</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-18" 
+                                            value="18"
+                                            {% if 18|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-18">2007年春</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-19" 
+                                            value="19"
+                                            {% if 19|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-19">2007年夏</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-20" 
+                                            value="20"
+                                            {% if 20|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-20">2007年秋</label>
+                                    </div>
+                                    <button type="button" class="btn btn-primary mt-2 confirm-filters">確定</button>
                                 </div>
                             </li>
                             <!-- 2006年 -->
@@ -954,12 +1065,47 @@
                                     2006年
                                 </a>
                                 <div id="year-2006" class="collapse">
-                                    <ul>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="13">冬</button></li>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="14">春</button></li>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="15">夏</button></li>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="16">秋</button></li>
-                                    </ul>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-13" 
+                                            value="13"
+                                            {% if 13|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-13">2006年冬</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-14" 
+                                            value="14"
+                                            {% if 14|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-14">2006年春</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-15" 
+                                            value="15"
+                                            {% if 15|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-15">2006年夏</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-16" 
+                                            value="16"
+                                            {% if 16|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-16">2006年秋</label>
+                                    </div>
+                                    <button type="button" class="btn btn-primary mt-2 confirm-filters">確定</button>
                                 </div>
                             </li>
                             <!-- 2005年 -->
@@ -968,12 +1114,47 @@
                                     2005年
                                 </a>
                                 <div id="year-2005" class="collapse">
-                                    <ul>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="9">冬</button></li>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="10">春</button></li>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="11">夏</button></li>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="12">秋</button></li>
-                                    </ul>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-9" 
+                                            value="9"
+                                            {% if 9|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-9">2005年冬</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-10" 
+                                            value="10"
+                                            {% if 10|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-10">2005年春</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-11" 
+                                            value="11"
+                                            {% if 11|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-11">2005年夏</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-12" 
+                                            value="12"
+                                            {% if 12|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-12">2005年秋</label>
+                                    </div>
+                                    <button type="button" class="btn btn-primary mt-2 confirm-filters">確定</button>
                                 </div>
                             </li>
                             <!-- 2004年 -->
@@ -982,12 +1163,47 @@
                                     2004年
                                 </a>
                                 <div id="year-2004" class="collapse">
-                                    <ul>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="5">冬</button></li>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="6">春</button></li>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="7">夏</button></li>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="8">秋</button></li>
-                                    </ul>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-5" 
+                                            value="5"
+                                            {% if 5|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-5">2004年冬</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-6" 
+                                            value="6"
+                                            {% if 6|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-6">2004年春</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-7" 
+                                            value="7"
+                                            {% if 7|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-7">2004年夏</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-8" 
+                                            value="8"
+                                            {% if 8|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-8">2004年秋</label>
+                                    </div>
+                                    <button type="button" class="btn btn-primary mt-2 confirm-filters">確定</button>
                                 </div>
                             </li>
                             <!-- 2003年 -->
@@ -996,12 +1212,47 @@
                                     2003年
                                 </a>
                                 <div id="year-2003" class="collapse">
-                                    <ul>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="1">冬</button></li>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="2">春</button></li>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="3">夏</button></li>
-                                        <li><button class="btn btn-outline-primary season-button" data-type="season" data-id="4">秋</button></li>
-                                    </ul>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-1" 
+                                            value="2"
+                                            {% if 1|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-1">2003年冬</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-2" 
+                                            value="2"
+                                            {% if 2|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-2">2003年春</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-3" 
+                                            value="3"
+                                            {% if 3|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-3">2003年夏</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input" 
+                                            name="season" 
+                                            id="season-4" 
+                                            value="4"
+                                            {% if 4|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
+                                        <label class="form-check-label" for="season-4">2003年秋</label>
+                                    </div>
+                                    <button type="button" class="btn btn-primary mt-2 confirm-filters">確定</button>
                                 </div>
                             </li>
                         </ul>
