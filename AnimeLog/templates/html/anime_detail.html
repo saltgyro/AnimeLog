@@ -29,8 +29,10 @@
                     data-status="watched"
                     data-update-url="{% url 'anime_tracker:update_status' pk=anime.id %}"
                     {% if not user.is_authenticated %}disabled{% endif %}
-                    class="{% if user_relation and user_relation.status == 2 %}btn-active{% else %}btn-inactive{% endif %}"
-                    onclick="toggleStatus('{{ anime.id }}', 'watched', this)">
+                    class="{% if not user.is_authenticated %}btn-no-hover{% elif user_relation and user_relation.status == 2 %}btn-active{% else %}btn-inactive{% endif %}"
+                    onclick="toggleStatus('{{ anime.id }}', 'watched', this)"
+                    data-bs-toggle="tooltip" data-bs-placement="top"
+                    title="{% if not user.is_authenticated %}これらの機能を利用するにはログインしてください{% endif %}">
                 視聴済
             </button>
         
@@ -56,7 +58,7 @@
                     data-status="plan_to_watch"
                     data-update-url="{% url 'anime_tracker:update_status' pk=anime.id %}"
                     {% if not user.is_authenticated %}disabled{% endif %}
-                    class="{% if user_relation and user_relation.status == 1 %}btn-active{% else %}btn-inactive{% endif %}"
+                    class="{% if not user.is_authenticated %}btn-no-hover{% elif user_relation and user_relation.status == 1 %}btn-active{% else %}btn-inactive{% endif %}"
                     onclick="toggleStatus('{{ anime.id }}', 'plan_to_watch', this)">
                 視聴予定
             </button>
@@ -233,6 +235,11 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(error => console.error("エラーが発生しました:", error));
         });
     });
+
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+        new bootstrap.Tooltip(tooltipTriggerEl);
+    });
 });
 // ↑が視聴済/お気に入り/視聴予定に関するJavaスクリプト
     
@@ -346,12 +353,6 @@ document.addEventListener('DOMContentLoaded', createStar);
 
 
 
-
-
-
-
-    
-    
 </script>
 <style>
     <!--
@@ -377,7 +378,7 @@ document.addEventListener('DOMContentLoaded', createStar);
     color: #000 !important;
 }
 
-    /* 関連付けられたタグを太字に */
+/* 関連付けられたタグを太字に */
 .tag-button.active-tag {
     font-weight: bold;
     color: black; /* テキストの色を目立たせる */

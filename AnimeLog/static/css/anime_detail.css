@@ -8,13 +8,29 @@
     color: white;
 }
 
-
-
-
 button[disabled] {
     background-color: lightgray;
     cursor: not-allowed;
 }
+/* 未ログイン時: ホバーを無効化 */
+.btn-no-hover {
+    pointer-events: none;
+    background-color: gray;
+    color: white;
+}
+
+.tooltip {
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    white-space: nowrap;
+    z-index: 1000;
+    display: none;
+}
+
 
 /* アニメ詳細画面のレイアウト */
 .anime-detail-container {
