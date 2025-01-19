@@ -389,7 +389,7 @@ def home(request):
     # データを取得
     genres = Genres.objects.all()
     tags = Tags.objects.all()
-    studios = Studios.objects.all()
+    studios = Studios.objects.all().order_by('name')
     seasons = Seasons.objects.all()
     grouped_seasons = generate_seasons()  # 動的に生成したシーズンを取得
     
