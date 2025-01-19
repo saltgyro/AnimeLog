@@ -59,7 +59,9 @@
                     data-update-url="{% url 'anime_tracker:update_status' pk=anime.id %}"
                     {% if not user.is_authenticated %}disabled{% endif %}
                     class="{% if not user.is_authenticated %}btn-no-hover{% elif user_relation and user_relation.status == 1 %}btn-active{% else %}btn-inactive{% endif %}"
-                    onclick="toggleStatus('{{ anime.id }}', 'plan_to_watch', this)">
+                    onclick="toggleStatus('{{ anime.id }}', 'plan_to_watch', this)"
+                    data-bs-toggle="tooltip" data-bs-placement="top"
+                    title="{% if not user.is_authenticated %}これらの機能を利用するにはログインしてください{% endif %}">
                 視聴予定
             </button>
         
