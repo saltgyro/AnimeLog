@@ -4,7 +4,7 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 
-<button class="btn btn-primary m-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+<button id="offcanvas-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
     →
 </button>
 <!-- オフキャンバスメニュー -->
@@ -2048,7 +2048,7 @@
 
 
 <!-- ソートボタン -->
-<div class="sort-options mb-3 d-flex justify-content-end">
+<div class="sort-options">
     <label for="sort-select" class="form-label">並び順:</label>
     <div style="margin-right: 30px;">
         <select id="sort-select" class="form-select" onchange="applySort()">
