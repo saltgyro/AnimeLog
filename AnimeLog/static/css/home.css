@@ -23,8 +23,6 @@
     box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25); /* カスタムフォーカスリング */
 }
 
-
-
 /* ソートボタンの右端配置 */
 .sort-options {
     display: flex; /* Flexboxを有効化 */
@@ -39,7 +37,7 @@
     justify-content: center;
     align-items: center;
     gap: 10px; /* ボタン間の隙間 */
-    margin-top: -40px;
+    margin-top: 0px;
 }
 
 .anime-list {
@@ -141,4 +139,20 @@
 .tooltip-container:hover .tooltip-text {
     visibility: visible; /* ホバー時に表示 */
     opacity: 1; /* 透明度を変更して表示 */
+}
+
+.search-area {
+    display: flex; /* 横並びに配置 */
+    align-items: center; /* 垂直方向に中央揃え */
+}
+
+.search-area h6 {
+    margin: 0; /* デフォルトの余白を削除 */
+    line-height: 1.5; /* 行の高さを調整 */
+}
+
+.search-area ul {
+    margin: 0; /* デフォルトの余白を削除 */
+    padding: 0; /* デフォルトの内側余白を削除 */
+    list-style: none; /* リストマーカーを削除 */
 }

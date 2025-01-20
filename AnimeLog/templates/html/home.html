@@ -4,9 +4,77 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 
+<div class="search-area">
 <button id="offcanvas-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
     →
 </button>
+<h6>検索条件</h6>
+    <ul>
+        <!-- フリーワード検索 -->
+        {% if search_conditions.search %}
+        <strong>フリーワード検索: 
+            {% for keyword in search_conditions.search %}
+                <span>{{ keyword }}
+                </span>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </strong>
+        {% endif %}
+        <!-- ジャンル -->
+        {% if search_conditions.genre %}
+            <strong>ジャンル: 
+                {% for genre in genres %}
+                    {% if genre.id|stringformat:"s" in search_conditions.genre %}
+                        <span>{{ genre.name }}
+                        </span>
+                    {% endif %}
+                {% endfor %}
+            </strong>
+        {% endif %}
+        <!-- タグ -->
+        {% if search_conditions.tag %}
+            <strong>タグ: 
+                {% for tag in tags %}
+                    {% if tag.id|stringformat:"s" in search_conditions.tag %}
+                        <span>{{ tag.name }}
+                        </span>
+                    {% endif %}
+                {% endfor %}
+            </strong>
+        {% endif %}
+        <!-- シーズン -->
+        {% if search_conditions.season %}
+            <strong>シーズン: 
+                {% for season in seasons %}
+                    {% if season.id|stringformat:"s" in search_conditions.season %}
+                        <span>{{ season.year }} 年 {{ season.get_season_display }}
+                        </span>
+                    {% endif %}
+                {% endfor %}
+            </strong>
+        {% endif %}
+        <!-- スタジオ -->
+        {% if search_conditions.studio %}
+            <strong>スタジオ: 
+                {% for studio in studios %}
+                    {% if studio.id|stringformat:"s" in search_conditions.studio %}
+                        <span>{{ studio.name }}
+                        </span>
+                    {% endif %}
+                {% endfor %}
+            </strong>
+        {% endif %}
+        <!-- 50音順 - 条件表示 -->
+        {% if formatted_conditions %}
+                <strong>50音順: 
+                    <span>
+                        {% for original, display in formatted_conditions.items %}
+                        <span>{{ display }}</span>
+                        {% endfor %}
+                    </span>
+                </strong>
+            {% endif %}
+    </ul>
+</div>
 <!-- オフキャンバスメニュー -->
 <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
@@ -1936,72 +2004,7 @@
     </div>
 </div>
 
-<h6>検索条件</h6>
-<ul>
-    <!-- フリーワード検索 -->
-    {% if search_conditions.search %}
-    <strong>フリーワード検索: 
-        {% for keyword in search_conditions.search %}
-            <span>{{ keyword }}
-            </span>{% if not forloop.last %}, {% endif %}
-        {% endfor %}
-    </strong>
-    {% endif %}
-    <!-- ジャンル -->
-    {% if search_conditions.genre %}
-        <strong>ジャンル: 
-            {% for genre in genres %}
-                {% if genre.id|stringformat:"s" in search_conditions.genre %}
-                    <span>{{ genre.name }}
-                    </span>
-                {% endif %}
-            {% endfor %}
-        </strong>
-    {% endif %}
-    <!-- タグ -->
-    {% if search_conditions.tag %}
-        <strong>タグ: 
-            {% for tag in tags %}
-                {% if tag.id|stringformat:"s" in search_conditions.tag %}
-                    <span>{{ tag.name }}
-                    </span>
-                {% endif %}
-            {% endfor %}
-        </strong>
-    {% endif %}
-    <!-- シーズン -->
-    {% if search_conditions.season %}
-        <strong>シーズン: 
-            {% for season in seasons %}
-                {% if season.id|stringformat:"s" in search_conditions.season %}
-                    <span>{{ season.year }} 年 {{ season.get_season_display }}
-                    </span>
-                {% endif %}
-            {% endfor %}
-        </strong>
-    {% endif %}
-    <!-- スタジオ -->
-    {% if search_conditions.studio %}
-        <strong>スタジオ: 
-            {% for studio in studios %}
-                {% if studio.id|stringformat:"s" in search_conditions.studio %}
-                    <span>{{ studio.name }}
-                    </span>
-                {% endif %}
-            {% endfor %}
-        </strong>
-    {% endif %}
-    <!-- 50音順 - 条件表示 -->
-    {% if formatted_conditions %}
-            <strong>50音順: 
-                <span>
-                    {% for original, display in formatted_conditions.items %}
-                    <span>{{ display }}</span>
-                    {% endfor %}
-                </span>
-            </strong>
-        {% endif %}
-</ul>
+    
 
 <div class="filters">
     <a href="{% url 'anime_tracker:home' %}?status=not_in_list" 
