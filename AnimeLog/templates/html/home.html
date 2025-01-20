@@ -2081,13 +2081,15 @@
                     <table class="table table-striped">
                         <tbody>
                             <tr>
-                                <th>放送開始日</th>
-                                <td>{{ anime.start_date }}</td>
+                                <th>放送<br>開始日</th>
+                                <td style="width: 60px;"> {{ anime.start_date|date:"Y年" }}<br>
+                                    {{ anime.start_date|date:"n月j日" }}</td>
                             </tr>
                             {% if anime.end_date %}
                             <tr>
-                                <th>放送終了日</th>
-                                <td>{{ anime.end_date }}</td>
+                                <th>放送<br>終了日</th>
+                                <td style="width: 60px;">{{ anime.start_date|date:"Y年" }}<br>
+                                    {{ anime.start_date|date:"n月j日" }}</td>
                             </tr>
                             {% endif %}
                             {% if anime.episode_count > 0 %}
