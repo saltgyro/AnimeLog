@@ -2149,35 +2149,32 @@
 
 
 <script>
-    // 詳細画面用のトグルボタン
-    const detailToggleButton = document.getElementById("toggle-detail");
-    const animeDetails = document.querySelectorAll('.anime-detail');
-    console.log("AA")
-    // 詳細情報の表示/非表示
-    detailToggleButton.addEventListener("change", function () {
-        if (detailToggleButton.checked) {
-            animeDetails.forEach(function(detail) {
-                detail.style.display = 'block';  // 詳細を表示
-                console.log("HEI")
-            });
-        } else {
-            animeDetails.forEach(function(detail) {
-                detail.style.display = 'none';  // 詳細を非表示
-            });
-        }
-    });
+    
 
-    // 初期状態の設定（トグルボタンの状態に応じて表示/非表示）
-    if (detailToggleButton.checked) {
-        animeDetails.forEach(function(detail) {
-            console.log("Foo")
-            detail.style.display = 'block';  // 詳細を表示
+    document.addEventListener("DOMContentLoaded", function () {
+        const detailToggleButton = document.getElementById("toggle-detail");
+        const animeDetails = document.querySelectorAll('.anime-detail');
+    
+        // ページ読み込み時に`sessionStorage`から状態を取得して復元
+        const savedState = sessionStorage.getItem('detailToggleState'); // 状態を取得
+        if (savedState === 'true') {
+            detailToggleButton.checked = true; // チェックを復元
+            animeDetails.forEach(detail => detail.style.display = 'block'); // 詳細情報を表示
+        } else {
+            detailToggleButton.checked = false; // チェックを外す
+            animeDetails.forEach(detail => detail.style.display = 'none'); // 詳細情報を非表示
+        }
+    
+        // トグルボタンの状態が変更されたときの処理
+        detailToggleButton.addEventListener("change", function () {
+            const isChecked = detailToggleButton.checked; // 現在の状態を取得
+            sessionStorage.setItem('detailToggleState', isChecked); // 状態を保存
+            animeDetails.forEach(detail => {
+                detail.style.display = isChecked ? 'block' : 'none'; // 状態に応じて表示/非表示
+            });
         });
-    } else {
-        animeDetails.forEach(function(detail) {
-            detail.style.display = 'none';  // 詳細を非表示
-        });
-    }
+    });
+    
     
     document.addEventListener("DOMContentLoaded", function() {
         // 全ての "remove-condition" ボタンにクリックイベントを追加
