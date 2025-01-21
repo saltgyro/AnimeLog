@@ -85,7 +85,6 @@ button[disabled] {
     cursor: pointer;
 }
 
-
 .anime-info .rating {
     margin-top: 20px;
 }
@@ -101,13 +100,34 @@ button[disabled] {
 }
 
 .related-animes ul {
-    list-style: none;
-    padding-left: 0;
+    list-style-type: none; /* デフォルトのリストスタイルを削除 */
+    padding: 0;
+    display: flex; /* 横並びにする */
+    flex-wrap: nowrap; /* 折り返しを無効化 */
+    overflow-x: auto; /* 横スクロールを許可 */
+    gap: 10px; /* アイテム間の隙間 */
+    white-space: nowrap; /* 折り返し防止（保険として） */
 }
 
-.related-animes li {
-    margin-bottom: 10px;
+.related-animes ul li {
+    flex-shrink: 0; /* 横幅が狭い場合でも縮まないようにする */
+    display: flex;
+    flex-direction: column; /* 縦方向に並べる */
+    align-items: center; /* 中央揃え */
+    text-align: center; /* テキスト中央揃え */
 }
+
+
+.related-animes {
+    overflow-x: auto; /* 横スクロールを有効化 */
+    white-space: nowrap; /* アイテムが折り返されないようにする */
+    padding: 10px; /* 内側に余白を追加 */
+    border: 1px solid #ccc; /* デザイン性を向上（任意） */
+}
+
+
+
+
 
 .related-animes a {
     text-decoration: none;
