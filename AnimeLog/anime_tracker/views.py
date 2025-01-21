@@ -444,6 +444,7 @@ def regist_view(request):
         'user_form': user_form,
     })
 
+
 @login_required
 def user_edit(request):
     if request.method == 'POST':
@@ -451,11 +452,13 @@ def user_edit(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'プロフィールが更新されました。')
-            return render(request, 'html/user_edit.html', {'form': form})  # アカウント設定画面のまま
-    else:
-        form = UserEditForm(user=request.user, instance=request.user)
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'error': '入力内容に誤りがあります。'}, status=400)
 
+    form = UserEditForm(user=request.user, instance=request.user)
     return render(request, 'html/user_edit.html', {'form': form})
+
 
 
 

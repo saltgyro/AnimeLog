@@ -60,3 +60,29 @@
     background-color: #f8d7da;
     color: #721c24;
 }
+
+
+
+.toast-message.toast-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #4CAF50; /* 成功時の緑色 */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1em;
+    z-index: 1000;
+    opacity: 0; /* 初期状態は透明 */
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.toast-message.toast-message.show {
+    opacity: 1; /* 表示時の透明度 */
+    transform: translateY(0);
+}
+
+.toast-message.toast-message.error {
+    background-color: #f44336; /* エラー時の赤色 */
+}
