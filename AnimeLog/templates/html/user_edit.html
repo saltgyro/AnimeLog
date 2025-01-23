@@ -1,145 +1,147 @@
-{% extends "html/base.html" %}
-{% load static %}
-
-{% block content %}
-<link rel="stylesheet" href="{% static 'css/user_edit.css' %}">
+{% extends "html/base.html" %} {% load static %} {% block content %}
+<link rel="stylesheet" href="{% static 'css/user_edit.css' %}" />
 <h2 class="h2">アカウント設定</h2>
 
 <!-- Toastメッセージ用のHTML -->
 <div id="toast-message" class="toast-message"></div>
 
-<form method="post" class="account-form" action="{% url 'anime_tracker:user_edit' %}">
-    {% csrf_token %}
+<form
+  method="post"
+  class="account-form"
+  action="{% url 'anime_tracker:user_edit' %}"
+>
+  {% csrf_token %}
 
-    <!-- ニックネーム -->
-    <div class="form-group">
-        <label for="id_nickname">ニックネーム</label>
-        {{ form.nickname }}
-        <button type="submit" name="field" value="nickname" class="btn btn-primary">変更を保存</button>
-    </div>
+  <!-- ニックネーム -->
+  <div class="form-group">
+    <label for="id_nickname">ニックネーム</label>
+    {{ form.nickname }}
+    <button type="submit" name="field" value="nickname" class="btn btn-primary">
+      変更を保存
+    </button>
+  </div>
 
-    <!-- メールアドレス -->
-    <div class="form-group">
-        <label for="id_email">メールアドレス</label>
-        {{ form.email }}
-        <button type="submit" name="field" value="email" class="btn btn-primary">変更を保存</button>
-    </div>
+  <!-- メールアドレス -->
+  <div class="form-group">
+    <label for="id_email">メールアドレス</label>
+    {{ form.email }}
+    <button type="submit" name="field" value="email" class="btn btn-primary">
+      変更を保存
+    </button>
+  </div>
 
-    <!-- 現在のパスワード -->
-    <div class="form-group">
-        <label for="id_current_password">現在のパスワード</label>
-        {{ form.current_password }}
-    </div>
+  <!-- 現在のパスワード -->
+  <div class="form-group">
+    <label for="id_current_password">現在のパスワード</label>
+    {{ form.current_password }}
+  </div>
 
-    <!-- 新しいパスワード -->
-    <div class="form-group">
-        <label for="id_new_password">新しいパスワード</label>
-        {{ form.new_password }}
-    </div>
+  <!-- 新しいパスワード -->
+  <div class="form-group">
+    <label for="id_new_password">新しいパスワード</label>
+    {{ form.new_password }}
+  </div>
 
-    <!-- 新しいパスワード（確認用） -->
-    <div class="form-group">
-        <label for="id_new_password_confirm">新しいパスワード(確認用)</label>
-        {{ form.new_password_confirm }}
-        <button type="submit" name="field" value="new_password_confirm" class="btn btn-primary">変更を保存</button>
-    </div>
+  <!-- 新しいパスワード（確認用） -->
+  <div class="form-group">
+    <label for="id_new_password_confirm">新しいパスワード(確認用)</label>
+    {{ form.new_password_confirm }}
+    <button
+      type="submit"
+      name="field"
+      value="new_password_confirm"
+      class="btn btn-primary"
+    >
+      変更を保存
+    </button>
+  </div>
 </form>
 
-
-
-
-
-
-
-
 <script>
-    function showToastMessage(message, type = 'success') {
-        const toast = document.getElementById('toast-message');
-        toast.textContent = message; // メッセージ内容を設定
-        toast.className = `toast-message ${type} show`; // 成功またはエラーのクラスを追加
+  function showToastMessage(message, type = "success") {
+    const toast = document.getElementById("toast-message");
+    toast.textContent = message; // メッセージ内容を設定
+    toast.className = `toast-message ${type} show`; // 成功またはエラーのクラスを追加
 
-        setTimeout(() => {
-            toast.className = 'toast-message'; // クラスをリセットして非表示にする
-        }, 3000); // 3秒後に消える
-    }
+    setTimeout(() => {
+      toast.className = "toast-message"; // クラスをリセットして非表示にする
+    }, 3000); // 3秒後に消える
+  }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const form = document.querySelector('.account-form');
-        const submitButtons = form.querySelectorAll('button[name="field"]');
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector(".account-form");
+    const submitButtons = form.querySelectorAll('button[name="field"]');
 
-        // 各送信ボタンにクリックイベントを設定
-        submitButtons.forEach(button => {
-            button.addEventListener('click', function (e) {
-                e.preventDefault(); // 実際の送信を防ぐ
-                const field = this.value; // ボタンのvalue属性からフィールド名を取得
+    // 各送信ボタンにクリックイベントを設定
+    submitButtons.forEach((button) => {
+      button.addEventListener("click", function (e) {
+        e.preventDefault(); // 実際の送信を防ぐ
+        const field = this.value; // ボタンのvalue属性からフィールド名を取得
 
-                // Toastメッセージをフィールド名に応じて設定
-                let message = '';
-                if (field === 'nickname') {
-                    message = 'ニックネームが更新されました！';
-                } else if (field === 'email') {
-                    message = 'メールアドレスが更新されました！';
-                } else if (field === 'new_password_confirm') {
-                    message = 'パスワードが更新されました！';
-                } else {
-                    message = '変更が保存されました！';
-                }
+        // Toastメッセージをフィールド名に応じて設定
+        let message = "";
+        if (field === "nickname") {
+          message = "ニックネームが更新されました！";
+        } else if (field === "email") {
+          message = "メールアドレスが更新されました！";
+        } else if (field === "new_password_confirm") {
+          message = "パスワードが更新されました！";
+        } else {
+          message = "変更が保存されました！";
+        }
 
-                // Toast通知を表示
-                showToastMessage(message, 'success');
+        // Toast通知を表示
+        showToastMessage(message, "success");
 
-                // 非同期でサーバーにデータを送信
-                const formData = new FormData(form);
-                formData.append('field', field);
+        // 非同期でサーバーにデータを送信
+        const formData = new FormData(form);
+        formData.append("field", field);
 
-                fetch(form.action, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
-                    },
-                    body: formData,
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (!data.success) {
-                        showToastMessage('更新に失敗しました: ' + data.error, 'error');
-                    }
-                })
-                .catch(error => {
-                    showToastMessage('通信エラーが発生しました。', 'error');
-                });
-            });
-        });
+        fetch(form.action, {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": formData.get("csrfmiddlewaretoken"),
+          },
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (!data.success) {
+              showToastMessage("更新に失敗しました: " + data.error, "error");
+            }
+          })
+          .catch((error) => {
+            showToastMessage("通信エラーが発生しました。", "error");
+          });
+      });
     });
+  });
 </script>
-
-
 
 {% endblock %}
 
 <style>
-    .toast-message {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background-color: #4CAF50; /* 成功時の緑色 */
-        color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-size: 1em;
-        z-index: 1000;
-        opacity: 0; /* 初期状態は透明 */
-        transform: translateY(-20px);
-        transition: opacity 0.3s ease, transform 0.3s ease; /* フェードイン・アウト */
-    }
+  .toast-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #4caf50; /* 成功時の緑色 */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1em;
+    z-index: 1000;
+    opacity: 0; /* 初期状態は透明 */
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease; /* フェードイン・アウト */
+  }
 
-    .toast-message.show {
-        opacity: 1; /* 表示時 */
-        transform: translateY(0);
-    }
+  .toast-message.show {
+    opacity: 1; /* 表示時 */
+    transform: translateY(0);
+  }
 
-    .toast-message.error {
-        background-color: #f44336; /* エラー時の赤色 */
-    }
+  .toast-message.error {
+    background-color: #f44336; /* エラー時の赤色 */
+  }
 </style>
-

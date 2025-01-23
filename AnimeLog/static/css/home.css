@@ -1,158 +1,157 @@
 #offcanvas-toggle {
-    background-color: #0d6efd; /* btn-primary の背景色 (デフォルト青) */
-    color: white; /* 文字色 */
-    border: none; /* ボーダーなし */
-    padding: 0.375rem 0.75rem; /* ボタンのパディング */
-    font-size: 1rem; /* ボタンのフォントサイズ */
-    line-height: 1.5; /* ボタンの高さ */
-    border-radius: 0.25rem; /* ボタンの角を丸める */
-    cursor: pointer; /* ポインタ表示 */
-    margin-top: 1rem; /* mt-3 (上マージン) に相当 */
-    transition: background-color 0.2s ease-in-out; /* ホバースタイルのアニメーション */
+  background-color: #0d6efd; /* btn-primary の背景色 (デフォルト青) */
+  color: white; /* 文字色 */
+  border: none; /* ボーダーなし */
+  padding: 0.375rem 0.75rem; /* ボタンのパディング */
+  font-size: 1rem; /* ボタンのフォントサイズ */
+  line-height: 1.5; /* ボタンの高さ */
+  border-radius: 0.25rem; /* ボタンの角を丸める */
+  cursor: pointer; /* ポインタ表示 */
+  margin-top: 1rem; /* mt-3 (上マージン) に相当 */
+  transition: background-color 0.2s ease-in-out; /* ホバースタイルのアニメーション */
 }
 
 /* ホバー時のスタイル */
 #offcanvas-toggle:hover {
-    background-color: #0056b3; /* ホバー時の濃い青 */
-    color: white;
+  background-color: #0056b3; /* ホバー時の濃い青 */
+  color: white;
 }
 
 /* フォーカス時のスタイル (クリック時など) */
 #offcanvas-toggle:focus {
-    outline: none; /* デフォルトのアウトラインを削除 */
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25); /* カスタムフォーカスリング */
+  outline: none; /* デフォルトのアウトラインを削除 */
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25); /* カスタムフォーカスリング */
 }
 
 /* ソートボタンの右端配置 */
 .sort-options {
-    display: flex; /* Flexboxを有効化 */
-    justify-content: flex-end; /* 子要素を右揃え */
-    align-items: center; /* 子要素を中央揃え */
-    margin-top: -40px;
+  display: flex; /* Flexboxを有効化 */
+  justify-content: flex-end; /* 子要素を右揃え */
+  align-items: center; /* 子要素を中央揃え */
+  margin-top: -40px;
 }
 
 /* 全体のレイアウト */
 .filters {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px; /* ボタン間の隙間 */
-    margin-top: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* ボタン間の隙間 */
+  margin-top: 0px;
 }
 
 .anime-list {
-    display: flex; /* 横並びに配置 */
-    flex-wrap: wrap; /* 行を折り返す */
-    gap: 20px; /* アイテム間の間隔 */
-    justify-content: center; /* コンテナ内で中央揃え */
-    padding: 20px;
+  display: flex; /* 横並びに配置 */
+  flex-wrap: wrap; /* 行を折り返す */
+  gap: 20px; /* アイテム間の間隔 */
+  justify-content: center; /* コンテナ内で中央揃え */
+  padding: 20px;
 }
 
 .anime-item {
-    width: calc(12.5% - 20px); /* 1行に8枚 (12.5% の幅)、間隔分を引く */
-    box-sizing: border-box; /* パディングとボーダーを含めて計算 */
-    text-align: center; /* タイトルを中央揃え */
+  width: calc(12.5% - 20px); /* 1行に8枚 (12.5% の幅)、間隔分を引く */
+  box-sizing: border-box; /* パディングとボーダーを含めて計算 */
+  text-align: center; /* タイトルを中央揃え */
 }
 
 .anime-item img {
-    width: 100%; /* コンテナの幅に合わせる */
-    height: auto; /* アスペクト比を維持 */
-    border-radius: 8px; /* 角を丸める（任意） */
+  width: 100%; /* コンテナの幅に合わせる */
+  height: auto; /* アスペクト比を維持 */
+  border-radius: 8px; /* 角を丸める（任意） */
 }
 
 .anime-item p {
-    margin-top: 8px; /* 画像との間隔を設定 */
-    font-size: 14px; /* フォントサイズを調整 */
-    color: #333; /* テキストカラーを設定 */
+  margin-top: 8px; /* 画像との間隔を設定 */
+  font-size: 14px; /* フォントサイズを調整 */
+  color: #333; /* テキストカラーを設定 */
 }
 
 /* ソート */
 .form-select {
-    width: 200px; /* 横幅を固定 */
-    padding: 5px; /* 内側に余白を追加 */
-    border: 1px solid #ccc; /* 境界線を追加 */
-    border-radius: 5px; /* 角を丸くする */
-    background-color: #f9f9f9; /* 背景色を淡いグレーに */
-    font-size: 0.9rem; /* 文字サイズを調整 */
+  width: 200px; /* 横幅を固定 */
+  padding: 5px; /* 内側に余白を追加 */
+  border: 1px solid #ccc; /* 境界線を追加 */
+  border-radius: 5px; /* 角を丸くする */
+  background-color: #f9f9f9; /* 背景色を淡いグレーに */
+  font-size: 0.9rem; /* 文字サイズを調整 */
 }
 
 /* すべてのボタンのデフォルトのスタイル */
 .filter-btn {
-    margin: 0 10px;
+  margin: 0 10px;
 }
 /* 選択中のボタンの色をオレンジに変更 */
 .filter-btn.selected {
-    background-color: orange;
-    border-color: orange;
-    color: white;
+  background-color: orange;
+  border-color: orange;
+  color: white;
 }
 /* ホバー時のボタン色 */
 .filter-btn:hover {
-    background-color: #ff7f50;
-    border-color: #ff7f50;
+  background-color: #ff7f50;
+  border-color: #ff7f50;
 }
-
 
 /* アニメ詳細情報を一覧に表示する */
 .search-results .anime-detail table {
-    font-size: 10px !important; 
+  font-size: 10px !important;
 }
 
-
 .anime-detail {
-    font-size: 12px; /* 全体の文字サイズを指定 */
+  font-size: 12px; /* 全体の文字サイズを指定 */
 }
 
 .anime-detail th {
-    font-size: 12px; /* ヘッダー部分の文字サイズ */
-    font-weight: bold; /* ヘッダーの太字 */
+  font-size: 12px; /* ヘッダー部分の文字サイズ */
+  font-weight: bold; /* ヘッダーの太字 */
 }
 
 .anime-detail td {
-    font-size: 12px; /* データ部分の文字サイズ */
+  font-size: 12px; /* データ部分の文字サイズ */
 }
 
 /* 未ログイン時の視聴済/お気に入り/視聴予定のホバー時動作 */
 .tooltip-container {
-    position: relative;
-    display: inline-block;
+  position: relative;
+  display: inline-block;
 }
 
 .tooltip-text {
-    visibility: hidden; /* 初期状態では非表示 */
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 5px;
-    border-radius: 5px;
-    position: absolute;
-    bottom: 120%; /* ボタンの上に表示 */
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1;
-    white-space: nowrap;
-    font-size: 12px;
-    opacity: 0; /* 初期状態で透明 */
-    transition: opacity 0.3s; /* フェードイン効果 */
+  visibility: hidden; /* 初期状態では非表示 */
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 5px;
+  border-radius: 5px;
+  position: absolute;
+  bottom: 120%; /* ボタンの上に表示 */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  white-space: nowrap;
+  font-size: 12px;
+  opacity: 0; /* 初期状態で透明 */
+  transition: opacity 0.3s; /* フェードイン効果 */
 }
 
 .tooltip-container:hover .tooltip-text {
-    visibility: visible; /* ホバー時に表示 */
-    opacity: 1; /* 透明度を変更して表示 */
+  visibility: visible; /* ホバー時に表示 */
+  opacity: 1; /* 透明度を変更して表示 */
 }
 
 .search-area {
-    display: flex; /* 横並びに配置 */
-    align-items: center; /* 垂直方向に中央揃え */
+  display: flex; /* 横並びに配置 */
+  align-items: center; /* 垂直方向に中央揃え */
 }
 
 .search-area h6 {
-    margin: 0; /* デフォルトの余白を削除 */
-    line-height: 1.5; /* 行の高さを調整 */
+  margin: 0; /* デフォルトの余白を削除 */
+  line-height: 1.5; /* 行の高さを調整 */
+  margin-left: 20px !important;
 }
 
 .search-area ul {
-    margin: 0; /* デフォルトの余白を削除 */
-    padding: 0; /* デフォルトの内側余白を削除 */
-    list-style: none; /* リストマーカーを削除 */
+  margin: 0; /* デフォルトの余白を削除 */
+  padding: 0; /* デフォルトの内側余白を削除 */
+  list-style: none; /* リストマーカーを削除 */
 }

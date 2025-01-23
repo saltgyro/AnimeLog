@@ -1,31 +1,34 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ポートフォリオ</title>
-    <link rel="stylesheet" href="{% static 'portfolio.css' %}">
-</head>
-<body>
+    <link rel="stylesheet" href="{% static 'portfolio.css' %}" />
+  </head>
+  <body>
     <h1>AnimeLog</h1>
 
     <!-- スクリーンショットのセクション -->
     <div class="screenshots">
-        <div class="screenshot">
-            <img src="{% static 'screenshots1.png' %}" alt="スクリーンショット1">
-            <img src="{% static 'screenshots2.png' %}" alt="スクリーンショット2">
-        </div>
-        <div class="screenshot">
-            <img src="{% static 'screenshots3.png' %}" alt="スクリーンショット3">
-            <img src="{% static 'screenshots4.png' %}" alt="スクリーンショット4">
-        </div>
+      <div class="screenshot">
+        <img src="{% static 'screenshots1.png' %}" alt="スクリーンショット1" />
+        <img src="{% static 'screenshots2.png' %}" alt="スクリーンショット2" />
+      </div>
+      <div class="screenshot">
+        <img src="{% static 'screenshots3.png' %}" alt="スクリーンショット3" />
+        <img src="{% static 'screenshots4.png' %}" alt="スクリーンショット4" />
+      </div>
     </div>
 
-    <p>アニメログは、アニメをネタに会話で盛り上がりたい人々をサポートする視聴記録アプリです。</p>
+    <p>
+      アニメログは、アニメをネタに会話で盛り上がりたい人々をサポートする視聴記録アプリです。
+    </p>
     <a href="{% static 'plan.pdf' %}" target="_blank">企画書</a>
+    <a href="{% static 'screenflow.svg' %}" target="_blank">画面遷移図</a>
     <a href="{% static 'er_diagram.svg' %}" target="_blank">ER図</a>
-    <br>
+    <br />
     <a href="{% url 'anime_tracker:home' %}" class="btn">アプリにアクセス</a>
-</body>
+  </body>
 </html>
