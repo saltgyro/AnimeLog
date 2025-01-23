@@ -37,7 +37,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from .models import Anime, Tags
-
+from django.contrib.auth.hashers import make_password
 
 # 行と文字の対応を定義
 ROW_ALPHABET_MAPPING = {
@@ -181,6 +181,19 @@ class CustomPasswordResetView(PasswordResetView):
     success_url = reverse_lazy('anime_tracker:password_reset_done')  # 成功時のURLを指定
 
     def form_valid(self, form):
+        # メール送信前にユーザーのパスワードを無効化
+        email = form.cleaned_data.get('email')
+        
+        try:
+            user = Users.objects.get(email=email)
+            # ランダムな新しいパスワードを設定（使えないパスワードを設定）
+            user.password = make_password(None)  # ランダムで使えないパスワード
+            user.save()
+        except Users.DoesNotExist:
+            # ユーザーが存在しない場合でもエラーを出さない
+            pass
+        
+        
         # contextを取得
         context = self.get_context_data(form=form)
         context['settings'] = settings  # settingsを追加
