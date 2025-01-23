@@ -1,98 +1,96 @@
 /* 入力フォームの全体スタイル */
 .form-group {
-    margin-bottom: 15px; /* 各フォーム要素間の余白 */
+  margin-bottom: 15px; /* 各フォーム要素間の余白 */
 }
 
 /* フォーム全体のラッパー */
 
 .form-container {
-    display: flex;
-    justify-content: flex-start; /* 水平方向の中央揃え */
-    align-items: center; /* 垂直方向の中央揃え */
-    flex-direction: column; /* 縦方向に並べる */
-    min-height: 100vh; /* 画面全体の高さを占める */
-    background-color: #f9f9f9; /* 背景色 */
-    text-align: center; /* 中央揃え */
+  display: flex;
+  justify-content: flex-start; /* 水平方向の中央揃え */
+  align-items: center; /* 垂直方向の中央揃え */
+  flex-direction: column; /* 縦方向に並べる */
+  min-height: 100vh; /* 画面全体の高さを占める */
+  background-color: #f9f9f9; /* 背景色 */
+  text-align: center; /* 中央揃え */
 }
-
 
 /* 入力フィールドのスタイル */
 input[type="nickname"],
 input[type="password1"],
 input[type="password2"] {
-    width: 100%; /* 横幅を100%に */
-    padding: 10px; /* 内側の余白 */
-    margin-top: 5px; /* ラベルとの間にスペース */
-    border: 1px solid #ccc; /* 境界線 */
-    border-radius: 5px; /* 角を丸く */
-    box-sizing: border-box; /* ボックスモデルを調整 */
-    font-size: 1em;
+  width: 100%; /* 横幅を100%に */
+  padding: 10px; /* 内側の余白 */
+  margin-top: 5px; /* ラベルとの間にスペース */
+  border: 1px solid #ccc; /* 境界線 */
+  border-radius: 5px; /* 角を丸く */
+  box-sizing: border-box; /* ボックスモデルを調整 */
+  font-size: 1em;
 }
 input[type="checkbox"] {
-    appearance: none; /* ブラウザのデフォルトスタイルをリセット */
-    width: 20px; /* チェックボックスの幅 */
-    height: 20px; /* チェックボックスの高さ */
-    border: 2px solid #000; /* 濃い黒色の枠線 */
-    border-radius: 4px; /* 枠線を少し丸くする（必要なら） */
-    background-color: #fff; /* 背景色を白に */
-    cursor: pointer; /* マウスホバー時にポインターを表示 */
+  appearance: none; /* ブラウザのデフォルトスタイルをリセット */
+  width: 20px; /* チェックボックスの幅 */
+  height: 20px; /* チェックボックスの高さ */
+  border: 2px solid #000; /* 濃い黒色の枠線 */
+  border-radius: 4px; /* 枠線を少し丸くする（必要なら） */
+  background-color: #fff; /* 背景色を白に */
+  cursor: pointer; /* マウスホバー時にポインターを表示 */
 }
-
-
 
 /* ラベルのスタイル */
 label {
-    font-weight: bold;
-    display: block; /* 各ラベルをブロック表示 */
+  font-weight: bold;
+  display: block; /* 各ラベルをブロック表示 */
+  white-space: nowrap;
 }
 
 /* 登録ボタンのスタイル */
 button[type="submit"] {
-    background-color: #4CAF50; /* 緑色 */
-    color: white; /* テキスト色 */
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
+  background-color: #4caf50; /* 緑色 */
+  color: white; /* テキスト色 */
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
 }
 
 button[type="submit"]:hover {
-    background-color: #45a049; /* ホバー時に少し濃く */
+  background-color: #45a049; /* ホバー時に少し濃く */
 }
 
 /* h1タグのスタイル */
 h1 {
-    font-size: 2em; /* フォントサイズ */
-    font-weight: bold; /* 太字 */
-    text-align: center; /* 中央揃え */
-    margin-bottom: 20px; /* 下に余白 */
-    letter-spacing: 4px; /* 文字の間に2pxの余白を追加 */
+  font-size: 2em; /* フォントサイズ */
+  font-weight: bold; /* 太字 */
+  text-align: center; /* 中央揃え */
+  margin-bottom: 20px; /* 下に余白 */
+  letter-spacing: 4px; /* 文字の間に2pxの余白を追加 */
+  margin-top: 40px;
 }
 
 #toggle-detail {
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #000;
-    background-color: #fff;
-    cursor: pointer;
-    position: relative; /* 疑似要素の基準を設定 */
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #000;
+  background-color: #fff;
+  cursor: pointer;
+  position: relative; /* 疑似要素の基準を設定 */
 }
 
 #toggle-detail:checked {
-    background-color: #0626f7; /* チェック時の背景 */
-    border-color: #f0f6f1;
+  background-color: #0626f7; /* チェック時の背景 */
+  border-color: #f0f6f1;
 }
 
 #toggle-detail:checked::after {
-    content: "✓"; /* チェックマークを表示 */
-    color: white; /* チェックマークの色 */
-    font-size: 16px; /* チェックマークのサイズ */
-    font-weight: bold;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  content: "✓"; /* チェックマークを表示 */
+  color: white; /* チェックマークの色 */
+  font-size: 16px; /* チェックマークのサイズ */
+  font-weight: bold;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
-

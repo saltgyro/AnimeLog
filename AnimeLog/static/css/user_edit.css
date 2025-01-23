@@ -1,88 +1,87 @@
 /* user_editページのスタイル */
-.h2  {
-    text-align: center; /* 見出しを中央揃え */
-    margin-bottom: 20px; /* 見出しの下に余白 */
+.h2 {
+  text-align: center; /* 見出しを中央揃え */
+  margin-bottom: 20px; /* 見出しの下に余白 */
+  margin-top: 40px;
 }
 
 .account-form {
-    max-width: 600px; /* フォームの最大幅を設定 */
-    margin: 0 auto;   /* フォームを画面中央に配置 */
-    padding: 20px;
-    background-color: #f9f9f9; /* 背景色を設定 */
-    border-radius: 8px; /* 角を丸める */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 薄いシャドウを追加 */
+  max-width: 600px; /* フォームの最大幅を設定 */
+  margin: 0 auto; /* フォームを画面中央に配置 */
+  padding: 20px;
+  background-color: #f9f9f9; /* 背景色を設定 */
+  border-radius: 8px; /* 角を丸める */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 薄いシャドウを追加 */
 }
 
 .account-form h2 {
-    text-align: center; /* 見出しを中央揃え */
-    margin-bottom: 20px; /* 見出しの下に余白 */
+  text-align: center; /* 見出しを中央揃え */
+  margin-bottom: 20px; /* 見出しの下に余白 */
 }
 
 .account-form p {
-    font-size: 1.1em;
-    margin-bottom: 15px;
+  font-size: 1.1em;
+  margin-bottom: 15px;
 }
 
 .account-form button {
-    display: block;
-    width: 50%;
-    padding: 4px;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.2em;
-    cursor: pointer;
-    /* margin: 0 auto; 真ん中に*/
+  display: block;
+  width: 50%;
+  padding: 4px;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2em;
+  cursor: pointer;
+  /* margin: 0 auto; 真ん中に*/
 }
 
 .account-form button:hover {
-    background-color: #0056b3;
+  background-color: #0056b3;
 }
 
 .messages {
-    margin-top: 20px;
-    padding: 0;
-    list-style-type: none;
+  margin-top: 20px;
+  padding: 0;
+  list-style-type: none;
 }
 
 .messages li {
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
 }
 
 .messages .success {
-    background-color: #d4edda;
-    color: #155724;
+  background-color: #d4edda;
+  color: #155724;
 }
 
 .messages .error {
-    background-color: #f8d7da;
-    color: #721c24;
+  background-color: #f8d7da;
+  color: #721c24;
 }
 
-
-
 .toast-message.toast-message {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: #4CAF50; /* 成功時の緑色 */
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 1em;
-    z-index: 1000;
-    opacity: 0; /* 初期状態は透明 */
-    transform: translateY(-20px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #4caf50; /* 成功時の緑色 */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1em;
+  z-index: 1000;
+  opacity: 0; /* 初期状態は透明 */
+  transform: translateY(-20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .toast-message.toast-message.show {
-    opacity: 1; /* 表示時の透明度 */
-    transform: translateY(0);
+  opacity: 1; /* 表示時の透明度 */
+  transform: translateY(0);
 }
 
 .toast-message.toast-message.error {
-    background-color: #f44336; /* エラー時の赤色 */
+  background-color: #f44336; /* エラー時の赤色 */
 }
