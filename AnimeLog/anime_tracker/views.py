@@ -3,7 +3,7 @@ from django.views.generic import (TemplateView,CreateView,FormView,View)
 from django.contrib.auth import authenticate,login,logout
 from .forms import UserForm,RegistForm,UserLoginForm,CustomUserCreationForm,UserEditForm,forms
 from django.urls import reverse_lazy
-from .models import (Anime,Genres,Seasons,Studios,Tags,User_anime_relations,VoiceActor,Song,Character,Artist)
+from .models import (Anime,Genres,Seasons,Studios,Tags,User_anime_relations,VoiceActor,Song,Character,Artist,Users)
 from django.db.models import F,Q
 import json
 from django.contrib import messages
@@ -124,8 +124,14 @@ class UserLoginView(FormView):
             else:
                 self.request.session.set_expiry(0)  # ブラウザが閉じられると終了
             return super().form_valid(form)
-        # 認証に失敗した場合、フォームを無効にしてエラーメッセージを表示
-        form.add_error('password', 'メールアドレスまたはパスワードが間違っています。')
+        
+        # 認証失敗時の処理
+        if not Users.objects.filter(email=email).exists():
+            # メールアドレスが存在しない場合のエラー
+            form.add_error('email', 'このメールアドレスは登録されていません。')
+        else:
+            # パスワードが間違っている場合のエラー
+            form.add_error('password', 'パスワードが間違っています。')
         return self.form_invalid(form)
     
     def form_invalid(self, form):
@@ -233,13 +239,6 @@ def kata2hira(text):
         else:
             result.append(char)  # 文字列全体が長すぎる場合、そのまま追加
     return ''.join(result)
-
-
-
-
-
-
-
 
 def preprocess_keywords(search_query):
     """
