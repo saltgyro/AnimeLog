@@ -37,6 +37,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from .models import Anime, Tags
+from django.contrib.auth.forms import PasswordResetForm
 
 
 # 行と文字の対応を定義
@@ -178,27 +179,33 @@ def regist_view(request):
 class CustomPasswordResetView(PasswordResetView):
     # パスワードリセットページのカスタムビュー
     template_name = 'registration/password_reset.html'  # カスタムテンプレートを指定
+    form_class = PasswordResetForm
     success_url = reverse_lazy('anime_tracker:password_reset_done')  # 成功時のURLを指定
 
     def form_valid(self, form):
-        # contextを取得
-        context = self.get_context_data(form=form)
-        context['settings'] = settings  # settingsを追加
+        try:
+            response = super().form_valid(form)
+            print("メール送信が成功しました")
+            return response
+        except Exception as e:
+            print(f"メール送信中にエラーが発生しました: {e}")
+            messages.error(self.request, "メール送信に失敗しました。管理者にお問い合わせください。")
+            return self.form_invalid(form)
 
-        # ここでフォームのデフォルトの動作を行います。
-        # 入力されたメールに基づきユーザーを検索し、リセット用のメールを送信する
-        response = super().form_valid(form)
-
-        # メール送信処理後、contextをレスポンスに追加
-        response.context_data = context
-        return response
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     template_name = 'registration/password_reset_confirm.html'
 
     def form_valid(self, form):
-        messages.success(self.request, 'パスワードが正常に更新されました。')
-        return super().form_valid(form)
+        try:
+            response = super().form_valid(form)
+            print("パスワードが正常に更新されました")
+            messages.success(self.request, "パスワードが正常に更新されました。")
+            return response
+        except Exception as e:
+            print(f"パスワード更新中にエラーが発生しました: {e}")
+            messages.error(self.request, "パスワードの更新に失敗しました。管理者にお問い合わせください。")
+            return self.form_invalid(form)
 
     def form_invalid(self, form):
         messages.error(self.request, 'パスワードの更新に失敗しました。入力内容に誤りがあります。')

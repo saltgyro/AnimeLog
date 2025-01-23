@@ -2306,6 +2306,26 @@ document.getElementById('studio-search').addEventListener('input', function () {
     });
 });
 
+// 以下が検索バー押された時に他の検索条件保持する動作
+document.addEventListener('DOMContentLoaded', function() {
+    const searchForm = document.getElementById('search-form');
+    searchForm.addEventListener('submit', function(e) {
+        e.preventDefault(); // デフォルトのフォーム送信を防ぐ
+
+        // 現在のURLを取得
+        const url = new URL(window.location.href);
+        const params = url.searchParams;
+
+        // フリーワード検索を設定
+        const searchInput = document.querySelector('input[name="search"]').value;
+        params.set('search', searchInput);
+
+        // 新しいURLにリダイレクト
+        window.location.href = `${url.pathname}?${params.toString()}`;
+    });
+});
+
+
 </script>
 {% endblock %}
 
