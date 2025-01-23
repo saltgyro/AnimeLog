@@ -61,63 +61,51 @@ for row, characters in ROW_ALPHABET_MAPPING.items():
         DISPLAY_MAPPING[f"{row}{char}"] = f"{char}（{row}）"
 
 #====================================================================================================================
-class CustomPasswordResetView(PasswordResetView):
-    # パスワードリセットページのカスタムビュー
-    template_name = 'registration/password_reset.html'  # カスタムテンプレートを指定
-    success_url = reverse_lazy('anime_tracker:password_reset_done')  # 成功時のURLを指定
 
-    def form_valid(self, form):
-        # contextを取得
-        context = self.get_context_data(form=form)
-        context['settings'] = settings  # settingsを追加
-
-        # ここでフォームのデフォルトの動作を行います。
-        # 入力されたメールに基づきユーザーを検索し、リセット用のメールを送信する
-        response = super().form_valid(form)
-
-        # メール送信処理後、contextをレスポンスに追加
-        response.context_data = context
-        return response
-
-
-class CustomPasswordResetConfirmView(PasswordResetConfirmView):
-    template_name = 'registration/password_reset_confirm.html'
-
-    def get_success_url(self):
-        print("パスワードリセットビューが呼び出されました")
-        # パスワードリセット完了ページにリダイレクト
-        return reverse_lazy('anime_tracker:password_reset_complete')
-
-class CustomPasswordResetCompleteView(PasswordResetCompleteView):
-    template_name = 'registration/password_reset_complete.html'  # カスタムテンプレートを指定
-
-    def get_success_url(self):
-        # 必要であれば成功後のURLを指定
-        return reverse_lazy('anime_tracker:password_reset_done')
-
-
-
-class CustomPasswordResetDoneView(PasswordResetDoneView):
-    template_name = 'registration/password_reset_done.html'  # カスタムテンプレートを指定
-
-#====================================================================================================================   
-
-def kata2hira(text):
-    """
-    カタカナをひらがなに変換する関数
-    """
-    result = []
-    for char in text:
-        if isinstance(char, str) and len(char) == 1:  # 1文字かを確認
-            # カタカナの範囲（「ァ」～「ン」）をひらがなに変換
-            if 'ァ' <= char <= 'ン':
-                result.append(chr(ord(char) - 0x60))  # カタカナからひらがなに変換
-            else:
-                result.append(char)  # カタカナでない場合はそのまま追加
+@login_required
+def user_edit(request):
+    # フィールド名をラベルに変換する辞書
+    field_labels = {
+        "nickname": "ニックネーム",
+        "email": "メールアドレス",
+        "current_password": "現在のパスワード",
+        "new_password": "新しいパスワード",
+        "new_password_confirm": "新しいパスワード(確認用)"
+    }
+    print("user_edit実行")
+    if request.method == 'POST':
+        field = request.POST.get("field")
+        form = UserEditForm(request.POST, user=request.user, instance=request.user)
+        if form.is_valid():
+            form.save()
+            print("更新:成功user_edit")
+            # 成功時のフィールドごとのメッセージ
+            success_message = {
+                "nickname": "ニックネームを変更しました。",
+                "email": "メールアドレスを変更しました。",
+                "new_password_confirm": "パスワードを変更しました。",
+            }
+            # 成功メッセージを含むJSONレスポンスを返す
+            return JsonResponse({
+                "success": True,
+                "message": success_message.get(field, "変更が保存されました。")
+            })
         else:
-            result.append(char)  # 文字列全体が長すぎる場合、そのまま追加
-    return ''.join(result)
+            print("失敗:user_edit実行")
+            # エラー時のレスポンス
+            errors = {field: [str(err) for err in error_list] for field, error_list in form.errors.items()}
+            # フィールド名をラベルに変換してエラーメッセージを作成
+            field_label = field_labels.get(field, field)
+            field_errors = errors.get(field, ["入力内容に誤りがあります。"])
+            # エラー時にエラーメッセージを含むJSONレスポンスを返す
+            return JsonResponse({
+                "success": False,
+                "message": f"{field_label}の変更に失敗しました: {', '.join(field_errors)}"
+            }, status=400)
 
+
+    form = UserEditForm(user=request.user, instance=request.user)
+    return render(request, 'html/user_edit.html', {'form': form})
 
 class UserLoginView(FormView):
     template_name = 'html/user_login.html'
@@ -156,6 +144,98 @@ class RegistUseView(CreateView):
     template_name = 'html/regist.html'
     form_class = RegistForm
     success_url = reverse_lazy('anime:home')
+    
+    
+def regist_view(request):
+    user_form = CustomUserCreationForm(request.POST or None)  
+    
+    # フォームの状態をコンソールに表示
+    print("フォームのデータ:", user_form.data)  # POSTデータが渡されているか確認
+    print("フォームのバリデーション:", user_form.is_valid())  # True or False
+    print("フォームのエラー:", user_form.errors)  # バリデーションエラーの詳細
+    
+    
+    
+    if user_form.is_valid():
+        user_form.save()
+        return redirect('anime_tracker:user_login')  # 登録成功後にログイン画面へリダイレクト
+    else:
+        # フォームのエラーをコンソールに出力
+        print("Form errors:", user_form.errors)
+
+    return render(request, 'html/regist.html', context={
+        'user_form': user_form,
+    })
+
+#====================================================================================================================
+
+class CustomPasswordResetView(PasswordResetView):
+    # パスワードリセットページのカスタムビュー
+    template_name = 'registration/password_reset.html'  # カスタムテンプレートを指定
+    success_url = reverse_lazy('anime_tracker:password_reset_done')  # 成功時のURLを指定
+
+    def form_valid(self, form):
+        # contextを取得
+        context = self.get_context_data(form=form)
+        context['settings'] = settings  # settingsを追加
+
+        # ここでフォームのデフォルトの動作を行います。
+        # 入力されたメールに基づきユーザーを検索し、リセット用のメールを送信する
+        response = super().form_valid(form)
+
+        # メール送信処理後、contextをレスポンスに追加
+        response.context_data = context
+        return response
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'registration/password_reset_confirm.html'
+
+    def form_valid(self, form):
+        messages.success(self.request, 'パスワードが正常に更新されました。')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'パスワードの更新に失敗しました。入力内容に誤りがあります。')
+        return super().form_invalid(form)
+
+    def get_success_url(self):
+        print("パスワードリセットビューが呼び出されました")
+        # パスワードリセット完了ページにリダイレクト
+        return reverse_lazy('anime_tracker:password_reset_complete')
+
+
+class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'registration/password_reset_complete.html'  # カスタムテンプレートを指定
+
+    def get_success_url(self):
+        # 必要であれば成功後のURLを指定
+        return reverse_lazy('anime_tracker:password_reset_done')
+
+
+
+class CustomPasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'registration/password_reset_done.html'  # カスタムテンプレートを指定
+
+#====================================================================================================================   
+
+def kata2hira(text):
+    """
+    カタカナをひらがなに変換する関数
+    """
+    result = []
+    for char in text:
+        if isinstance(char, str) and len(char) == 1:  # 1文字かを確認
+            # カタカナの範囲（「ァ」～「ン」）をひらがなに変換
+            if 'ァ' <= char <= 'ン':
+                result.append(chr(ord(char) - 0x60))  # カタカナからひらがなに変換
+            else:
+                result.append(char)  # カタカナでない場合はそのまま追加
+        else:
+            result.append(char)  # 文字列全体が長すぎる場合、そのまま追加
+    return ''.join(result)
+
+
+
 
 
 
@@ -421,46 +501,6 @@ def home(request):
         'formatted_conditions': formatted_conditions,
         'query_params': query_params,
     })
-
-
-def regist_view(request):
-    user_form = CustomUserCreationForm(request.POST or None)  
-    
-    # フォームの状態をコンソールに表示
-    print("フォームのデータ:", user_form.data)  # POSTデータが渡されているか確認
-    print("フォームのバリデーション:", user_form.is_valid())  # True or False
-    print("フォームのエラー:", user_form.errors)  # バリデーションエラーの詳細
-    
-    
-    
-    if user_form.is_valid():
-        user_form.save()
-        return redirect('anime_tracker:user_login')  # 登録成功後にログイン画面へリダイレクト
-    else:
-        # フォームのエラーをコンソールに出力
-        print("Form errors:", user_form.errors)
-
-    return render(request, 'html/regist.html', context={
-        'user_form': user_form,
-    })
-
-
-@login_required
-def user_edit(request):
-    if request.method == 'POST':
-        form = UserEditForm(request.POST, user=request.user, instance=request.user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'プロフィールが更新されました。')
-            return JsonResponse({'success': True})
-        else:
-            return JsonResponse({'success': False, 'error': '入力内容に誤りがあります。'}, status=400)
-
-    form = UserEditForm(user=request.user, instance=request.user)
-    return render(request, 'html/user_edit.html', {'form': form})
-
-
-
 
 @login_required
 def update_status(request, pk):

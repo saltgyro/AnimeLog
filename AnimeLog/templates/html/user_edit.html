@@ -72,30 +72,13 @@
     const form = document.querySelector(".account-form");
     const submitButtons = form.querySelectorAll('button[name="field"]');
 
-    // 各送信ボタンにクリックイベントを設定
     submitButtons.forEach((button) => {
       button.addEventListener("click", function (e) {
-        e.preventDefault(); // 実際の送信を防ぐ
-        const field = this.value; // ボタンのvalue属性からフィールド名を取得
+        e.preventDefault();
+        const field = this.value; // クリックされたボタンのフィールド名を取得
 
-        // Toastメッセージをフィールド名に応じて設定
-        let message = "";
-        if (field === "nickname") {
-          message = "ニックネームが更新されました！";
-        } else if (field === "email") {
-          message = "メールアドレスが更新されました！";
-        } else if (field === "new_password_confirm") {
-          message = "パスワードが更新されました！";
-        } else {
-          message = "変更が保存されました！";
-        }
-
-        // Toast通知を表示
-        showToastMessage(message, "success");
-
-        // 非同期でサーバーにデータを送信
         const formData = new FormData(form);
-        formData.append("field", field);
+        formData.append("field", field); // どのフィールドかを送信データに追加
 
         fetch(form.action, {
           method: "POST",
@@ -106,9 +89,9 @@
         })
           .then((response) => response.json())
           .then((data) => {
-            if (!data.success) {
-              showToastMessage("更新に失敗しました: " + data.error, "error");
-            }
+            // サーバーから返されたメッセージをトーストで表示
+            const type = data.success ? "success" : "error";
+            showToastMessage(data.message, type);
           })
           .catch((error) => {
             showToastMessage("通信エラーが発生しました。", "error");
