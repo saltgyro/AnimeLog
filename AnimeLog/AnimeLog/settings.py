@@ -141,12 +141,13 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # ブラウザ終了時にセッショ�
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIA_URL = '/media/'
 
-
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # SMTPサーバー（例：Gmailの場合）
 EMAIL_PORT = 587  # ポート番号
 EMAIL_USE_TLS = True  # TLSを使用
 EMAIL_HOST_USER = 'lingmuguibo8@gmail.com'  # Gmailのメールアドレス
-EMAIL_HOST_PASSWORD = 'solr znpx dpsc bsmy'  # Gmailのパスワード
+EMAIL_HOST_PASSWORD = 'yabn suri ibqv negr'  # Gmailのパスワード
+DEFAULT_FROM_EMAIL = 'lingmuguibo8@gmail.com'
 
 PASSWORD_RESET_TIMEOUT = 60 * 60   # リンクの有効期限を1時間に設定

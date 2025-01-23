@@ -38,6 +38,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from .models import Anime, Tags
 from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.messages.views import SuccessMessageMixin
 
 
 # 行と文字の対応を定義
@@ -176,21 +177,24 @@ def regist_view(request):
 
 #====================================================================================================================
 
-class CustomPasswordResetView(PasswordResetView):
+class CustomPasswordResetView(SuccessMessageMixin,PasswordResetView):
     # パスワードリセットページのカスタムビュー
     template_name = 'registration/password_reset.html'  # カスタムテンプレートを指定
     form_class = PasswordResetForm
     success_url = reverse_lazy('anime_tracker:password_reset_done')  # 成功時のURLを指定
+    success_message = "パスワードリセット用のメールを送信しました。メールをご確認ください。"
 
     def form_valid(self, form):
+        email = form.cleaned_data.get('email')
+        print(f"入力されたメールアドレス: {email}")  # ログで確認
         try:
             response = super().form_valid(form)
-            print("メール送信が成功しました")
+            print("メール送信が成功しました")  # メール送信成功時のログ
             return response
         except Exception as e:
-            print(f"メール送信中にエラーが発生しました: {e}")
-            messages.error(self.request, "メール送信に失敗しました。管理者にお問い合わせください。")
-            return self.form_invalid(form)
+            print(f"メール送信中にエラーが発生しました: {e}")  # エラーログ
+            messages.error(self.request, "メール送信に失敗しました。もう一度お試しください。")
+            return self.render_to_response(self.get_context_data(form=form))
 
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
