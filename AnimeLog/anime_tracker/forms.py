@@ -124,9 +124,11 @@ class UserEditForm(forms.ModelForm):#更新処理するフォーム
         current_password = self.cleaned_data.get('current_password')
         # パスワードが入力されていない場合は検証をスキップ
         if not current_password:
+            print("現在のパスワードが入力されていません。")
             return current_password
         # 入力されている場合のみ検証を実施
         if not self.user.check_password(current_password):
+            print("現在のパスワードが間違っています。")
             raise forms.ValidationError("現在のパスワードが正しくありません。")
         return current_password
     

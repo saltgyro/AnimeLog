@@ -95,13 +95,23 @@ def user_edit(request):
             print("失敗:user_edit実行")
             # エラー時のレスポンス
             errors = {field: [str(err) for err in error_list] for field, error_list in form.errors.items()}
-            # フィールド名をラベルに変換してエラーメッセージを作成
-            field_label = field_labels.get(field, field)
-            field_errors = errors.get(field, ["入力内容に誤りがあります。"])
-            # エラー時にエラーメッセージを含むJSONレスポンスを返す
+            print("errors:", errors)
+            # 最初のエラーを取得
+            first_field, first_error_list = next(iter(errors.items()))  # 最初のフィールドとエラーを取得
+            field_label = field_labels.get(first_field, first_field)  # ラベルを取得
+            first_error_message = first_error_list[0]  # 最初のエラーメッセージを取得
+            print("最初のエラー:", field_label, first_error_message)
+            
+            # # フィールド名をラベルに変換してエラーメッセージを作成
+            # field_label = field_labels.get(field, field)
+            # print("field_label:", field_label)
+            # field_errors = errors.get(field, ["入力内容に誤りがあります。"])
+            # print("field_errors:", field_errors)
+            # print(f"{field_label}の変更に失敗しました: {', '.join(errors)}")
+            # # エラー時にエラーメッセージを含むJSONレスポンスを返す
             return JsonResponse({
                 "success": False,
-                "message": f"{field_label}の変更に失敗しました: {', '.join(field_errors)}"
+                "message": f"{first_error_message}"
             }, status=400)
 
 
