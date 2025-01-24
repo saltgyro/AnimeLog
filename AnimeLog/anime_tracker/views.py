@@ -39,7 +39,7 @@ import json
 from .models import Anime, Tags
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.messages.views import SuccessMessageMixin
-
+from django.contrib.auth.hashers import make_password
 
 # 行と文字の対応を定義
 ROW_ALPHABET_MAPPING = {
@@ -189,12 +189,10 @@ class CustomPasswordResetView(SuccessMessageMixin,PasswordResetView):
         email = form.cleaned_data.get('email')
         print(f"入力されたメールアドレス: {email}")  # ログで確認
         try:
-            # response = super().form_valid(form)
-            # print("メール送信が成功しました")  # メール送信成功時のログ
-            # return response
+            # パスワードリセットメールを送信
             print("PasswordResetForm.save() を呼び出します")
             print(list(form.get_users(email)))
-            result = form.save(
+            result = form.save( 
                 subject_template_name='registration/password_reset_subject.txt',
                 email_template_name='registration/password_reset_email.html',
                 use_https=self.request.is_secure(),
@@ -202,6 +200,7 @@ class CustomPasswordResetView(SuccessMessageMixin,PasswordResetView):
                 request=self.request,
             )
             print("PasswordResetForm.save() が正常に実行されました")
+                
             return super().form_valid(form)
         
         except Exception as e:
@@ -215,9 +214,12 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     
     def get_context_data(self, **kwargs):
         # 親クラスの get_context_data を呼び出してデフォルトのコンテキストを取得
+        
         context = super().get_context_data(**kwargs)
         # デバッグ用にコンテキストを出力
         print("コンテキスト:", context)
+        print(f"validlink の値: {context.get('validlink')}")
+        print(f"フォームの値: {context.get('form')}")
         return context
 
     def form_valid(self, form):
