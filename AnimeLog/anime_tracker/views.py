@@ -39,7 +39,6 @@ import json
 from .models import Anime, Tags
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib.auth.hashers import make_password
 
 # 行と文字の対応を定義
 ROW_ALPHABET_MAPPING = {
@@ -190,15 +189,14 @@ class CustomPasswordResetView(SuccessMessageMixin,PasswordResetView):
         print(f"入力されたメールアドレス: {email}")  # ログで確認
         try:
             # パスワードリセットメールを送信
-            print("PasswordResetForm.save() を呼び出します")
             print(list(form.get_users(email)))
-            result = form.save( 
-                subject_template_name='registration/password_reset_subject.txt',
-                email_template_name='registration/password_reset_email.html',
-                use_https=self.request.is_secure(),
-                from_email=settings.EMAIL_HOST_USER,
-                request=self.request,
-            )
+            # result = form.save( 
+            #     subject_template_name='registration/password_reset_subject.txt',
+            #     email_template_name='registration/password_reset_email.html',
+            #     use_https=self.request.is_secure(),
+            #     from_email=settings.EMAIL_HOST_USER,
+            #     request=self.request,
+            # )
             print("PasswordResetForm.save() が正常に実行されました")
                 
             return super().form_valid(form)
