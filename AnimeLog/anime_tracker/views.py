@@ -177,6 +177,7 @@ def regist_view(request):
 
 #====================================================================================================================
 
+
 class CustomPasswordResetView(SuccessMessageMixin,PasswordResetView):
     # パスワードリセットページのカスタムビュー
     template_name = 'registration/password_reset.html'  # カスタムテンプレートを指定
@@ -188,9 +189,21 @@ class CustomPasswordResetView(SuccessMessageMixin,PasswordResetView):
         email = form.cleaned_data.get('email')
         print(f"入力されたメールアドレス: {email}")  # ログで確認
         try:
-            response = super().form_valid(form)
-            print("メール送信が成功しました")  # メール送信成功時のログ
-            return response
+            # response = super().form_valid(form)
+            # print("メール送信が成功しました")  # メール送信成功時のログ
+            # return response
+            print("PasswordResetForm.save() を呼び出します")
+            print(list(form.get_users(email)))
+            result = form.save(
+                subject_template_name='registration/password_reset_subject.txt',
+                email_template_name='registration/password_reset_email.html',
+                use_https=self.request.is_secure(),
+                from_email=settings.EMAIL_HOST_USER,
+                request=self.request,
+            )
+            print("PasswordResetForm.save() が正常に実行されました")
+            return super().form_valid(form)
+        
         except Exception as e:
             print(f"メール送信中にエラーが発生しました: {e}")  # エラーログ
             messages.error(self.request, "メール送信に失敗しました。もう一度お試しください。")
@@ -199,6 +212,13 @@ class CustomPasswordResetView(SuccessMessageMixin,PasswordResetView):
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     template_name = 'registration/password_reset_confirm.html'
+    
+    def get_context_data(self, **kwargs):
+        # 親クラスの get_context_data を呼び出してデフォルトのコンテキストを取得
+        context = super().get_context_data(**kwargs)
+        # デバッグ用にコンテキストを出力
+        print("コンテキスト:", context)
+        return context
 
     def form_valid(self, form):
         try:
