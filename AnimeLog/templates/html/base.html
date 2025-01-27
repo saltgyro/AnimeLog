@@ -40,7 +40,6 @@
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="{% url 'anime_tracker:user_edit' %}">アカウント設定</a></li>
                         <li>
-                            {% comment %} <a class="dropdown-item" href="#" onclick="document.getElementById('logout-form').submit();">ログアウト</a> {% endcomment %}
                             <a class="dropdown-item" href="#" id="logout-btn">ログアウト</a>
                             <form id="logout-form" method="POST" action="{% url 'anime_tracker:user_logout' %}" style="display: none;">
                                 {% csrf_token %}

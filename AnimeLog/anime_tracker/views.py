@@ -39,6 +39,7 @@ import json
 from .models import Anime, Tags
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth import update_session_auth_hash
 
 # 行と文字の対応を定義
 ROW_ALPHABET_MAPPING = {
@@ -80,6 +81,9 @@ def user_edit(request):
         if form.is_valid():
             form.save()
             print("更新:成功user_edit")
+            # セッションを維持するために追加
+            if field == "new_password_confirm":  # パスワード変更時のみ実行
+                update_session_auth_hash(request, request.user)
             # 成功時のフィールドごとのメッセージ
             success_message = {
                 "nickname": "ニックネームを変更しました。",
@@ -102,19 +106,10 @@ def user_edit(request):
             first_error_message = first_error_list[0]  # 最初のエラーメッセージを取得
             print("最初のエラー:", field_label, first_error_message)
             
-            # # フィールド名をラベルに変換してエラーメッセージを作成
-            # field_label = field_labels.get(field, field)
-            # print("field_label:", field_label)
-            # field_errors = errors.get(field, ["入力内容に誤りがあります。"])
-            # print("field_errors:", field_errors)
-            # print(f"{field_label}の変更に失敗しました: {', '.join(errors)}")
-            # # エラー時にエラーメッセージを含むJSONレスポンスを返す
             return JsonResponse({
                 "success": False,
                 "message": f"{first_error_message}"
             }, status=400)
-
-
     form = UserEditForm(user=request.user, instance=request.user)
     return render(request, 'html/user_edit.html', {'form': form})
 
