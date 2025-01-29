@@ -6,7 +6,6 @@
 <link rel="stylesheet" href="{% static 'css/anime_detail.css' %}">
 
 <div class="anime-detail-container">
-    {% comment %} <a href="{% if request.META.HTTP_REFERER and 'home' in request.META.HTTP_REFERER %}{{ request.META.HTTP_REFERER }}{% else %}{% url 'anime_tracker:home' %}{% endif %}" class="back-link">戻る</a> {% endcomment %}
     <a href="{% url 'anime_tracker:home' %}?{{ request.GET.urlencode }}" class="back-link">戻る</a>
 
     <!-- 左側: サムネイル -->

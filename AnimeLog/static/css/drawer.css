@@ -20,6 +20,17 @@
     content: "\f00d";
 }
 
+.offcanvas-header{
+    display: flex;
+      justify-content: space-between; /* 左右の端に配置 */
+      align-items: center; /* 縦方向の中央揃え */
+      padding: 10px; /* 必要に応じて余白調整 */
+  }
+  
+  .offcanvas-header .button-group {
+    display: flex;
+  }
+
 
 
 
