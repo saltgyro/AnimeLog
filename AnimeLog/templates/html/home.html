@@ -225,22 +225,43 @@
                 <div style="height: 10px;"></div> <!-- 空白を作るダミー要素 -->
 
                 <li>
-                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#tagMenu" aria-expanded="false" aria-controls="tagMenu">🏷 タグ</a>
+                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#tagMenu" aria-expanded="false" aria-controls="tagMenu">
+                        🏷 タグ
+                    </a>
+                
+                    <!-- ✅ 検索条件（選択されているタグ）をチェック済みの状態で表示 -->
+                    <div id="selected-tags" class="selected-filters">
+                        {% for tag in tags %}
+                            {% if tag.id|stringformat:"s" in search_conditions.tag %}
+                                <div class="form-check">
+                                    <input 
+                                        type="checkbox" 
+                                        class="form-check-input tag-checkbox" 
+                                        name="tag" 
+                                        id="selected-tag-{{ tag.id }}" 
+                                        value="{{ tag.id }}" 
+                                        checked>  <!-- ✅ ここで checked を追加 -->
+                                    <label class="form-check-label" for="selected-tag-{{ tag.id }}">{{ tag.name }}</label>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                
+                    <!-- ✅ 検索条件にないもの（未選択のタグ）だけを表示 -->
                     <div id="tagMenu" class="collapse">
                         {% for tag in tags %}
-                            <div class="form-check">
-                                <input 
-                                    type="checkbox" 
-                                    class="form-check-input" 
-                                    name="tag" 
-                                    id="tag-{{ tag.id }}" 
-                                    value="{{ tag.id }}"
-                                    {% if tag.id|stringformat:"s" in search_conditions.tag %}checked{% endif %}>  
-                                <label class="form-check-label" for="tag-{{ tag.id }}">{{ tag.name }}</label>
-                            </div>
+                            {% if tag.id|stringformat:"s" not in search_conditions.tag %}
+                                <div class="form-check">
+                                    <input 
+                                        type="checkbox" 
+                                        class="form-check-input tag-checkbox" 
+                                        name="tag" 
+                                        id="tag-{{ tag.id }}" 
+                                        value="{{ tag.id }}">
+                                    <label class="form-check-label" for="tag-{{ tag.id }}">{{ tag.name }}</label>
+                                </div>
+                            {% endif %}
                         {% endfor %}
-
-                        
                     </div>
                 </li>
 
@@ -248,6 +269,78 @@
                 
                 <li>
                     <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#seasonMenu" aria-expanded="false" aria-controls="seasonMenu">📅 年代</a>
+                    <!-- ✅ 検索条件（選択されているシーズン）をチェック済みの状態で表示 -->
+                    <div id="selected-seasons" class="selected-filters">
+                        {% if 89|stringformat:"s" in search_conditions.season %}
+                            <div class="form-check">
+                                <input 
+                                    type="checkbox" 
+                                    class="form-check-input season-checkbox" 
+                                    name="season" 
+                                    id="selected-season-89" 
+                                    value="89" 
+                                    checked>  <!-- ✅ ここで checked を追加 -->
+                                <label class="form-check-label" for="selected-season-89">2025年冬</label>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div id="selected-seasons" class="selected-filters">
+                        {% if 85|stringformat:"s" in search_conditions.season %}
+                            <div class="form-check">
+                                <input 
+                                    type="checkbox" 
+                                    class="form-check-input season-checkbox" 
+                                    name="season" 
+                                    id="selected-season-85" 
+                                    value="85" 
+                                    checked>  <!-- ✅ ここで checked を追加 -->
+                                <label class="form-check-label" for="selected-season-85">2024年冬</label>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div id="selected-seasons" class="selected-filters">
+                        {% if 86|stringformat:"s" in search_conditions.season %}
+                            <div class="form-check">
+                                <input 
+                                    type="checkbox" 
+                                    class="form-check-input season-checkbox" 
+                                    name="season" 
+                                    id="selected-season-86" 
+                                    value="86" 
+                                    checked>  <!-- ✅ ここで checked を追加 -->
+                                <label class="form-check-label" for="selected-season-86">2024年夏</label>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div id="selected-seasons" class="selected-filters">
+                        {% if 87|stringformat:"s" in search_conditions.season %}
+                            <div class="form-check">
+                                <input 
+                                    type="checkbox" 
+                                    class="form-check-input season-checkbox" 
+                                    name="season" 
+                                    id="selected-season-87" 
+                                    value="87" 
+                                    checked>  <!-- ✅ ここで checked を追加 -->
+                                <label class="form-check-label" for="selected-season-87">2024年秋</label>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div id="selected-seasons" class="selected-filters">
+                        {% if 88|stringformat:"s" in search_conditions.season %}
+                            <div class="form-check">
+                                <input 
+                                    type="checkbox" 
+                                    class="form-check-input season-checkbox" 
+                                    name="season" 
+                                    id="selected-season-88" 
+                                    value="88" 
+                                    checked>  <!-- ✅ ここで checked を追加 -->
+                                <label class="form-check-label" for="selected-season-88">2024年冬</label>
+                            </div>
+                        {% endif %}
+                    </div>
+
                     <div id="seasonMenu" class="collapse">
                         <ul>
                             <!-- 2025年 -->
@@ -255,67 +348,78 @@
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#year-2025" aria-expanded="false" aria-controls="year-2025">
                                     2025年
                                 </a>
+                                
+                                
+                            
+                                <!-- ✅ 検索条件にないもの（未選択のシーズン）だけを表示 -->
                                 <div id="year-2025" class="collapse">
-                                    <div class="form-check">
-                                        <input 
-                                            type="checkbox" 
-                                            class="form-check-input" 
-                                            name="season" 
-                                            id="season-89" 
-                                            value="89"
-                                            {% if 89|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
-                                        <label class="form-check-label" for="season-89">2025年冬</label>
-                                    </div>
-                                    
+                                    {% if 89|stringformat:"s" not in search_conditions.season %}
+                                        <div class="form-check">
+                                            <input 
+                                                type="checkbox" 
+                                                class="form-check-input season-checkbox" 
+                                                name="season" 
+                                                id="season-89" 
+                                                value="89">
+                                            <label class="form-check-label" for="season-89">2025年冬</label>
+                                        </div>
+                                    {% endif %}
+                                    <div style="height: 10px;"></div>
                                 </div>
+                                
                             </li>
+                            
                             <!-- 2024年 -->
                             <li>
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#year-2024" aria-expanded="false" aria-controls="year-2024">
                                     2024年
                                 </a>
                                 <div id="year-2024" class="collapse">
-                                    <div class="form-check">
-                                        <input 
-                                            type="checkbox" 
-                                            class="form-check-input" 
-                                            name="season" 
-                                            id="season-85" 
-                                            value="85"
-                                            {% if 85|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
-                                        <label class="form-check-label" for="season-85">2024年冬</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input 
-                                            type="checkbox" 
-                                            class="form-check-input" 
-                                            name="season" 
-                                            id="season-86" 
-                                            value="86"
-                                            {% if 86|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
-                                        <label class="form-check-label" for="season-86">2024年春</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input 
-                                            type="checkbox" 
-                                            class="form-check-input" 
-                                            name="season" 
-                                            id="season-87" 
-                                            value="87"
-                                            {% if 87|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
-                                        <label class="form-check-label" for="season-87">2024年夏</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input 
-                                            type="checkbox" 
-                                            class="form-check-input" 
-                                            name="season" 
-                                            id="season-88" 
-                                            value="88"
-                                            {% if 88|stringformat:"s" in search_conditions.season %}checked{% endif %}>  
-                                        <label class="form-check-label" for="season-88">2024年秋</label>
-                                    </div>
-                                    
+                                    {% if 85|stringformat:"s" not in search_conditions.season %}
+                                        <div class="form-check">
+                                            <input 
+                                                type="checkbox" 
+                                                class="form-check-input season-checkbox" 
+                                                name="season" 
+                                                id="season-85" 
+                                                value="85">
+                                            <label class="form-check-label" for="season-85">2024年冬</label>
+                                        </div>
+                                    {% endif %}
+                                    {% if 86|stringformat:"s" not in search_conditions.season %}
+                                        <div class="form-check">
+                                            <input 
+                                                type="checkbox" 
+                                                class="form-check-input season-checkbox" 
+                                                name="season" 
+                                                id="season-86" 
+                                                value="86">
+                                            <label class="form-check-label" for="season-86">2024年春</label>
+                                        </div>
+                                    {% endif %}
+                                    {% if 87|stringformat:"s" not in search_conditions.season %}
+                                        <div class="form-check">
+                                            <input 
+                                                type="checkbox" 
+                                                class="form-check-input season-checkbox" 
+                                                name="season" 
+                                                id="season-87" 
+                                                value="87">
+                                            <label class="form-check-label" for="season-87">2024年夏</label>
+                                        </div>
+                                    {% endif %}
+                                    {% if 88|stringformat:"s" not in search_conditions.season %}
+                                        <div class="form-check">
+                                            <input 
+                                                type="checkbox" 
+                                                class="form-check-input season-checkbox" 
+                                                name="season" 
+                                                id="season-88" 
+                                                value="88">
+                                            <label class="form-check-label" for="season-88">2024年秋</label>
+                                        </div>
+                                    {% endif %}
+                                    <div style="height: 10px;"></div>
                                 </div>
                             </li>
                             <!-- 2023年 -->
@@ -1352,20 +1456,49 @@
                 <div style="height: 10px;"></div> <!-- 空白を作るダミー要素 -->
 
                 <li>
-                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#studioMenu" aria-expanded="false" aria-controls="studioMenu">🎬 制作スタジオ</a>
+                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#studioMenu" aria-expanded="false" aria-controls="studioMenu">
+                        🎬 制作スタジオ
+                    </a>
+                
+                    <!-- ✅ 検索条件（選択されている制作スタジオ）をチェック済みの状態で表示 -->
+                    <div id="selected-studios" class="selected-filters">
+                        {% for studio in studios %}
+                            {% if studio.id|stringformat:"s" in search_conditions.studio %}
+                                <div class="form-check">
+                                    <input 
+                                        type="checkbox" 
+                                        class="form-check-input studio-checkbox" 
+                                        name="studio" 
+                                        id="selected-studio-{{ studio.id }}" 
+                                        value="{{ studio.id }}" 
+                                        checked>  <!-- ✅ ここで checked を追加 -->
+                                    <label class="form-check-label" for="selected-studio-{{ studio.id }}">{{ studio.name }}</label>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                
+                    <!-- ✅ 検索条件にないもの（未選択の制作スタジオ）だけを表示 -->
                     <div id="studioMenu" class="collapse">
                         <input type="text" id="studio-search" placeholder="スタジオを検索">
                         <div id="studio-list">
                             {% for studio in studios %}
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" name="studio" id="studio-{{ studio.id }}" value="{{ studio.id }}" {% if studio.id|stringformat:"s" in search_conditions.studio %}checked{% endif %}>
-                                    <label class="form-check-label" for="studio-{{ studio.id }}">{{ studio.name }}</label>
-                                </div>
+                                {% if studio.id|stringformat:"s" not in search_conditions.studio %}
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input studio-checkbox" 
+                                            name="studio" 
+                                            id="studio-{{ studio.id }}" 
+                                            value="{{ studio.id }}">
+                                        <label class="form-check-label" for="studio-{{ studio.id }}">{{ studio.name }}</label>
+                                    </div>
+                                {% endif %}
                             {% endfor %}
                         </div>
-                        
                     </div>
                 </li>
+                
                 <div style="height: 10px;"></div> <!-- 空白を作るダミー要素 -->
                 <li>
                     <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#alphabetMenu" aria-expanded="false" aria-controls="alphabetMenu">🔤 50音順</a>
