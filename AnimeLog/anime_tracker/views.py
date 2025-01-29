@@ -570,6 +570,10 @@ def update_status(request, pk):
                     user_relation.is_favorite = not user_relation.is_favorite
 
             user_relation.save()
+            
+            # **お気に入り数を計算し直す**
+            anime.favorite_count = User_anime_relations.objects.filter(anime_id=anime, is_favorite=True).count()
+            anime.save()
 
             # JSONレスポンスを返す
             return JsonResponse({
