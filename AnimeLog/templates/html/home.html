@@ -181,23 +181,46 @@
         <div style="height: 10px;"></div> <!-- 空白を作るダミー要素 -->
         <ul class="list-unstyled">
                 <li>
-                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#genreMenu" aria-expanded="false" aria-controls="genreMenu">🎭 ジャンル</a>
+                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#genreMenu" aria-expanded="false" aria-controls="genreMenu">
+                        🎭 ジャンル
+                    </a>
+                
+                    <!-- ✅ 検索条件（選択されているジャンル）を上に表示（チェックボックス付き） -->
+                    <div id="selected-genres" class="selected-filters">
+                        {% for genre in genres %}
+                            {% if genre.id|stringformat:"s" in search_conditions.genre %}
+                                <div class="form-check">
+                                    <input 
+                                        type="checkbox" 
+                                        class="form-check-input genre-checkbox" 
+                                        name="genre" 
+                                        id="selected-genre-{{ genre.id }}" 
+                                        value="{{ genre.id }}" 
+                                        checked>
+                                    <label class="form-check-label" for="selected-genre-{{ genre.id }}">{{ genre.name }}</label>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                
+                    <!-- ✅ 検索条件にないもの（未選択のジャンル）だけを表示 -->
                     <div id="genreMenu" class="collapse">
                         {% for genre in genres %}
-                            <div class="form-check">
-                                <input 
-                                    type="checkbox" 
-                                    class="form-check-input" 
-                                    name="genre" 
-                                    id="genre-{{ genre.id }}" 
-                                    value="{{ genre.id }}"
-                                    {% if genre.id|stringformat:"s" in search_conditions.genre %}checked{% endif %}>
-                                <label class="form-check-label" for="genre-{{ genre.id }}">{{ genre.name }}</label>
-                            </div>
+                            {% if genre.id|stringformat:"s" not in search_conditions.genre %}
+                                <div class="form-check">
+                                    <input 
+                                        type="checkbox" 
+                                        class="form-check-input genre-checkbox" 
+                                        name="genre" 
+                                        id="genre-{{ genre.id }}" 
+                                        value="{{ genre.id }}">
+                                    <label class="form-check-label" for="genre-{{ genre.id }}">{{ genre.name }}</label>
+                                </div>
+                            {% endif %}
                         {% endfor %}
-                        
                     </div>
                 </li>
+                
 
                 <div style="height: 10px;"></div> <!-- 空白を作るダミー要素 -->
 
