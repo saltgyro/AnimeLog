@@ -28,7 +28,7 @@
                     data-status="plan_to_watch"
                     data-update-url="{% url 'anime_tracker:update_status' pk=anime.id %}"
                     {% if not user.is_authenticated %}disabled{% endif %}
-                    class="w-25 btn {% if not user.is_authenticated %}btn-no-hover{% elif user_relation and user_relation.status == 1 %}btn-active{% else %}btn-inactive{% endif %}"
+                    class="w-25 {% if not user.is_authenticated %}btn-no-hover{% elif user_relation and user_relation.status == 1 %}btn-active{% else %}btn-inactive{% endif %}"
                     onclick="toggleStatus('{{ anime.id }}', 'plan_to_watch', this)"
                     data-bs-toggle="tooltip" data-bs-placement="top"
                     title="{% if not user.is_authenticated %}これらの機能を利用するにはログインしてください{% endif %}" >
@@ -41,7 +41,7 @@
                     data-status="watched"
                     data-update-url="{% url 'anime_tracker:update_status' pk=anime.id %}"
                     {% if not user.is_authenticated %}disabled{% endif %}
-                    class="w-25 btn {% if not user.is_authenticated %}btn-no-hover{% elif user_relation and user_relation.status == 2 %}btn-active{% else %}btn-inactive{% endif %}"
+                    class="w-25 {% if not user.is_authenticated %}btn-no-hover{% elif user_relation and user_relation.status == 2 %}btn-active{% else %}btn-inactive{% endif %}"
                     onclick="toggleStatus('{{ anime.id }}', 'watched', this)"
                     data-bs-toggle="tooltip" data-bs-placement="top"
                     title="{% if not user.is_authenticated %}これらの機能を利用するにはログインしてください{% endif %}">
@@ -56,7 +56,7 @@
                     data-status="favorite"
                     data-update-url="{% url 'anime_tracker:update_status' pk=anime.id %}"
                     {% if not can_edit_tags %}disabled{% endif %}
-                    class="w-50 btn {% if user_relation and user_relation.is_favorite %}btn-active{% else %}btn-inactive{% endif %}"
+                    class="w-50 {% if user_relation and user_relation.is_favorite %}btn-active{% else %}btn-inactive{% endif %}"
                     onclick="toggleStatus('{{ anime.id }}', 'favorite', this)" style="width:">
                 お気に入り
             </button>
