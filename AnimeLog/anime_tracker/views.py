@@ -615,25 +615,25 @@ def home(request):
             unselected_seasons_by_year[year] = []
         unselected_seasons_by_year[year].append((season_id, season_name))
     
-    print("=== シーズンリスト (すべてのシーズン) ===")
-    for s in season_list:
-        print(f"タイプ: {type(s)}, 内容: {s}, 要素数: {len(s)}") 
-        print(s)  # (ID, "202X年冬") の形で出力
+    # print("=== シーズンリスト (すべてのシーズン) ===")
+    # for s in season_list:
+    #     print(f"タイプ: {type(s)}, 内容: {s}, 要素数: {len(s)}") 
+    #     print(s)  # (ID, "202X年冬") の形で出力
         
-    print("\n=== 選択されているシーズン ===")
-    for s in selected_seasons:
-        print(f"タイプ: {type(s)}, 内容: {s}, 要素数: {len(s)}") 
-        print(s)  # (ID, "202X年冬") の形で出力
+    # print("\n=== 選択されているシーズン ===")
+    # for s in selected_seasons:
+    #     print(f"タイプ: {type(s)}, 内容: {s}, 要素数: {len(s)}") 
+    #     print(s)  # (ID, "202X年冬") の形で出力
 
-    print("\n=== 選択されていないシーズン ===")
-    for s in unselected_seasons:
-        print(f"タイプ: {type(s)}, 内容: {s}, 要素数: {len(s)}") 
-        print(s)  # (ID, "202X年冬") の形で出力
+    # print("\n=== 選択されていないシーズン ===")
+    # for s in unselected_seasons:
+    #     print(f"タイプ: {type(s)}, 内容: {s}, 要素数: {len(s)}") 
+    #     print(s)  # (ID, "202X年冬") の形で出力
         
-    print("\n=== 選択されていないシーズンイヤー ===")
-    for s in unselected_seasons_by_year:
-        print(f"タイプ: {type(s)}, 内容: {s}, 要素数: {len(s)}") 
-        print(s)  # (ID, "202X年冬") の形で出力
+    # print("\n=== 選択されていないシーズンイヤー ===")
+    # for s in unselected_seasons_by_year:
+    #     print(f"タイプ: {type(s)}, 内容: {s}, 要素数: {len(s)}") 
+    #     print(s)  # (ID, "202X年冬") の形で出力
     
     # 選択されている50音を取得（リストが空なら空文字をセット）
     selected_alphabet_list = search_conditions.get("alphabet_search", [])
