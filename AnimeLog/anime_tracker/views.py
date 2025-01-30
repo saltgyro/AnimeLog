@@ -645,8 +645,6 @@ def home(request):
         if data in selected_alphabet_list
     ]
 
-    
-
     # 未選択の50音リストの作成
     # 選択されているもののデータ部分だけ取得（setで高速チェック用）
     selected_alphabet_data = {data for data, _ in selected_alphabet}
@@ -658,41 +656,11 @@ def home(request):
         for data, display in items
         if data not in selected_alphabet_data  # ここで選択済みを除外
     ]
-    
 
     # デバッグ出力
     print("\n=== 選択されている50音 ===")
     print(f"選択: {selected_alphabet}")
     
-    
-
-    # selected_alphabet_display = DISPLAY_MAPPING.get(selected_alphabet, selected_alphabet)
-    # selected_alphabet を DISPLAY 用に変換
-    # selected_alphabet_display = DISPLAY_ALPHABET_MAPPING.get(selected_alphabet, selected_alphabet)
-    # selected_alphabet_display = DISPLAY_ALPHABET_MAPPING.get(
-    # selected_alphabet[0][0], selected_alphabet[0][1]
-    # ) if selected_alphabet else ""
-    # print(f"selected_alphabet_display: {selected_alphabet_display}")
-    
-    # 未選択の表示用データ作成
-    # unselected_alphabet_display = {
-    #     DISPLAY_MAPPING.get(row, row): [DISPLAY_MAPPING.get(char, char) for char in chars]
-    #     for row, chars in unselected_alphabets.items()
-    # }
-    # unselected_alphabet_display = {
-    # DISPLAY_MAPPING.get(row, row): [
-    #     DISPLAY_MAPPING.get(char, char) if char != row else char
-    #     for char in chars
-    # ]
-    # for row, chars in unselected_alphabets.items()
-    # }
-    
-    # unselected_alphabets = [
-    #     (data, display)  # (データ用, 表示用)
-    #     for row, items in ALPHABET_MAPPING.items()
-    #     for data, display in items
-    #     if data not in selected_alphabet_data  # ここで選択済みを除外
-    # ]
     unselected_alphabets = {
         row: [(data, display) for data, display in items if data not in selected_alphabet_list]
         for row, items in ALPHABET_MAPPING.items()
@@ -700,63 +668,6 @@ def home(request):
     print("\n=== 未選択の50音 ===")
     for data, display in unselected_alphabets:
         print(f"データ用: {data}, 表示用: {display}")
-
-    
-    # print("\n=== 未選択の50音（表示用） ===")
-    # for row, chars in unselected_alphabet_display.items():
-    #     print(f"行: {row} → 未選択: {chars}")
-    
-    # # まず選択されているものを取得（1つだけ）
-    # selected_alphabet = search_conditions.get("alphabet_search", [""])[0]  # デフォルト空文字
-
-    # # すべての文字を `selected_alphabet` と比較し、未選択のものを `unselected_alphabets` に入れる
-    # selected_row = ""
-    # selected_char = ""
-    # unselected_alphabets = {}
-    
-    # for row, chars in ROW_ALPHABET_MAPPING.items():
-    #     # 「あ行」のような行が選択されている場合
-    #     if selected_alphabet == row:
-    #         selected_row = row  # 行をセット
-    #         unselected_alphabets[row] = [f"{row}{char}" for char in chars]  # 全部未選択に入れる
-    #     # 「あ行あ」のような個別の文字が選択されている場合
-    #     elif selected_alphabet in [f"{row}{char}" for char in chars]:
-    #         selected_row = row
-    #         selected_char = selected_alphabet
-    #         unselected_alphabets[row] = [f"{row}{char}" for char in chars if f"{row}{char}" != selected_alphabet]
-    # # デバッグ出力
-    # print("\n=== 選択されている50音 ===")
-    # print(f"行: {selected_row}, 文字: {selected_char}")
-
-    # print("\n=== 選択されていない50音 ===")
-    # for row, chars in unselected_alphabets.items():
-    #     print(f"行: {row}, 未選択: {chars}")
-        
-    # # 選択された50音（行＋個別の文字）
-    # selected_alphabets = {
-    #     row: [f"{row}{char}" for char in chars if f"{row}{char}" in search_conditions.get("alphabet_search", [])]
-    #     for row, chars in ROW_ALPHABET_MAPPING.items()
-    # }
-    # # ✅ 「行（あ行・か行...）」が選択されている場合は、それ自体も `selected_alphabets` に含める
-    # for row in ROW_ALPHABET_MAPPING.keys():
-    #     if row in search_conditions.get("alphabet_search", []):
-    #         selected_alphabets[row].insert(0, row)  # 先頭に行を追加
-    # print("\n=== 選択されている50音 ===")
-    # for row, chars in selected_alphabets.items():
-    #     print(f"行: {row}, 選択: {chars}")
-
-    # # 未選択の50音（行＋個別の文字）
-    # unselected_alphabets = {
-    #     row: [f"{row}{char}" for char in chars if f"{row}{char}" not in search_conditions.get("alphabet_search", [])]
-    #     for row, chars in ROW_ALPHABET_MAPPING.items()
-    # }
-    # # ✅ 「行（あ行・か行...）」だけ選択されている場合は、それ自体を `unselected_alphabets` から削除
-    # for row in ROW_ALPHABET_MAPPING.keys():
-    #     if row in search_conditions.get("alphabet_search", []):
-    #         unselected_alphabets[row] = [char for char in unselected_alphabets[row] if char != row]
-    # print("\n=== 選択されていない50音 ===")
-    # for row, chars in unselected_alphabets.items():
-    #     print(f"行: {row}, 未選択: {chars}")
 
     return render(request, 'html/home.html', {
         'page_obj': page_obj,
@@ -875,8 +786,6 @@ def update_rating(request, pk):
                 "user_rating": relation.rating
             })
 
-            # return JsonResponse({"message": "Rating updated successfully."})
-            # return JsonResponse({"message": "Rating updated successfully.", "average_rating": average_rating})
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
     return JsonResponse({"error": "Invalid request method."}, status=400)

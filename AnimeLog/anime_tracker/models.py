@@ -249,6 +249,7 @@ class User_anime_relations(models.Model):#ユーザーのアニメの視聴管�
         """アニメの平均評価を再計算して保存する"""
         related_ratings = User_anime_relations.objects.filter(anime_id=self.anime_id).values_list('rating', flat=True)
         average_rating = sum(related_ratings) / len(related_ratings) if related_ratings else 0.0
+        average_rating = round(average_rating, 1)  # 小数点以下1桁に丸める
         self.anime_id.average_rating = average_rating
         print(f"平均評価が更新されました: {average_rating}")
         self.anime_id.save()
