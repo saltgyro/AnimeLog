@@ -1,3 +1,4 @@
+
 .btn-active {
     background-color: orange;
     color: white;
@@ -78,6 +79,7 @@ button[disabled] {
 }
 
 .anime-info .buttons button {
+    height: 50px;
     margin-right: 10px;
     padding: 10px 20px;
     border: none;

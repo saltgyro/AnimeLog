@@ -22,19 +22,33 @@
         <h2>{{ anime.title }}</h2>
         
         <div class="buttons">
+            <!-- 視聴予定ボタン -->
+            <button id="plan-to-watch-btn"
+                    data-anime-id="{{ anime.id }}"
+                    data-status="plan_to_watch"
+                    data-update-url="{% url 'anime_tracker:update_status' pk=anime.id %}"
+                    {% if not user.is_authenticated %}disabled{% endif %}
+                    class="w-25 btn {% if not user.is_authenticated %}btn-no-hover{% elif user_relation and user_relation.status == 1 %}btn-active{% else %}btn-inactive{% endif %}"
+                    onclick="toggleStatus('{{ anime.id }}', 'plan_to_watch', this)"
+                    data-bs-toggle="tooltip" data-bs-placement="top"
+                    title="{% if not user.is_authenticated %}これらの機能を利用するにはログインしてください{% endif %}" >
+                視聴予定
+            </button>
+
             <!-- 視聴済ボタン -->
             <button id="watched-btn"
                     data-anime-id="{{ anime.id }}"
                     data-status="watched"
                     data-update-url="{% url 'anime_tracker:update_status' pk=anime.id %}"
                     {% if not user.is_authenticated %}disabled{% endif %}
-                    class="{% if not user.is_authenticated %}btn-no-hover{% elif user_relation and user_relation.status == 2 %}btn-active{% else %}btn-inactive{% endif %}"
+                    class="w-25 btn {% if not user.is_authenticated %}btn-no-hover{% elif user_relation and user_relation.status == 2 %}btn-active{% else %}btn-inactive{% endif %}"
                     onclick="toggleStatus('{{ anime.id }}', 'watched', this)"
                     data-bs-toggle="tooltip" data-bs-placement="top"
                     title="{% if not user.is_authenticated %}これらの機能を利用するにはログインしてください{% endif %}">
                 視聴済
             </button>
-        
+            <br>
+            <div style="height: 10px;"></div> 
             <!-- お気に入りボタン -->
             {% if can_edit_tags %}
             <button id="favorite-btn"
@@ -42,27 +56,14 @@
                     data-status="favorite"
                     data-update-url="{% url 'anime_tracker:update_status' pk=anime.id %}"
                     {% if not can_edit_tags %}disabled{% endif %}
-                    class="{% if user_relation and user_relation.is_favorite %}btn-active{% else %}btn-inactive{% endif %}"
-                    onclick="toggleStatus('{{ anime.id }}', 'favorite', this)">
+                    class="w-50 btn {% if user_relation and user_relation.is_favorite %}btn-active{% else %}btn-inactive{% endif %}"
+                    onclick="toggleStatus('{{ anime.id }}', 'favorite', this)" style="width:">
                 お気に入り
             </button>
             {% else %}
                 <!-- 空白のプレースホルダー -->
                 <button class="btn-inactive placeholder-btn" disabled></button>
             {% endif %}
-        
-            <!-- 視聴予定ボタン -->
-            <button id="plan-to-watch-btn"
-                    data-anime-id="{{ anime.id }}"
-                    data-status="plan_to_watch"
-                    data-update-url="{% url 'anime_tracker:update_status' pk=anime.id %}"
-                    {% if not user.is_authenticated %}disabled{% endif %}
-                    class="{% if not user.is_authenticated %}btn-no-hover{% elif user_relation and user_relation.status == 1 %}btn-active{% else %}btn-inactive{% endif %}"
-                    onclick="toggleStatus('{{ anime.id }}', 'plan_to_watch', this)"
-                    data-bs-toggle="tooltip" data-bs-placement="top"
-                    title="{% if not user.is_authenticated %}これらの機能を利用するにはログインしてください{% endif %}">
-                視聴予定
-            </button>
         
             {% if not user.is_authenticated %}
                 <p>これらの機能を利用するにはログインしてください。</p>
