@@ -442,6 +442,44 @@ def generate_seasons():
 def index(request):
     return render(request, 'html/index.html')
 
+from datetime import datetime
+
+def generate_season_list(start_year=2003):
+    """ 2003年から現在の年の現在の月のシーズンまでのリストを自動生成 """
+    seasons = ["冬", "春", "夏", "秋"]
+    current_year = datetime.now().year  # 現在の年
+    current_month = datetime.now().month  # 現在の月
+
+    # 現在の月からシーズンを判定
+    if current_month in range(1, 4):
+        last_season_index = 0  # 冬
+    elif current_month in range(4, 7):
+        last_season_index = 1  # 春
+    elif current_month in range(7, 10):
+        last_season_index = 2  # 夏
+    else:
+        last_season_index = 3  # 秋
+
+    season_list = []
+    id_counter = 1  # IDを0からカウント
+
+    for year in range(start_year, current_year + 1):
+        for i, season in enumerate(seasons):
+            # 最後の年の場合、現在のシーズンまで作成
+            if year == current_year and i > last_season_index:
+                break
+            season_list.append((id_counter, f"{year}年{season}"))
+            id_counter += 1  # IDを1つずつ増やす
+
+    return season_list
+# シーズンの並び順（冬→春→夏→秋）
+SEASON_ORDER = {"冬": 1, "春": 2, "夏": 3, "秋": 4}
+
+def sort_seasons_by_year_and_season(season_list):
+    return sorted(
+        season_list,
+        key=lambda x: (-int(x[1][:4]), SEASON_ORDER[x[1][5:]])  # 年を降順、季節を指定順で並べる
+    )
 
 # homeビュー
 def home(request):
@@ -522,6 +560,43 @@ def home(request):
     page_number = request.GET.get('page')  # 現在のページ番号
     page_obj = paginator.get_page(page_number)  # 該当のページを取得
     
+    season_list = generate_season_list()
+    # selected_seasons = [s for s in season_list if str(s[0]) in search_conditions["season"]]
+    # unselected_seasons = [s for s in season_list if str(s[0]) not in search_conditions["season"]]
+    selected_seasons = sort_seasons_by_year_and_season([
+        s for s in season_list if str(s[0]) in search_conditions["season"]
+    ])
+
+    unselected_seasons = sort_seasons_by_year_and_season([
+        s for s in season_list if str(s[0]) not in search_conditions["season"]
+    ])
+    # 年ごとに分類
+    unselected_seasons_by_year = {}
+    for season_id, season_name in unselected_seasons:
+        year = season_name[:4]  # "2023年冬" の "2023" を取得
+        if year not in unselected_seasons_by_year:
+            unselected_seasons_by_year[year] = []
+        unselected_seasons_by_year[year].append((season_id, season_name))
+    
+    print("=== シーズンリスト (すべてのシーズン) ===")
+    for s in season_list:
+        print(f"タイプ: {type(s)}, 内容: {s}, 要素数: {len(s)}") 
+        print(s)  # (ID, "202X年冬") の形で出力
+        
+    print("\n=== 選択されているシーズン ===")
+    for s in selected_seasons:
+        print(f"タイプ: {type(s)}, 内容: {s}, 要素数: {len(s)}") 
+        print(s)  # (ID, "202X年冬") の形で出力
+
+    print("\n=== 選択されていないシーズン ===")
+    for s in unselected_seasons:
+        print(f"タイプ: {type(s)}, 内容: {s}, 要素数: {len(s)}") 
+        print(s)  # (ID, "202X年冬") の形で出力
+        
+    print("\n=== 選択されていないシーズンイヤー ===")
+    for s in unselected_seasons_by_year:
+        print(f"タイプ: {type(s)}, 内容: {s}, 要素数: {len(s)}") 
+        print(s)  # (ID, "202X年冬") の形で出力
 
     return render(request, 'html/home.html', {
         'page_obj': page_obj,
@@ -535,6 +610,9 @@ def home(request):
         'search_conditions': search_conditions,#検索条件
         'formatted_conditions': formatted_conditions,
         'query_params': query_params,
+        "season_list": season_list,
+        "selected_seasons": selected_seasons,
+        "unselected_seasons": unselected_seasons,
     })
 
 @login_required
