@@ -1,3 +1,12 @@
+#menu-container{
+  display: flex;
+    flex-direction: column; /* 縦並び */
+    align-items: flex-start; /* 左端に寄せる */
+    padding: 10px 15px; /* 内側の余白 */
+    margin-bottom: 10px; /* 下の要素との余白 */
+
+}
+
 #offcanvas-toggle {
   background-color: #0d6efd; /* btn-primary の背景色 (デフォルト青) */
   color: white; /* 文字色 */

@@ -80,98 +80,21 @@
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasExampleLabel">メニュー</h5>
         <div class="button-group">
-            <button type="button" class="btn btn-primary confirm-filters"  style = "margin-right: 10px;"">検索を実行</button>
+            
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="閉じる"></button>
         </div>
     </div>
     <div class="offcanvas-body">
-        <h6>検索条件</h6>
-        <ul>
-            <!-- フリーワード検索 -->
-            {% if search_conditions.search %}
-            <li>フリーワード検索: 
-                {% for keyword in search_conditions.search %}
-                    <span>{{ keyword }}
-                        <button class="btn btn-sm btn-danger remove-condition" data-type="search" data-value="{{ keyword }}">×</button>
-                    </span>{% if not forloop.last %} {% endif %}
-                {% endfor %}
-            </li>
-            {% endif %}
-            
-            <!-- ジャンル -->
-            {% if search_conditions.genre %}
-                <li>ジャンル: 
-                    {% for genre in genres %}
-                        {% if genre.id|stringformat:"s" in search_conditions.genre %}
-                            <span>{{ genre.name }}
-                                <button class="btn btn-sm btn-danger remove-condition" data-type="genre" data-value="{{ genre.id }}">×</button>
-
-                            </span>
-                        {% endif %}
-                    {% endfor %}
-                </li>
-            {% endif %}
-
-            <!-- タグ -->
-            {% if search_conditions.tag %}
-                <li>タグ: 
-                    {% for tag in tags %}
-                        {% if tag.id|stringformat:"s" in search_conditions.tag %}
-                            <span>{{ tag.name }}
-                                <button class="btn btn-sm btn-danger remove-condition" data-type="tag" data-value="{{ tag.id }}">×</button>
-                            </span>
-                        {% endif %}
-                    {% endfor %}
-                </li>
-            {% endif %}
-
-            <!-- シーズン -->
-            {% if search_conditions.season %}
-                <li>シーズン: 
-                    {% for season in seasons %}
-                        {% if season.id|stringformat:"s" in search_conditions.season %}
-                            <span>{{ season.year }} 年 {{ season.get_season_display }}
-                                <button class="btn btn-sm btn-danger remove-condition" data-type="season" data-value="{{ season.id }}">×</button>
-                            </span>
-                        {% endif %}
-                    {% endfor %}
-                </li>
-            {% endif %}
-
-            <!-- スタジオ -->
-            {% if search_conditions.studio %}
-                <li>スタジオ: 
-                    {% for studio in studios %}
-                        {% if studio.id|stringformat:"s" in search_conditions.studio %}
-                            <span>{{ studio.name }}
-                                <button class="btn btn-sm btn-danger remove-condition" data-type="studio" data-value="{{ studio.id }}">×</button>
-                            </span>
-                        {% endif %}
-                    {% endfor %}
-                </li>
-            {% endif %}
-
-            <!-- 50音順 - 条件表示 -->
-            {% if formatted_conditions %}
-            <li>50音順: 
-                <span>
-                    {% for original, display in formatted_conditions.items %}
-                    <span>{{ display }}
-                        <button class="btn btn-sm btn-danger remove-condition" data-type="alphabet" data-value="{{ original }}">×</button>
-                    </span>
-                    {% endfor %}
-                </span>
-            </li>
-            {% endif %}
-
+        <div id="menu-container">
 
         </ul>
 
         <!-- リセットボタン -->
-        <div class="offcanvas-footer">
-            <button class="btn btn-danger m-3" id="reset-search">検索リセット</button>
-        </div>
         
+            <button type="button" class="btn btn-primary confirm-filters">検索を実行</button>
+            
+        
+            <div style="height: 20px;"></div>
         
         <label class="switch">
             <input type="checkbox" id="toggle-detail">
@@ -901,281 +824,285 @@
                 <li>
                     <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#alphabetMenu" aria-expanded="false" aria-controls="alphabetMenu">🔤 50音順</a>
                 
+                    <div class="selected-alphabet">
+                        {% if selected_alphabet %}
+                            {% for data, display in selected_alphabet %}
+                                <div class="form-check">
+                                    <input 
+                                        type="radio" 
+                                        class="form-check-input" 
+                                        name="alphabet" 
+                                        id="alphabet-{{ data }}" 
+                                        value="{{ data }}"
+                                        checked>
+                                    <label class="form-check-label" for="alphabet-{{ data }}">
+                                        {{ display }}</label>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
 
-                    {% if selected_alphabet %}
-                        {% for data, display in selected_alphabet %}
-                            <div class="form-check">
-                                <input 
-                                    type="radio" 
-                                    class="form-check-input" 
-                                    name="alphabet" 
-                                    id="alphabet-{{ data }}" 
-                                    value="{{ data }}"
-                                    checked>
-                                <label class="form-check-label" for="alphabet-{{ data }}">
-                                    {{ display }}</label>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
 
+                        <div id="alphabetMenu" class="collapse">
+                            <!-- 選択済みの50音がある場合に表示 -->
+                            <!-- 50音順フィルター（選択済みのみ表示） -->
+                            
 
-                    <div id="alphabetMenu" class="collapse">
-                        <!-- 選択済みの50音がある場合に表示 -->
-                        <!-- 50音順フィルター（選択済みのみ表示） -->
-                        
+                            <ul>
+                                <!-- あ行 -->
+                                <li>
+                                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-a" aria-expanded="false" aria-controls="row-a">あ行</a>
+                                    <div id="row-a" class="collapse">
+                                        <ul style="padding-left: 0; margin-left: 0;">
+                                            {% if unselected_alphabets.あ行 %}
+                                            <div>
+                                                {% for data, display in unselected_alphabets.あ行 %}
+                                                    <div class="form-check">
+                                                        <input 
+                                                            type="radio" 
+                                                            class="form-check-input" 
+                                                            name="alphabet" 
+                                                            id="alphabet-{{ data }}" 
+                                                            value="{{ data }}">
+                                                        <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
 
-                        <ul>
-                            <!-- あ行 -->
-                            <li>
-                                <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-a" aria-expanded="false" aria-controls="row-a">あ行</a>
-                                <div id="row-a" class="collapse">
-                                    <ul style="padding-left: 0; margin-left: 0;">
-                                        {% if unselected_alphabets.あ行 %}
-                                        <div>
-                                            {% for data, display in unselected_alphabets.あ行 %}
-                                                <div class="form-check">
-                                                    <input 
-                                                        type="radio" 
-                                                        class="form-check-input" 
-                                                        name="alphabet" 
-                                                        id="alphabet-{{ data }}" 
-                                                        value="{{ data }}">
-                                                    <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <!-- か行 -->
+                                <li>
+                                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ka" aria-expanded="false" aria-controls="row-ka">か行</a>
+                                    <div id="row-ka" class="collapse">
+                                        <ul style="padding-left: 0; margin-left: 0;">
+                                            <div id="row-ka" class="collapse">
+                                                <ul style="padding-left: 0; margin-left: 0;">
+                                                    {% if unselected_alphabets.か行 %}
+                                                    <div>
+                                                        {% for data, display in unselected_alphabets.か行 %}
+                                                            <div class="form-check">
+                                                                <input 
+                                                                    type="radio" 
+                                                                    class="form-check-input" 
+                                                                    name="alphabet" 
+                                                                    id="alphabet-{{ data }}" 
+                                                                    value="{{ data }}">
+                                                                <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                    {% endif %}
+            
+                                                </ul>
+                                            </div>
+                                        </ul>
+                                        
+                                    </div>
+                                </li>
+                                <!-- さ行 -->
+                                <li>
+                                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-sa" aria-expanded="false" aria-controls="row-sa">さ行</a>
+                                    <div id="row-sa" class="collapse">
+                                        <ul style="padding-left: 0; margin-left: 0;">
+                                            {% if unselected_alphabets.さ行 %}
+                                            <div>
+                                                {% for data, display in unselected_alphabets.さ行 %}
+                                                    <div class="form-check">
+                                                        <input 
+                                                            type="radio" 
+                                                            class="form-check-input" 
+                                                            name="alphabet" 
+                                                            id="alphabet-{{ data }}" 
+                                                            value="{{ data }}">
+                                                        <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
                                         {% endif %}
 
-                                    </ul>
-                                </div>
-                            </li>
-                            <!-- か行 -->
-                            <li>
-                                <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ka" aria-expanded="false" aria-controls="row-ka">か行</a>
-                                <div id="row-ka" class="collapse">
-                                    <ul style="padding-left: 0; margin-left: 0;">
-                                        <div id="row-ka" class="collapse">
-                                            <ul style="padding-left: 0; margin-left: 0;">
-                                                {% if unselected_alphabets.か行 %}
-                                                <div>
-                                                    {% for data, display in unselected_alphabets.か行 %}
-                                                        <div class="form-check">
-                                                            <input 
-                                                                type="radio" 
-                                                                class="form-check-input" 
-                                                                name="alphabet" 
-                                                                id="alphabet-{{ data }}" 
-                                                                value="{{ data }}">
-                                                            <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
-                                                        </div>
-                                                    {% endfor %}
-                                                </div>
-                                                {% endif %}
-        
-                                            </ul>
-                                        </div>
-                                    </ul>
-                                    
-                                </div>
-                            </li>
-                            <!-- さ行 -->
-                            <li>
-                                <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-sa" aria-expanded="false" aria-controls="row-sa">さ行</a>
-                                <div id="row-sa" class="collapse">
-                                    <ul style="padding-left: 0; margin-left: 0;">
-                                        {% if unselected_alphabets.さ行 %}
-                                        <div>
-                                            {% for data, display in unselected_alphabets.さ行 %}
-                                                <div class="form-check">
-                                                    <input 
-                                                        type="radio" 
-                                                        class="form-check-input" 
-                                                        name="alphabet" 
-                                                        id="alphabet-{{ data }}" 
-                                                        value="{{ data }}">
-                                                    <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
+                                        </ul>
+                                        
+                                    </div>
+                                </li>
+                                <!-- た行 -->
+                                <li>
+                                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ta" aria-expanded="false" aria-controls="row-ta">た行</a>
+                                    <div id="row-ta" class="collapse">
+                                        <ul style="padding-left: 0; margin-left: 0;">
+                                            {% if unselected_alphabets.た行 %}
+                                            <div>
+                                                {% for data, display in unselected_alphabets.た行 %}
+                                                    <div class="form-check">
+                                                        <input 
+                                                            type="radio" 
+                                                            class="form-check-input" 
+                                                            name="alphabet" 
+                                                            id="alphabet-{{ data }}" 
+                                                            value="{{ data }}">
+                                                        <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
 
-                                    </ul>
-                                    
-                                </div>
-                            </li>
-                            <!-- た行 -->
-                            <li>
-                                <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ta" aria-expanded="false" aria-controls="row-ta">た行</a>
-                                <div id="row-ta" class="collapse">
-                                    <ul style="padding-left: 0; margin-left: 0;">
-                                        {% if unselected_alphabets.た行 %}
-                                        <div>
-                                            {% for data, display in unselected_alphabets.た行 %}
-                                                <div class="form-check">
-                                                    <input 
-                                                        type="radio" 
-                                                        class="form-check-input" 
-                                                        name="alphabet" 
-                                                        id="alphabet-{{ data }}" 
-                                                        value="{{ data }}">
-                                                    <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-
-                                    </ul>
-                                    
-                                </div>
-                            </li>
-                            <!-- な行 -->
-                            <li>
-                                <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-na" aria-expanded="false" aria-controls="row-na">な行</a>
-                                <div id="row-na" class="collapse">
-                                    <ul style="padding-left: 0; margin-left: 0;">
-                                        {% if unselected_alphabets.な行 %}
-                                        <div>
-                                            {% for data, display in unselected_alphabets.な行 %}
-                                                <div class="form-check">
-                                                    <input 
-                                                        type="radio" 
-                                                        class="form-check-input" 
-                                                        name="alphabet" 
-                                                        id="alphabet-{{ data }}" 
-                                                        value="{{ data }}">
-                                                    <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
-                                        {% endif %}
-                                    </ul>
-                                    
-                                </div>
-                            </li>
-                            <!-- は行 -->
-                            <li>
-                                <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ha" aria-expanded="false" aria-controls="row-ha">は行</a>
-                                <div id="row-ha" class="collapse">
-                                    <ul style="padding-left: 0; margin-left: 0;">
-                                        {% if unselected_alphabets.は行 %}
-                                        <div>
-                                            {% for data, display in unselected_alphabets.は行 %}
-                                                <div class="form-check">
-                                                    <input 
-                                                        type="radio" 
-                                                        class="form-check-input" 
-                                                        name="alphabet" 
-                                                        id="alphabet-{{ data }}" 
-                                                        value="{{ data }}">
-                                                    <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
-                                        {% endif %}
-                                    </ul>
-                                    
-                                </div>
-                            </li>
-                            <!-- ま行 -->
-                            <li>
-                                <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ma" aria-expanded="false" aria-controls="row-ma">ま行</a>
-                                <div id="row-ma" class="collapse">
-                                    <ul style="padding-left: 0; margin-left: 0;">
-                                        {% if unselected_alphabets.ま行 %}
-                                        <div>
-                                            {% for data, display in unselected_alphabets.ま行 %}
-                                                <div class="form-check">
-                                                    <input 
-                                                        type="radio" 
-                                                        class="form-check-input" 
-                                                        name="alphabet" 
-                                                        id="alphabet-{{ data }}" 
-                                                        value="{{ data }}">
-                                                    <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
-                                        {% endif %}
-                                    </ul>
-                                    
-                                </div>
-                            </li>
-                            <!-- や行 -->
-                            <li>
-                                <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ya" aria-expanded="false" aria-controls="row-ya">や行</a>
-                                <div id="row-ya" class="collapse">
-                                    <ul style="padding-left: 0; margin-left: 0;">
-                                        {% if unselected_alphabets.や行 %}
-                                        <div>
-                                            {% for data, display in unselected_alphabets.や行 %}
-                                                <div class="form-check">
-                                                    <input 
-                                                        type="radio" 
-                                                        class="form-check-input" 
-                                                        name="alphabet" 
-                                                        id="alphabet-{{ data }}" 
-                                                        value="{{ data }}">
-                                                    <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
-                                        {% endif %}
-                                    </ul>
-                                    
-                                </div>
-                            </li>
-                            <!-- ら行 -->
-                            <li>
-                                <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ra" aria-expanded="false" aria-controls="row-ra">ら行</a>
-                                <div id="row-ra" class="collapse">
-                                    <ul style="padding-left: 0; margin-left: 0;">
-                                        {% if unselected_alphabets.ら行 %}
-                                        <div>
-                                            {% for data, display in unselected_alphabets.ら行 %}
-                                                <div class="form-check">
-                                                    <input 
-                                                        type="radio" 
-                                                        class="form-check-input" 
-                                                        name="alphabet" 
-                                                        id="alphabet-{{ data }}" 
-                                                        value="{{ data }}">
-                                                    <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
-                                        {% endif %}
-                                    </ul>
-                                    
-                                </div>
-                            </li>
-                            <!-- わ行 -->
-                            <li>
-                                <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-wa" aria-expanded="false" aria-controls="row-wa">わ行</a>
-                                <div id="row-wa" class="collapse">
-                                    <ul style="padding-left: 0; margin-left: 0;">
-                                        {% if unselected_alphabets.わ行 %}
-                                        <div>
-                                            {% for data, display in unselected_alphabets.わ行 %}
-                                                <div class="form-check">
-                                                    <input 
-                                                        type="radio" 
-                                                        class="form-check-input" 
-                                                        name="alphabet" 
-                                                        id="alphabet-{{ data }}" 
-                                                        value="{{ data }}">
-                                                    <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
-                                        {% endif %}
-                                    </ul>
-                                    
-                                </div>
-                            </li>
-                        </ul>
+                                        </ul>
+                                        
+                                    </div>
+                                </li>
+                                <!-- な行 -->
+                                <li>
+                                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-na" aria-expanded="false" aria-controls="row-na">な行</a>
+                                    <div id="row-na" class="collapse">
+                                        <ul style="padding-left: 0; margin-left: 0;">
+                                            {% if unselected_alphabets.な行 %}
+                                            <div>
+                                                {% for data, display in unselected_alphabets.な行 %}
+                                                    <div class="form-check">
+                                                        <input 
+                                                            type="radio" 
+                                                            class="form-check-input" 
+                                                            name="alphabet" 
+                                                            id="alphabet-{{ data }}" 
+                                                            value="{{ data }}">
+                                                        <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
+                                        </ul>
+                                        
+                                    </div>
+                                </li>
+                                <!-- は行 -->
+                                <li>
+                                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ha" aria-expanded="false" aria-controls="row-ha">は行</a>
+                                    <div id="row-ha" class="collapse">
+                                        <ul style="padding-left: 0; margin-left: 0;">
+                                            {% if unselected_alphabets.は行 %}
+                                            <div>
+                                                {% for data, display in unselected_alphabets.は行 %}
+                                                    <div class="form-check">
+                                                        <input 
+                                                            type="radio" 
+                                                            class="form-check-input" 
+                                                            name="alphabet" 
+                                                            id="alphabet-{{ data }}" 
+                                                            value="{{ data }}">
+                                                        <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
+                                        </ul>
+                                        
+                                    </div>
+                                </li>
+                                <!-- ま行 -->
+                                <li>
+                                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ma" aria-expanded="false" aria-controls="row-ma">ま行</a>
+                                    <div id="row-ma" class="collapse">
+                                        <ul style="padding-left: 0; margin-left: 0;">
+                                            {% if unselected_alphabets.ま行 %}
+                                            <div>
+                                                {% for data, display in unselected_alphabets.ま行 %}
+                                                    <div class="form-check">
+                                                        <input 
+                                                            type="radio" 
+                                                            class="form-check-input" 
+                                                            name="alphabet" 
+                                                            id="alphabet-{{ data }}" 
+                                                            value="{{ data }}">
+                                                        <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
+                                        </ul>
+                                        
+                                    </div>
+                                </li>
+                                <!-- や行 -->
+                                <li>
+                                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ya" aria-expanded="false" aria-controls="row-ya">や行</a>
+                                    <div id="row-ya" class="collapse">
+                                        <ul style="padding-left: 0; margin-left: 0;">
+                                            {% if unselected_alphabets.や行 %}
+                                            <div>
+                                                {% for data, display in unselected_alphabets.や行 %}
+                                                    <div class="form-check">
+                                                        <input 
+                                                            type="radio" 
+                                                            class="form-check-input" 
+                                                            name="alphabet" 
+                                                            id="alphabet-{{ data }}" 
+                                                            value="{{ data }}">
+                                                        <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
+                                        </ul>
+                                        
+                                    </div>
+                                </li>
+                                <!-- ら行 -->
+                                <li>
+                                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ra" aria-expanded="false" aria-controls="row-ra">ら行</a>
+                                    <div id="row-ra" class="collapse">
+                                        <ul style="padding-left: 0; margin-left: 0;">
+                                            {% if unselected_alphabets.ら行 %}
+                                            <div>
+                                                {% for data, display in unselected_alphabets.ら行 %}
+                                                    <div class="form-check">
+                                                        <input 
+                                                            type="radio" 
+                                                            class="form-check-input" 
+                                                            name="alphabet" 
+                                                            id="alphabet-{{ data }}" 
+                                                            value="{{ data }}">
+                                                        <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
+                                        </ul>
+                                        
+                                    </div>
+                                </li>
+                                <!-- わ行 -->
+                                <li>
+                                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-wa" aria-expanded="false" aria-controls="row-wa">わ行</a>
+                                    <div id="row-wa" class="collapse">
+                                        <ul style="padding-left: 0; margin-left: 0;">
+                                            {% if unselected_alphabets.わ行 %}
+                                            <div>
+                                                {% for data, display in unselected_alphabets.わ行 %}
+                                                    <div class="form-check">
+                                                        <input 
+                                                            type="radio" 
+                                                            class="form-check-input" 
+                                                            name="alphabet" 
+                                                            id="alphabet-{{ data }}" 
+                                                            value="{{ data }}">
+                                                        <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
+                                        </ul>
+                                        
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </li>
         </ul>
+        <div style="height: 10px;"></div> 
+        <button class="btn btn-danger" id="reset-search">すべての検索条件をリセットする</button>
+        </div>
     </div>
 </div>
 
@@ -1508,6 +1435,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <style>
 <!--
 
+      
     
     
 -->
