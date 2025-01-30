@@ -54,6 +54,43 @@ ROW_ALPHABET_MAPPING = {
     "ら行": ["ら", "り", "る", "れ", "ろ"],
     "わ行": ["わ", "を", "ん"],
 }
+SEARCH_ALPHABET_MAPPING = {
+    "あ行": ["あ行", "あ行あ", "あ行い", "あ行う", "あ行え", "あ行お"],
+    "か行": ["か行", "か行か", "か行き", "か行く", "か行け", "か行こ"],
+    "さ行": ["さ行", "さ行さ", "さ行し", "さ行す", "さ行せ", "さ行そ"],
+    "た行": ["た行", "た行た", "た行ち", "た行つ", "た行て", "た行と"],
+    "な行": ["な行", "な行な", "な行に", "な行ぬ", "な行ね", "な行の"],
+    "は行": ["は行", "は行は", "は行ひ", "は行ふ", "は行へ", "は行ほ"],
+    "ま行": ["ま行", "ま行ま", "ま行み", "ま行む", "ま行め", "ま行も"],
+    "や行": ["や行", "や行や", "や行ゆ", "や行よ"],
+    "ら行": ["ら行", "ら行ら", "ら行り", "ら行る", "ら行れ", "ら行ろ"],
+    "わ行": ["わ行", "わ行わ", "わ行を", "わ行ん"],
+}
+DISPLAY_ALPHABET_MAPPING = {
+    "あ行": ["あ行", "あ", "い", "う", "え", "お"],
+    "か行": ["か行", "か", "き", "く", "け", "こ"],
+    "さ行": ["さ行", "さ", "し", "す", "せ", "そ"],
+    "た行": ["た行", "た", "ち", "つ", "て", "と"],
+    "な行": ["な行", "な", "に", "ぬ", "ね", "の"],
+    "は行": ["は行", "は", "ひ", "ふ", "へ", "ほ"],
+    "ま行": ["ま行", "ま", "み", "む", "め", "も"],
+    "や行": ["や行", "や", "ゆ", "よ"],
+    "ら行": ["ら行", "ら", "り", "る", "れ", "ろ"],
+    "わ行": ["わ行", "わ", "を", "ん"],
+}
+ALPHABET_MAPPING = {
+    "あ行": [("あ行", "あ行"), ("あ行あ", "あ"), ("あ行い", "い"), ("あ行う", "う"), ("あ行え", "え"), ("あ行お", "お")],
+    "か行": [("か行", "か行"), ("か行か", "か"), ("か行き", "き"), ("か行く", "く"), ("か行け", "け"), ("か行こ", "こ")],
+    "さ行": [("さ行", "さ行"), ("さ行さ", "さ"), ("さ行し", "し"), ("さ行す", "す"), ("さ行せ", "せ"), ("さ行そ", "そ")],
+    "た行": [("た行", "た行"), ("た行た", "た"), ("た行ち", "ち"), ("た行つ", "つ"), ("た行て", "て"), ("た行と", "と")],
+    "な行": [("な行", "な行"), ("な行な", "な"), ("な行に", "に"), ("な行ぬ", "ぬ"), ("な行ね", "ね"), ("な行の", "の")],
+    "は行": [("は行", "は行"), ("は行は", "は"), ("は行ひ", "ひ"), ("は行ふ", "ふ"), ("は行へ", "へ"), ("は行ほ", "ほ")],
+    "ま行": [("ま行", "ま行"), ("ま行ま", "ま"), ("ま行み", "み"), ("ま行む", "む"), ("ま行め", "め"), ("ま行も", "も")],
+    "や行": [("や行", "や行"), ("や行や", "や"), ("や行ゆ", "ゆ"), ("や行よ", "よ")],
+    "ら行": [("ら行", "ら行"), ("ら行ら", "ら"), ("ら行り", "り"), ("ら行る", "る"), ("ら行れ", "れ"), ("ら行ろ", "ろ")],
+    "わ行": [("わ行", "わ行"), ("わ行わ", "わ"), ("わ行を", "を"), ("わ行ん", "ん")],
+}
+
 
 # DISPLAY_MAPPING を動的に生成
 DISPLAY_MAPPING = {}
@@ -597,6 +634,129 @@ def home(request):
     for s in unselected_seasons_by_year:
         print(f"タイプ: {type(s)}, 内容: {s}, 要素数: {len(s)}") 
         print(s)  # (ID, "202X年冬") の形で出力
+    
+    # 選択されている50音を取得（リストが空なら空文字をセット）
+    selected_alphabet_list = search_conditions.get("alphabet_search", [])
+    # selected_alphabet = selected_alphabet_list[0] if selected_alphabet_list else ""  # 空リストなら空文字
+    selected_alphabet = [
+        (data, display)  # (データ用, 表示用)
+        for row, items in ALPHABET_MAPPING.items()
+        for data, display in items
+        if data in selected_alphabet_list
+    ]
+
+    
+
+    # 未選択の50音リストの作成
+    # 選択されているもののデータ部分だけ取得（setで高速チェック用）
+    selected_alphabet_data = {data for data, _ in selected_alphabet}
+
+    # 未選択リストを作成（選択されていないものだけを抽出）
+    unselected_alphabets = [
+        (data, display)  # (データ用, 表示用)
+        for row, items in ALPHABET_MAPPING.items()
+        for data, display in items
+        if data not in selected_alphabet_data  # ここで選択済みを除外
+    ]
+    
+
+    # デバッグ出力
+    print("\n=== 選択されている50音 ===")
+    print(f"選択: {selected_alphabet}")
+    
+    
+
+    # selected_alphabet_display = DISPLAY_MAPPING.get(selected_alphabet, selected_alphabet)
+    # selected_alphabet を DISPLAY 用に変換
+    # selected_alphabet_display = DISPLAY_ALPHABET_MAPPING.get(selected_alphabet, selected_alphabet)
+    # selected_alphabet_display = DISPLAY_ALPHABET_MAPPING.get(
+    # selected_alphabet[0][0], selected_alphabet[0][1]
+    # ) if selected_alphabet else ""
+    # print(f"selected_alphabet_display: {selected_alphabet_display}")
+    
+    # 未選択の表示用データ作成
+    # unselected_alphabet_display = {
+    #     DISPLAY_MAPPING.get(row, row): [DISPLAY_MAPPING.get(char, char) for char in chars]
+    #     for row, chars in unselected_alphabets.items()
+    # }
+    # unselected_alphabet_display = {
+    # DISPLAY_MAPPING.get(row, row): [
+    #     DISPLAY_MAPPING.get(char, char) if char != row else char
+    #     for char in chars
+    # ]
+    # for row, chars in unselected_alphabets.items()
+    # }
+    
+    # unselected_alphabets = [
+    #     (data, display)  # (データ用, 表示用)
+    #     for row, items in ALPHABET_MAPPING.items()
+    #     for data, display in items
+    #     if data not in selected_alphabet_data  # ここで選択済みを除外
+    # ]
+    unselected_alphabets = {
+        row: [(data, display) for data, display in items if data not in selected_alphabet_list]
+        for row, items in ALPHABET_MAPPING.items()
+    }
+    print("\n=== 未選択の50音 ===")
+    for data, display in unselected_alphabets:
+        print(f"データ用: {data}, 表示用: {display}")
+
+    
+    # print("\n=== 未選択の50音（表示用） ===")
+    # for row, chars in unselected_alphabet_display.items():
+    #     print(f"行: {row} → 未選択: {chars}")
+    
+    # # まず選択されているものを取得（1つだけ）
+    # selected_alphabet = search_conditions.get("alphabet_search", [""])[0]  # デフォルト空文字
+
+    # # すべての文字を `selected_alphabet` と比較し、未選択のものを `unselected_alphabets` に入れる
+    # selected_row = ""
+    # selected_char = ""
+    # unselected_alphabets = {}
+    
+    # for row, chars in ROW_ALPHABET_MAPPING.items():
+    #     # 「あ行」のような行が選択されている場合
+    #     if selected_alphabet == row:
+    #         selected_row = row  # 行をセット
+    #         unselected_alphabets[row] = [f"{row}{char}" for char in chars]  # 全部未選択に入れる
+    #     # 「あ行あ」のような個別の文字が選択されている場合
+    #     elif selected_alphabet in [f"{row}{char}" for char in chars]:
+    #         selected_row = row
+    #         selected_char = selected_alphabet
+    #         unselected_alphabets[row] = [f"{row}{char}" for char in chars if f"{row}{char}" != selected_alphabet]
+    # # デバッグ出力
+    # print("\n=== 選択されている50音 ===")
+    # print(f"行: {selected_row}, 文字: {selected_char}")
+
+    # print("\n=== 選択されていない50音 ===")
+    # for row, chars in unselected_alphabets.items():
+    #     print(f"行: {row}, 未選択: {chars}")
+        
+    # # 選択された50音（行＋個別の文字）
+    # selected_alphabets = {
+    #     row: [f"{row}{char}" for char in chars if f"{row}{char}" in search_conditions.get("alphabet_search", [])]
+    #     for row, chars in ROW_ALPHABET_MAPPING.items()
+    # }
+    # # ✅ 「行（あ行・か行...）」が選択されている場合は、それ自体も `selected_alphabets` に含める
+    # for row in ROW_ALPHABET_MAPPING.keys():
+    #     if row in search_conditions.get("alphabet_search", []):
+    #         selected_alphabets[row].insert(0, row)  # 先頭に行を追加
+    # print("\n=== 選択されている50音 ===")
+    # for row, chars in selected_alphabets.items():
+    #     print(f"行: {row}, 選択: {chars}")
+
+    # # 未選択の50音（行＋個別の文字）
+    # unselected_alphabets = {
+    #     row: [f"{row}{char}" for char in chars if f"{row}{char}" not in search_conditions.get("alphabet_search", [])]
+    #     for row, chars in ROW_ALPHABET_MAPPING.items()
+    # }
+    # # ✅ 「行（あ行・か行...）」だけ選択されている場合は、それ自体を `unselected_alphabets` から削除
+    # for row in ROW_ALPHABET_MAPPING.keys():
+    #     if row in search_conditions.get("alphabet_search", []):
+    #         unselected_alphabets[row] = [char for char in unselected_alphabets[row] if char != row]
+    # print("\n=== 選択されていない50音 ===")
+    # for row, chars in unselected_alphabets.items():
+    #     print(f"行: {row}, 未選択: {chars}")
 
     return render(request, 'html/home.html', {
         'page_obj': page_obj,
@@ -613,6 +773,8 @@ def home(request):
         "season_list": season_list,
         "selected_seasons": selected_seasons,
         "unselected_seasons": unselected_seasons,
+        "selected_alphabet": selected_alphabet,
+        "unselected_alphabets": unselected_alphabets,
     })
 
 @login_required

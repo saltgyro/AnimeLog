@@ -897,77 +897,56 @@
                 </li>
                 
                 <div style="height: 10px;"></div> <!-- 空白を作るダミー要素 -->
+                
                 <li>
                     <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#alphabetMenu" aria-expanded="false" aria-controls="alphabetMenu">🔤 50音順</a>
+                
+
+                    {% if selected_alphabet %}
+                        {% for data, display in selected_alphabet %}
+                            <div class="form-check">
+                                <input 
+                                    type="radio" 
+                                    class="form-check-input" 
+                                    name="alphabet" 
+                                    id="alphabet-{{ data }}" 
+                                    value="{{ data }}"
+                                    checked>
+                                <label class="form-check-label" for="alphabet-{{ data }}">
+                                    {{ display }}</label>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+
                     <div id="alphabetMenu" class="collapse">
+                        <!-- 選択済みの50音がある場合に表示 -->
+                        <!-- 50音順フィルター（選択済みのみ表示） -->
+                        
+
                         <ul>
                             <!-- あ行 -->
                             <li>
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-a" aria-expanded="false" aria-controls="row-a">あ行</a>
                                 <div id="row-a" class="collapse">
                                     <ul style="padding-left: 0; margin-left: 0;">
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-あ行" 
-                                                value="あ行"
-                                                {% if "あ行" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-あ行">あ行</label>
+                                        {% if unselected_alphabets.あ行 %}
+                                        <div>
+                                            {% for data, display in unselected_alphabets.あ行 %}
+                                                <div class="form-check">
+                                                    <input 
+                                                        type="radio" 
+                                                        class="form-check-input" 
+                                                        name="alphabet" 
+                                                        id="alphabet-{{ data }}" 
+                                                        value="{{ data }}">
+                                                    <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
+                                                </div>
+                                            {% endfor %}
                                         </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-あ行あ" 
-                                                value="あ行あ"
-                                                {% if "あ行あ" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-あ行あ">あ</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-あ行い" 
-                                                value="あ行い"
-                                                {% if "あ行い" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-あ行い">い</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-あ行う" 
-                                                value="あ行う"
-                                                {% if "あ行う" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-あ行う">う</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-あ行え" 
-                                                value="あ行え"
-                                                {% if "あ行え" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-あ行え">え</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-あ行お" 
-                                                value="あ行お"
-                                                {% if "あ行お" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-あ行お">お</label>
-                                        </div>
+                                        {% endif %}
+
                                     </ul>
-                                    
                                 </div>
                             </li>
                             <!-- か行 -->
@@ -975,65 +954,25 @@
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ka" aria-expanded="false" aria-controls="row-ka">か行</a>
                                 <div id="row-ka" class="collapse">
                                     <ul style="padding-left: 0; margin-left: 0;">
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-か行" 
-                                                value="か行"
-                                                {% if "か行" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-か行">か行</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-か行か" 
-                                                value="か行か"
-                                                {% if "か行か" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-か行か">か</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-か行き" 
-                                                value="か行き"
-                                                {% if "か行き" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-か行き">き</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-か行く" 
-                                                value="か行く"
-                                                {% if "か行く" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-か行く">く</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-か行け" 
-                                                value="か行け"
-                                                {% if "か行け" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-か行け">け</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-か行こ" 
-                                                value="か行こ"
-                                                {% if "か行こ" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-か行こ">こ</label>
+                                        <div id="row-ka" class="collapse">
+                                            <ul style="padding-left: 0; margin-left: 0;">
+                                                {% if unselected_alphabets.か行 %}
+                                                <div>
+                                                    {% for data, display in unselected_alphabets.か行 %}
+                                                        <div class="form-check">
+                                                            <input 
+                                                                type="radio" 
+                                                                class="form-check-input" 
+                                                                name="alphabet" 
+                                                                id="alphabet-{{ data }}" 
+                                                                value="{{ data }}">
+                                                            <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                                {% endif %}
+        
+                                            </ul>
                                         </div>
                                     </ul>
                                     
@@ -1044,66 +983,22 @@
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-sa" aria-expanded="false" aria-controls="row-sa">さ行</a>
                                 <div id="row-sa" class="collapse">
                                     <ul style="padding-left: 0; margin-left: 0;">
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-さ行" 
-                                                value="さ行"
-                                                {% if "さ行" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-さ行">さ行</label>
+                                        {% if unselected_alphabets.さ行 %}
+                                        <div>
+                                            {% for data, display in unselected_alphabets.さ行 %}
+                                                <div class="form-check">
+                                                    <input 
+                                                        type="radio" 
+                                                        class="form-check-input" 
+                                                        name="alphabet" 
+                                                        id="alphabet-{{ data }}" 
+                                                        value="{{ data }}">
+                                                    <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
+                                                </div>
+                                            {% endfor %}
                                         </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-さ行さ" 
-                                                value="さ行さ"
-                                                {% if "さ行さ" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-さ行さ">さ</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-さ行し" 
-                                                value="さ行し"
-                                                {% if "さ行し" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-さ行し">し</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-さ行す" 
-                                                value="さ行す"
-                                                {% if "さ行す" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-さ行す">す</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-さ行せ" 
-                                                value="さ行せ"
-                                                {% if "さ行せ" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-さ行せ">せ</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-さ行そ" 
-                                                value="さ行そ"
-                                                {% if "さ行そ" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-さ行そ">そ</label>
-                                        </div>
+                                    {% endif %}
+
                                     </ul>
                                     
                                 </div>
@@ -1113,66 +1008,22 @@
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ta" aria-expanded="false" aria-controls="row-ta">た行</a>
                                 <div id="row-ta" class="collapse">
                                     <ul style="padding-left: 0; margin-left: 0;">
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-た行" 
-                                                value="た行"
-                                                {% if "た行" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-た行">た行</label>
+                                        {% if unselected_alphabets.た行 %}
+                                        <div>
+                                            {% for data, display in unselected_alphabets.た行 %}
+                                                <div class="form-check">
+                                                    <input 
+                                                        type="radio" 
+                                                        class="form-check-input" 
+                                                        name="alphabet" 
+                                                        id="alphabet-{{ data }}" 
+                                                        value="{{ data }}">
+                                                    <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
+                                                </div>
+                                            {% endfor %}
                                         </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-た行た" 
-                                                value="た行た"
-                                                {% if "た行た" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-た行た">た</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-た行ち" 
-                                                value="た行ち"
-                                                {% if "た行ち" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-た行ち">ち</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-た行つ" 
-                                                value="た行つ"
-                                                {% if "た行つ" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-た行つ">つ</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-た行て" 
-                                                value="た行て"
-                                                {% if "た行て" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-た行て">て</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-た行と" 
-                                                value="た行と"
-                                                {% if "た行と" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-た行と">と</label>
-                                        </div>
+                                    {% endif %}
+
                                     </ul>
                                     
                                 </div>
@@ -1182,66 +1033,21 @@
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-na" aria-expanded="false" aria-controls="row-na">な行</a>
                                 <div id="row-na" class="collapse">
                                     <ul style="padding-left: 0; margin-left: 0;">
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-な行" 
-                                                value="な行"
-                                                {% if "な行" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-な行">な行</label>
+                                        {% if unselected_alphabets.な行 %}
+                                        <div>
+                                            {% for data, display in unselected_alphabets.な行 %}
+                                                <div class="form-check">
+                                                    <input 
+                                                        type="radio" 
+                                                        class="form-check-input" 
+                                                        name="alphabet" 
+                                                        id="alphabet-{{ data }}" 
+                                                        value="{{ data }}">
+                                                    <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
+                                                </div>
+                                            {% endfor %}
                                         </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-な行な" 
-                                                value="な行な"
-                                                {% if "な行な" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-な行な">な</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-な行に" 
-                                                value="な行に"
-                                                {% if "な行に" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-な行に">に</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-な行ぬ" 
-                                                value="な行ぬ"
-                                                {% if "な行ぬ" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-な行ぬ">ぬ</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-な行ね" 
-                                                value="な行ね"
-                                                {% if "な行ね" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-な行ね">ね</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-な行の" 
-                                                value="な行の"
-                                                {% if "な行の" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-な行の">の</label>
-                                        </div>
+                                        {% endif %}
                                     </ul>
                                     
                                 </div>
@@ -1251,66 +1057,21 @@
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ha" aria-expanded="false" aria-controls="row-ha">は行</a>
                                 <div id="row-ha" class="collapse">
                                     <ul style="padding-left: 0; margin-left: 0;">
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-は行" 
-                                                value="は行"
-                                                {% if "は行" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-は行">は行</label>
+                                        {% if unselected_alphabets.は行 %}
+                                        <div>
+                                            {% for data, display in unselected_alphabets.は行 %}
+                                                <div class="form-check">
+                                                    <input 
+                                                        type="radio" 
+                                                        class="form-check-input" 
+                                                        name="alphabet" 
+                                                        id="alphabet-{{ data }}" 
+                                                        value="{{ data }}">
+                                                    <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
+                                                </div>
+                                            {% endfor %}
                                         </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-は行は" 
-                                                value="は行は"
-                                                {% if "は行は" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-は行は">は</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-は行ひ" 
-                                                value="は行ひ"
-                                                {% if "は行ひ" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-は行ひ">ひ</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-は行ふ" 
-                                                value="は行ふ"
-                                                {% if "は行ふ" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-は行ふ">ふ</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-は行へ" 
-                                                value="は行へ"
-                                                {% if "は行へ" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-は行へ">へ</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-は行ほ" 
-                                                value="は行ほ"
-                                                {% if "は行ほ" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-は行ほ">ほ</label>
-                                        </div>
+                                        {% endif %}
                                     </ul>
                                     
                                 </div>
@@ -1320,66 +1081,21 @@
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ma" aria-expanded="false" aria-controls="row-ma">ま行</a>
                                 <div id="row-ma" class="collapse">
                                     <ul style="padding-left: 0; margin-left: 0;">
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-ま行" 
-                                                value="ま行"
-                                                {% if "ま行" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-ま行">ま行</label>
+                                        {% if unselected_alphabets.ま行 %}
+                                        <div>
+                                            {% for data, display in unselected_alphabets.ま行 %}
+                                                <div class="form-check">
+                                                    <input 
+                                                        type="radio" 
+                                                        class="form-check-input" 
+                                                        name="alphabet" 
+                                                        id="alphabet-{{ data }}" 
+                                                        value="{{ data }}">
+                                                    <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
+                                                </div>
+                                            {% endfor %}
                                         </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-ま行ま" 
-                                                value="ま行ま"
-                                                {% if "ま行ま" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-ま行ま">ま</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-ま行み" 
-                                                value="ま行み"
-                                                {% if "ま行み" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-ま行み">み</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-ま行む" 
-                                                value="ま行む"
-                                                {% if "ま行む" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-ま行む">む</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-ま行め" 
-                                                value="ま行め"
-                                                {% if "ま行め" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-ま行め">め</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-ま行も" 
-                                                value="ま行も"
-                                                {% if "ま行も" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-ま行も">も</label>
-                                        </div>
+                                        {% endif %}
                                     </ul>
                                     
                                 </div>
@@ -1389,46 +1105,21 @@
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ya" aria-expanded="false" aria-controls="row-ya">や行</a>
                                 <div id="row-ya" class="collapse">
                                     <ul style="padding-left: 0; margin-left: 0;">
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-や行" 
-                                                value="や行"
-                                                {% if "や行" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-や行">や行</label>
+                                        {% if unselected_alphabets.や行 %}
+                                        <div>
+                                            {% for data, display in unselected_alphabets.や行 %}
+                                                <div class="form-check">
+                                                    <input 
+                                                        type="radio" 
+                                                        class="form-check-input" 
+                                                        name="alphabet" 
+                                                        id="alphabet-{{ data }}" 
+                                                        value="{{ data }}">
+                                                    <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
+                                                </div>
+                                            {% endfor %}
                                         </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-や行や" 
-                                                value="や行や"
-                                                {% if "や行や" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-や行や">や</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-や行ゆ" 
-                                                value="や行ゆ"
-                                                {% if "や行ゆ" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-や行ゆ">ゆ</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-や行よ" 
-                                                value="や行よ"
-                                                {% if "や行よ" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-や行よ">よ</label>
-                                        </div>
+                                        {% endif %}
                                     </ul>
                                     
                                 </div>
@@ -1438,66 +1129,21 @@
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-ra" aria-expanded="false" aria-controls="row-ra">ら行</a>
                                 <div id="row-ra" class="collapse">
                                     <ul style="padding-left: 0; margin-left: 0;">
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-ら行" 
-                                                value="ら行"
-                                                {% if "ら行" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-ら行">ら行</label>
+                                        {% if unselected_alphabets.ら行 %}
+                                        <div>
+                                            {% for data, display in unselected_alphabets.ら行 %}
+                                                <div class="form-check">
+                                                    <input 
+                                                        type="radio" 
+                                                        class="form-check-input" 
+                                                        name="alphabet" 
+                                                        id="alphabet-{{ data }}" 
+                                                        value="{{ data }}">
+                                                    <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
+                                                </div>
+                                            {% endfor %}
                                         </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-ら行ら" 
-                                                value="ら行ら"
-                                                {% if "ら行ら" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-ら行ら">ら</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-ら行り" 
-                                                value="ら行り"
-                                                {% if "ら行り" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-ら行り">り</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-ら行る" 
-                                                value="ら行る"
-                                                {% if "ら行る" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-ら行る">る</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-ら行れ" 
-                                                value="ら行れ"
-                                                {% if "ら行れ" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-ら行れ">れ</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-ら行ろ" 
-                                                value="ら行ろ"
-                                                {% if "ら行ろ" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-ら行ろ">ろ</label>
-                                        </div>
+                                        {% endif %}
                                     </ul>
                                     
                                 </div>
@@ -1507,46 +1153,21 @@
                                 <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#row-wa" aria-expanded="false" aria-controls="row-wa">わ行</a>
                                 <div id="row-wa" class="collapse">
                                     <ul style="padding-left: 0; margin-left: 0;">
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-わ行" 
-                                                value="わ行"
-                                                {% if "わ行" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-わ行">わ行</label>
+                                        {% if unselected_alphabets.わ行 %}
+                                        <div>
+                                            {% for data, display in unselected_alphabets.わ行 %}
+                                                <div class="form-check">
+                                                    <input 
+                                                        type="radio" 
+                                                        class="form-check-input" 
+                                                        name="alphabet" 
+                                                        id="alphabet-{{ data }}" 
+                                                        value="{{ data }}">
+                                                    <label class="form-check-label" for="alphabet-{{ data }}">{{ display }}</label>
+                                                </div>
+                                            {% endfor %}
                                         </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-わ行わ" 
-                                                value="わ行わ"
-                                                {% if "わ行わ" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-わ行わ">わ</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-わ行を" 
-                                                value="わ行を"
-                                                {% if "わ行を" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-わ行を">を</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input" 
-                                                name="alphabet" 
-                                                id="alphabet-わ行ん" 
-                                                value="わ行ん"
-                                                {% if "わ行ん" in search_conditions.alphabet %}checked{% endif %}>
-                                            <label class="form-check-label" for="alphabet-わ行ん">ん</label>
-                                        </div>
+                                        {% endif %}
                                     </ul>
                                     
                                 </div>
