@@ -783,7 +783,8 @@ def update_rating(request, pk):
             
             return JsonResponse({
                 "message": "Rating updated successfully.",
-                "user_rating": relation.rating
+                "user_rating": relation.rating,
+                "average_rating": anime.average_rating, 
             })
 
         except Exception as e:
