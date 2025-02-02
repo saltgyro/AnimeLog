@@ -117,7 +117,7 @@
         {% if anime.episode_count > 0 %}
             <p><strong>総話数:</strong> {{ anime.episode_count }}</p>
         {% endif %}
-        <p><strong>平均評価:</strong><span id="average-rating"> {{ anime.average_rating }}</span></p>
+        <p><strong>平均評価:</strong> {{ anime.average_rating }}</p>
         <p><strong>視聴済みユーザー数:</strong> {{ anime.watched_count }}</p>
         <p><strong>お気に入り数:</strong> {{ anime.favorite_count }}</p>
 
@@ -251,7 +251,6 @@ document.addEventListener("DOMContentLoaded", function () {
 const createStar = () => {
     const starElement = document.querySelector('.card-review_star');
     const userRatingElement = document.querySelector('#user-rating');
-    const averageRatingElement = document.querySelector('#average-rating'); // 平均評価の要素
     const tooltip = document.getElementById('rating-tooltip'); // ツールチップ要素
     const animeId = starElement.getAttribute('data-anime-id'); // アニメのID
     const isDisabled = starElement.getAttribute('data-disabled') === "true"; // 操作禁止フラグ
@@ -343,10 +342,6 @@ const createStar = () => {
                     console.log('評価が更新されました:', data);
                     if (userRatingElement) {
                         userRatingElement.textContent = newRating; // 確定後の評価を更新
-                    }
-                    // **平均評価を更新**
-                    if (averageRatingElement && data.average_rating !== undefined) {
-                        averageRatingElement.textContent = data.average_rating.toFixed(1); // 小数点2桁
                     }
                 })
                 .catch((error) => {
