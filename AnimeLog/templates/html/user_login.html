@@ -10,7 +10,7 @@
   <h1 class="form-header">アニメログにログイン</h1>
 
   <!-- ログインフォーム -->
-  <form method="POST">
+  <form method="POST" class="form">
     {% csrf_token %}
 
     <div class="form-group">
@@ -35,11 +35,11 @@
       {% endif %}
     </div>
 
-    <div class="form-check">
+    <div class="form-check" >
       {{ form.remember }}
-      <label class="form-check-label" for="{{ form.remember.id_for_label }}"
-        >ログインしたままにする</label
-      >
+      <label class="form-check-label" for="{{ form.remember.id_for_label }}">
+        ログインしたままにする
+      </label>
     </div>
 
     <button type="submit" class="btn btn-primary">ログイン</button>
@@ -60,8 +60,16 @@
 
 <style>
   <!--
+    .form-check {
+      display: flex;
+      align-items: center; /* 垂直方向の中央揃え */
+      gap: 5px; /* チェックボックスとテキストの間隔を設定 */
+      position: relative;
+  }
 
-
+  form {
+    width:100%;
+  }
 
   -->
 </style>

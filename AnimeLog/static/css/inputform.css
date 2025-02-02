@@ -94,3 +94,18 @@ h1 {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  width: 100%; /* フィールドの幅に合わせる */
+  word-wrap: break-word; /* 長い単語があっても折り返す */
+  white-space: normal; /* 自然に折り返し */
+}
+.error-text {
+  color: red;
+  font-size: 14px;
+  width: 100%; /* フィールドの幅に合わせる */
+  word-wrap: break-word; /* 長い単語があっても折り返す */
+  white-space: normal; /* 自然に折り返し */
+}
