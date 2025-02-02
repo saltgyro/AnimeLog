@@ -72,7 +72,12 @@
         
         <div class="anime-rating">
             <!-- 評価星の表示 -->
-            <div class="{% if not user.is_authenticated %}rating-no-hover{% elif not can_edit_tags %}disabled{% else %}rating-container{% endif %}">
+            <div class="
+                {% if not can_edit_tags %}
+                    rating-no-hover
+                {% else %}
+                    rating-container
+                {% endif %}">
                 <div class="card-review_star"
                     data-anime-id="{% if can_edit_tags %}{{ anime.id }}{% else %}null{% endif %}"
                     data-rating="{% if can_edit_tags %}{{ user_relation.rating|default:0 }}{% else %}0{% endif %}"
@@ -440,6 +445,7 @@ document.addEventListener('DOMContentLoaded', createStar);
     color: #888888;
     font-size: 14px;
     margin-top: 5px;
+    cursor: default;
 }
 
 .rating-action {
